@@ -13,7 +13,20 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-  }
+
+	//Contains all of our Drive Constants for Swerve Drive.
+	public static class DriveConstants {
+
+		public static final int kFrontLeftDriveID = 0;
+		public static final int kFrontRightDriveID = 0;
+		public static final int kBackLeftDriveID = 0;
+		public static final int kBackRightDriveID = 0;
+		public static final int kFrontLeftTurningID = 0;
+		public static final int kFrontRightTurningID = 0;
+		public static final int kBackLeftTurningID = 0;
+		public static final int kBackRightTurningID = 0;
+
+	}
+
+	
 }
