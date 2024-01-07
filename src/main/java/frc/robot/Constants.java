@@ -17,6 +17,7 @@ public final class Constants {
 	//Contains all of our Drive Constants for Swerve Drive.
 	public static class DriveConstants {
 
+		//The hardcoded CAN IDs in relation to the motors.
 		public static final int kFrontLeftDriveID = 0;
 		public static final int kFrontRightDriveID = 0;
 		public static final int kBackLeftDriveID = 0;
@@ -26,6 +27,9 @@ public final class Constants {
 		public static final int kBackLeftTurningID = 0;
 		public static final int kBackRightTurningID = 0;
 
+
+		//The configurations for drivetrain speeds.
+		public static final int kSpeedMultiplier = 5;
 	}
 
 	
