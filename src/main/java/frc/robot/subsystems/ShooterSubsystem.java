@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * Sensors:
  * - x2 REV Through Bore Absolute Encoder
  * (one direction is reversed)
+ * - Beam Break Sensor to detect if ring is in possession.
  */
 public class ShooterSubsystem extends SubsystemBase {
     private TalonFX m_leftShooter, m_rightShooter, m_index; // declaring motors and global scope
@@ -34,6 +35,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private ShooterSubsystem() {
         // Initialize motors
+
+        // Initialize Beam Break sensor
     }
 
     public static ShooterSubsystem getInstance() {
@@ -53,8 +56,20 @@ public class ShooterSubsystem extends SubsystemBase {
     // ========================================================
     // ================== MOTOR ACTIONS =======================
 
+    // INDEX --------------------------------------------------
+
     /**
-     * Sets speed of the shooter uniformly for both sets of wheels.
+     * Sets speed of index. Positive -> into shooter. Negative -> away from shooter.
+     * 
+     * @param percentOutput
+     */
+    public void setIndexSpeed(double percentOutput) {
+    }
+
+    // SHOOTER ------------------------------------------------
+
+    /**
+     * Sets speed of the shooter for both sets of wheels.
      * 
      * @param percentOutput % output for both motors.
      */
@@ -73,6 +88,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // ========================================================
     // ===================== SENSORS ==========================
+
+    // INDEX --------------------------------------------------
+
+    /**
+     * @return whether the beam in the beam-break sensor is broken.
+     */
+    public boolean isBeamBroken() {
+        return false; // TODO: fill placeholder
+    }
+
+    // SHOOTER ------------------------------------------------
 
     /**
      * @return RPM of left set of wheels.
