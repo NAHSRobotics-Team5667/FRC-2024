@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import java.util.Map;
+
+import frc.robot.States.ArmState;
+import frc.robot.util.ArmPosition;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -21,31 +26,143 @@ public final class Constants {
     // Contains all of our Drive Constants for Swerve Drive.
     public static class DriveConstants {
 
+        // =======================================================
         // ================= MOTOR IDS ===========================
 
         // ---- FRONT LEFT ----
-        public static final int kFrontLeftDriveID = 0;
-        public static final int kFrontLeftTurningID = 0;
+        public static final int FRONT_LEFT_DRIVE_ID = -1;
+        public static final int FRONT_LEFT_TURN_ID = -1;
 
         // ---- FRONT RIGHT ----
-        public static final int kFrontRightDriveID = 0;
-        public static final int kFrontRightTurningID = 0;
+        public static final int FRONT_RIGHT_DRIVE_ID = -1;
+        public static final int FRONT_RIGHT_TURN_ID = -1;
 
         // ---- BACK LEFT ----
-        public static final int kBackLeftDriveID = 0;
-        public static final int kBackLeftTurningID = 0;
+        public static final int BACK_LEFT_DRIVE_ID = -1;
+        public static final int BACK_LEFT_TURN_ID = -1;
 
         // ---- BACK RIGHT ----
-        public static final int kBackRightDriveID = 0;
-        public static final int kBackRightTurningID = 0;
+        public static final int BACK_RIGHT_DRIVE_ID = -1;
+        public static final int BACK_RIGHT_TURN_ID = -1;
 
-        // ============================================================
+        // =======================================================
+        // ====================== MOTION =========================
 
-        // The configurations for drivetrain speeds.
-        public static final int kSpeedMultiplier = 5;
+        // ==== PID ====
+        // ---- FRONT LEFT ---
+        public static final double FL_DRIVE_P = -1;
+        public static final double FL_DRIVE_I = -1;
+        public static final double FL_DRIVE_D = -1;
+        public static final double FL_DRIVE_F = -1;
+
+        public static final double FL_TURN_P = -1;
+        public static final double FL_TURN_I = -1;
+        public static final double FL_TURN_D = -1;
+        public static final double FL_TURN_F = -1;
+
+        // ---- FRONT RIGHT ---
+        public static final double FR_DRIVE_P = -1;
+        public static final double FR_DRIVE_I = -1;
+        public static final double FR_DRIVE_D = -1;
+        public static final double FR_DRIVE_F = -1;
+
+        public static final double FR_TURN_P = -1;
+        public static final double FR_TURN_I = -1;
+        public static final double FR_TURN_D = -1;
+        public static final double FR_TURN_F = -1;
+
+        // ---- BACK LEFT ---
+        public static final double BL_DRIVE_P = -1;
+        public static final double BL_DRIVE_I = -1;
+        public static final double BL_DRIVE_D = -1;
+        public static final double BL_DRIVE_F = -1;
+
+        public static final double BL_TURN_P = -1;
+        public static final double BL_TURN_I = -1;
+        public static final double BL_TURN_D = -1;
+        public static final double BL_TURN_F = -1;
+
+        // ---- BACK RIGHT ---
+        public static final double BR_DRIVE_P = -1;
+        public static final double BR_DRIVE_I = -1;
+        public static final double BR_DRIVE_D = -1;
+        public static final double BR_DRIVE_F = -1;
+
+        public static final double BR_TURN_P = -1;
+        public static final double BR_TURN_I = -1;
+        public static final double BR_TURN_D = -1;
+        public static final double BR_TURN_F = -1;
+
+        // =======================================================
+        // ======================= AUTO ==========================
     }
 
     public static class ArmConstants {
+
+        // =======================================================
+        // ================= MOTOR IDS ===========================
+
+        // ---- FIRST PIVOT ----
+        public static final int FIRST_PIVOT_LEAD_ID = -1;
+        public static final int FIRST_PIVOT_FOLLOWER_ID = -1;
+
+        // ---- SECOND PIVOT ----
+        public static final int SECOND_PIVOT_LEAD_ID = -1;
+        public static final int SECOND_PIVOT_FOLLOWER_ID = -1;
+
+        // =======================================================
+        // ===================== ENCODERS ========================
+
+        // ---- FIRST PIVOT ----
+        public static final double FIRST_PIVOT_LEFT_OFFSET = -1;
+        public static final double FIRST_PIVOT_RIGHT_OFFSET = -1;
+
+        // ---- SECOND PIVOT ----
+        public static final double SECOND_PIVOT_LEFT_OFFSET = -1;
+        public static final double SECOND_PIVOT_RIGHT_OFFSET = -1;
+
+        // =======================================================
+        // ================= ARM POSITION ========================
+
+        public static final ArmPosition INITIAL_POSITION = new ArmPosition(
+                -1,
+                -1); // TODO: determine initial angles of arm
+
+        // create a map of goal states and their target arm positions
+        public static final Map<ArmState, ArmPosition> GOAL_POSITIONS = Map.of(
+                ArmState.RESTING, INITIAL_POSITION, // arm position when at resting position
+                ArmState.DEFAULT_SPEAKER, new ArmPosition(), // default position for speaker
+                ArmState.AMP, new ArmPosition(), // position for amp
+                ArmState.TRAP, new ArmPosition(), // position for trap
+                ArmState.HUMAN_PLAYER, new ArmPosition()); // position for human player intake
+
+        /**
+         * Returns the goal position for a given target.
+         * 
+         * @param key target position.
+         * @return goal position associated with target.
+         */
+        public static ArmPosition getGoalPosition(ArmState key) {
+            return GOAL_POSITIONS.get(key);
+        }
+
+        // =======================================================
+        // ====================== MOTION =========================
+
+        // ==== PID ====
+        // ---- FIRST PIVOT ----
+        public static final double FIRST_P = -1;
+        public static final double FIRST_I = -1;
+        public static final double FIRST_D = -1;
+
+        public static final double FIRST_F = -1; // if using feedforward
+
+        // ---- SECOND PIVOT ----
+        public static final double SECOND_P = -1;
+        public static final double SECOND_I = -1;
+        public static final double SECOND_D = -1;
+
+        public static final double SECOND_F = -1; // if using feedforward
     }
 
     public static class ShooterConstants {

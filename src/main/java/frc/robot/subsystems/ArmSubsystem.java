@@ -8,6 +8,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.util.ArmPosition;
 
 /**
  * ArmSubsystem.java
@@ -38,7 +40,7 @@ public class ArmSubsystem extends SubsystemBase {
             m_secondStageLead, m_secondStageFollower; // declaring motors and global scope
     private DutyCycleEncoder encoder1, encoder2; // declare encoders for arm actuation
 
-    private double firstPivotAngle, secondPivotAngle; // declare variable to store first link angle in degrees
+    private ArmPosition armPosition;
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -67,10 +69,20 @@ public class ArmSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+
+        // update arm position - run calculation to convert encoder reading to degrees
     }
 
     // ========================================================
     // ================== MOTOR ACTIONS =======================
+
+    // GENERAL ------------------------------------------------
+
+    /**
+     * Stops all motors.
+     */
+    public void stopAllMotors() {
+    }
 
     // FIRST PIVOT --------------------------------------------
 
@@ -93,42 +105,72 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     // ========================================================
-    // ===================== SENSORS ==========================
+    // ===================== POSITION =========================
+
+    /**
+     * Update the Arm Position variable.
+     * 
+     * @param newPosition replaces current arm position.
+     */
+    public void updateArmPosition(ArmPosition newPosition) {
+        armPosition = newPosition;
+    }
 
     // FIRST PIVOT --------------------------------------------
 
     /**
+     * @return raw encoder values of first pivot. First value is left, second value
+     *         is right.
+     */
+    public double[] getRawFirstEncoders() {
+        double[] pivotEncoders = { -1, -1 };
+        return pivotEncoders;
+    }
+
+    /**
+     * @return offset encoder values of first pivot. First value is left, second
+     *         value is right.
+     */
+    public double[] getOffsetFirstEncoders() {
+        double[] pivotEncoders = getRawFirstEncoders();
+        double[] offsetEncoders = { pivotEncoders[0] + ArmConstants.FIRST_PIVOT_LEFT_OFFSET,
+                pivotEncoders[1] + ArmConstants.FIRST_PIVOT_RIGHT_OFFSET };
+        return offsetEncoders;
+    }
+
+    /**
      * @return fist pivot angle in degrees.
      */
-    public double getFirstPivotDegrees() {
-        return firstPivotAngle;
+    public double getFirstPivot() {
+        return armPosition.getFirstPivot();
     }
 
     // SECOND PIVOT -------------------------------------------
 
     /**
+     * @return raw encoder values of first pivot. First value is left, second value
+     *         is right.
+     */
+    public double[] getRawSecondEncoders() {
+        double[] pivotEncoders = { -1, -1 };
+        return pivotEncoders;
+    }
+
+    /**
+     * @return offset encoder values of first pivot. First value is left, second
+     *         value is right.
+     */
+    public double[] getOffsetSecondEncoders() {
+        double[] pivotEncoders = getRawFirstEncoders();
+        double[] offsetEncoders = { pivotEncoders[0] + ArmConstants.FIRST_PIVOT_LEFT_OFFSET,
+                pivotEncoders[1] + ArmConstants.FIRST_PIVOT_RIGHT_OFFSET };
+        return offsetEncoders;
+    }
+
+    /**
      * @return second pivot angle in degrees.
      */
-    public double getSecondPivotDegrees() {
-        return secondPivotAngle;
-    }
-
-    // ========================================================
-    // ======================= OTHER ==========================
-
-    /**
-     * Update the variable that stores angle of first pivot.
-     * 
-     * @param armAngleDegrees new angle of first pivot.
-     */
-    public void setFirstPivotDegrees(double armAngleDegrees) {
-    }
-
-    /**
-     * Update the variable that stores angle of second pivot.
-     * 
-     * @param armAngleDegrees new angle of second pivot.
-     */
-    public void setSecondPivotDegrees(double armAngleDegrees) {
+    public double getSecondPivot() {
+        return armPosition.getSecondPivot();
     }
 }

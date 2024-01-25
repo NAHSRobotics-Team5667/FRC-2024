@@ -80,6 +80,13 @@ public class IntakeSubsystem extends SubsystemBase {
         return false; // TODO: check if intake is deployed
     }
 
+    /**
+     * @return whether intake is running.
+     */
+    public boolean isIntakeRunning() {
+        return false; // TODO: check if motor is spinning via encoder
+    }
+
     // ========================================================
     // ======================= OTHER ==========================
 }

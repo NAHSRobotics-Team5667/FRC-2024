@@ -92,9 +92,9 @@ public class ShooterSubsystem extends SubsystemBase {
     // INDEX --------------------------------------------------
 
     /**
-     * @return whether the beam in the beam-break sensor is broken.
+     * @return whether game piece is in index by consulting beam-break sensor.
      */
-    public boolean isBeamBroken() {
+    public boolean hasGamePiece() {
         return false; // TODO: fill placeholder
     }
 
