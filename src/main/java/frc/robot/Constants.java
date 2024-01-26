@@ -6,8 +6,8 @@ package frc.robot;
 
 import java.util.Map;
 
-import frc.robot.States.ArmState;
-import frc.robot.util.ArmPosition;
+import frc.robot.util.ArmAngle;
+import frc.robot.util.States.ArmState;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -124,17 +124,17 @@ public final class Constants {
         // =======================================================
         // ================= ARM POSITION ========================
 
-        public static final ArmPosition INITIAL_POSITION = new ArmPosition(
+        public static final ArmAngle INITIAL_POSITION = new ArmAngle(
                 -1,
                 -1); // TODO: determine initial angles of arm
 
         // create a map of goal states and their target arm positions
-        public static final Map<ArmState, ArmPosition> GOAL_POSITIONS = Map.of(
+        public static final Map<ArmState, ArmAngle> GOAL_POSITIONS = Map.of(
                 ArmState.RESTING, INITIAL_POSITION, // arm position when at resting position
-                ArmState.DEFAULT_SPEAKER, new ArmPosition(), // default position for speaker
-                ArmState.AMP, new ArmPosition(), // position for amp
-                ArmState.TRAP, new ArmPosition(), // position for trap
-                ArmState.HUMAN_PLAYER, new ArmPosition()); // position for human player intake
+                ArmState.DEFAULT_SPEAKER, new ArmAngle(), // default position for speaker
+                ArmState.AMP, new ArmAngle(), // position for amp
+                ArmState.TRAP, new ArmAngle(), // position for trap
+                ArmState.HUMAN_PLAYER, new ArmAngle()); // position for human player intake
 
         /**
          * Returns the goal position for a given target.
@@ -142,7 +142,7 @@ public final class Constants {
          * @param key target position.
          * @return goal position associated with target.
          */
-        public static ArmPosition getGoalPosition(ArmState key) {
+        public static ArmAngle getGoalPosition(ArmState key) {
             return GOAL_POSITIONS.get(key);
         }
 

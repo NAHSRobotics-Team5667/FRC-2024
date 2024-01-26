@@ -9,7 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.util.ArmPosition;
+import frc.robot.util.ArmAngle;
 
 /**
  * ArmSubsystem.java
@@ -40,7 +40,7 @@ public class ArmSubsystem extends SubsystemBase {
             m_secondStageLead, m_secondStageFollower; // declaring motors and global scope
     private DutyCycleEncoder encoder1, encoder2; // declare encoders for arm actuation
 
-    private ArmPosition armPosition;
+    private ArmAngle armAngles;
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -112,8 +112,8 @@ public class ArmSubsystem extends SubsystemBase {
      * 
      * @param newPosition replaces current arm position.
      */
-    public void updateArmPosition(ArmPosition newPosition) {
-        armPosition = newPosition;
+    public void updateArmPosition(ArmAngle newPosition) {
+        armAngles = newPosition;
     }
 
     // FIRST PIVOT --------------------------------------------
@@ -142,7 +142,7 @@ public class ArmSubsystem extends SubsystemBase {
      * @return fist pivot angle in degrees.
      */
     public double getFirstPivot() {
-        return armPosition.getFirstPivot();
+        return armAngles.getFirstPivot();
     }
 
     // SECOND PIVOT -------------------------------------------
@@ -171,6 +171,6 @@ public class ArmSubsystem extends SubsystemBase {
      * @return second pivot angle in degrees.
      */
     public double getSecondPivot() {
-        return armPosition.getSecondPivot();
+        return armAngles.getSecondPivot();
     }
 }

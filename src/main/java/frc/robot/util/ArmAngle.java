@@ -6,16 +6,16 @@ package frc.robot.util;
  * To be used solely as a class to hold information regarding Arm Positions.
  * Constructed for ease of use.
  */
-public class ArmPosition {
+public class ArmAngle {
     private double firstPivotAngle; // stores first pivot angle of the arm position
     private double secondPivotAngle; // second pivot angle of the arm position
 
-    public ArmPosition() {
+    public ArmAngle() {
         firstPivotAngle = 0;
         secondPivotAngle = 0;
     }
 
-    public ArmPosition(double firstPivotAngle, double secondPivotAngle) {
+    public ArmAngle(double firstPivotAngle, double secondPivotAngle) {
         this.firstPivotAngle = firstPivotAngle;
         this.secondPivotAngle = secondPivotAngle;
     }
@@ -56,7 +56,7 @@ public class ArmPosition {
      * @param armPosition arm position to be evaluated.
      * @return whether position is legal.
      */
-    public static boolean isLegal(ArmPosition armPosition) {
+    public static boolean isLegal(ArmAngle armPosition) {
         return false; // TODO: functionality for determining if an arm position is legal
     }
 
