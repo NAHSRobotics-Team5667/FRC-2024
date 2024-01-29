@@ -6,6 +6,11 @@ package frc.robot;
 
 import java.util.Map;
 
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+
+import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.util.Units;
 import frc.robot.util.ArmAngle;
 import frc.robot.util.States.ArmState;
 
@@ -22,6 +27,15 @@ import frc.robot.util.States.ArmState;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static class OperatorConstants {
+        // =======================================================
+        // ==================== DRIVER ===========================
+
+        public static final double LEFT_X_DEADBAND = 0.1;
+        public static final double LEFT_Y_DEADBAND = 0.1;
+        public static final double RIGHT_X_DEADBAND = 0.1;
+        public static final double RIGHT_Y_DEADBAND = 0.1;
+    }
 
     // Contains all of our Drive Constants for Swerve Drive.
     public static class DriveConstants {
@@ -46,55 +60,18 @@ public final class Constants {
         public static final int BACK_RIGHT_TURN_ID = -1;
 
         // =======================================================
-        // ====================== MOTION =========================
+        // ====================== PID ============================
 
-        // ==== PID ====
-        // ---- FRONT LEFT ---
-        public static final double FL_DRIVE_P = -1;
-        public static final double FL_DRIVE_I = -1;
-        public static final double FL_DRIVE_D = -1;
-        public static final double FL_DRIVE_F = -1;
-
-        public static final double FL_TURN_P = -1;
-        public static final double FL_TURN_I = -1;
-        public static final double FL_TURN_D = -1;
-        public static final double FL_TURN_F = -1;
-
-        // ---- FRONT RIGHT ---
-        public static final double FR_DRIVE_P = -1;
-        public static final double FR_DRIVE_I = -1;
-        public static final double FR_DRIVE_D = -1;
-        public static final double FR_DRIVE_F = -1;
-
-        public static final double FR_TURN_P = -1;
-        public static final double FR_TURN_I = -1;
-        public static final double FR_TURN_D = -1;
-        public static final double FR_TURN_F = -1;
-
-        // ---- BACK LEFT ---
-        public static final double BL_DRIVE_P = -1;
-        public static final double BL_DRIVE_I = -1;
-        public static final double BL_DRIVE_D = -1;
-        public static final double BL_DRIVE_F = -1;
-
-        public static final double BL_TURN_P = -1;
-        public static final double BL_TURN_I = -1;
-        public static final double BL_TURN_D = -1;
-        public static final double BL_TURN_F = -1;
-
-        // ---- BACK RIGHT ---
-        public static final double BR_DRIVE_P = -1;
-        public static final double BR_DRIVE_I = -1;
-        public static final double BR_DRIVE_D = -1;
-        public static final double BR_DRIVE_F = -1;
-
-        public static final double BR_TURN_P = -1;
-        public static final double BR_TURN_I = -1;
-        public static final double BR_TURN_D = -1;
-        public static final double BR_TURN_F = -1;
+        public static final double AUTO_DRIVE_P = 5.0;
+        public static final double AUTO_DRIVE_I = 0;
+        public static final double AUTO_DRIVE_D = 0;
+        public static final double AUTO_DRIVE_F = 0;
 
         // =======================================================
-        // ======================= AUTO ==========================
+        // ======================= GENERAL =======================
+
+        public static final double MAX_VELOCITY_FEET = 16.5;
+        public static final double MAX_VELOCITY_METERS = Units.feetToMeters(MAX_VELOCITY_FEET);
     }
 
     public static class ArmConstants {

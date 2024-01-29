@@ -11,11 +11,9 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.struct.Pose3dStruct;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -24,6 +22,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
+
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
@@ -44,12 +44,8 @@ public class SwerveSubsystem extends SubsystemBase {
      * Swerve drive object.
      */
     private final SwerveDrive swerveDrive;
-    /**
-     * Maximum speed of the robot in meters per second, used to limit acceleration.
-     */
-    public double maximumSpeed = Units.feetToMeters(16.5);
 
-    private SwerveSubsystem instance = null; // singleton instance
+    private static SwerveSubsystem instance = null; // singleton instance
 
     // ========================================================
     // ================= CONSTRUCTORS =========================
@@ -64,14 +60,14 @@ public class SwerveSubsystem extends SubsystemBase {
         // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
         // In this case the gear ratio is 150 / 7 motor revolutions per wheel rotation.
         // The encoder resolution per motor revolution is 1 per motor revolution.
-        double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation((150.0 / 7.0));
+        double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(150.0 / 7.0); // CANCoder
         // Motor conversion factor is (PI * WHEEL DIAMETER IN METERS) / (GEAR RATIO *
         // ENCODER RESOLUTION).
         // In this case the wheel diameter is 4 inches, which must be converted to
         // meters to get meters/second.
         // The gear ratio is 6.75 motor revolutions per wheel rotation.
-        // The encoder resolution per motor revolution is 1 per motor revolution.
-        double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75);
+        // The encoder resolution per motor revolution is 2048 per motor revolution.
+        double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75, 2048);
         System.out.println("\"conversionFactor\": {");
         System.out.println("\t\"angle\": " + angleConversionFactor + ",");
         System.out.println("\t\"drive\": " + driveConversionFactor);
@@ -81,7 +77,7 @@ public class SwerveSubsystem extends SubsystemBase {
         // objects being created.
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
         try {
-            swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
+            swerveDrive = new SwerveParser(directory).createSwerveDrive(DriveConstants.MAX_VELOCITY_METERS);
             // Alternative method if you don't want to supply the conversion factor via JSON
             // files.
             // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
@@ -102,14 +98,14 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param controllerCfg Swerve Controller.
      */
     private SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
-        swerveDrive = new SwerveDrive(driveCfg, controllerCfg, maximumSpeed);
+        swerveDrive = new SwerveDrive(driveCfg, controllerCfg, DriveConstants.MAX_VELOCITY_METERS);
     }
 
     // ========================================================
     // ===================== INSTANCE =========================
     // ========================================================
 
-    public void initialize(File directory) {
+    public static void initialize(File directory) {
         if (instance == null) {
             instance = new SwerveSubsystem(directory);
         } else {
@@ -117,7 +113,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
 
-    public void initialize(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
+    public static void initialize(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
         if (instance == null) {
             instance = new SwerveSubsystem(driveCfg, controllerCfg);
         } else {
@@ -125,7 +121,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
 
-    public SwerveSubsystem getInstance() {
+    public static SwerveSubsystem getInstance() {
         return instance;
     }
 
@@ -144,13 +140,14 @@ public class SwerveSubsystem extends SubsystemBase {
                 this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
                                                  // Constants class
-                        new PIDConstants(5.0, 0.0, 0.0),
+                        new PIDConstants(DriveConstants.AUTO_DRIVE_P, DriveConstants.AUTO_DRIVE_I,
+                                DriveConstants.AUTO_DRIVE_D),
                         // Translation PID constants
                         new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
                                 swerveDrive.swerveController.config.headingPIDF.i,
                                 swerveDrive.swerveController.config.headingPIDF.d),
                         // Rotation PID constants
-                        4.5,
+                        DriveConstants.MAX_VELOCITY_METERS,
                         // Max module speed, in m/s
                         swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
                         // Drive base radius in meters. Distance from robot center to furthest module.
@@ -436,7 +433,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 headingX,
                 headingY,
                 getHeading().getRadians(),
-                maximumSpeed);
+                DriveConstants.MAX_VELOCITY_METERS);
     }
 
     /**
@@ -456,7 +453,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 yInput,
                 angle.getRadians(),
                 getHeading().getRadians(),
-                maximumSpeed);
+                DriveConstants.MAX_VELOCITY_METERS);
     }
 
     /**
