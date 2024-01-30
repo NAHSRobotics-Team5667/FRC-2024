@@ -75,6 +75,9 @@ public class ClimbSubsystem extends SubsystemBase {
         double lDistance = leftEncoder.getDistance();
         double rDistance = rightEncoder.getDistance();
 
+        if (lDistance == 0) {
+            
+        }
 
     }
 
