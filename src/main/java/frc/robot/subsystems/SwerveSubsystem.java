@@ -4,28 +4,41 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPoint;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 
 import java.io.File;
+import java.util.List;
 import java.util.function.DoubleSupplier;
+import java.util.stream.Collectors;
+
+import org.littletonrobotics.junction.Logger;
+
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -60,7 +73,7 @@ public class SwerveSubsystem extends SubsystemBase {
         // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
         // In this case the gear ratio is 150 / 7 motor revolutions per wheel rotation.
         // The encoder resolution per motor revolution is 1 per motor revolution.
-        double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(150.0 / 7.0); // CANCoder
+        double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(150.0 / 7.0);
         // Motor conversion factor is (PI * WHEEL DIAMETER IN METERS) / (GEAR RATIO *
         // ENCODER RESOLUTION).
         // In this case the wheel diameter is 4 inches, which must be converted to
@@ -88,7 +101,19 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot
                                                  // via angle.
 
-        setupPathPlanner();
+        // log PathPlanner path
+        PathPlannerLogging.setLogActivePathCallback(
+                (activePath) -> {
+                    Logger.recordOutput(
+                            "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+                });
+
+        PathPlannerLogging.setLogTargetPoseCallback(
+                (targetPose) -> {
+                    Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+                });
+
+        setupPathPlanner(); // configure AutoBuilder - path generator
     }
 
     /**
@@ -123,6 +148,18 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public static SwerveSubsystem getInstance() {
         return instance;
+    }
+
+    // ========================================================
+    // ===================== PERIODIC =========================
+    // ========================================================
+
+    @Override
+    public void periodic() {
+    }
+
+    @Override
+    public void simulationPeriodic() {
     }
 
     // ========================================================
@@ -174,11 +211,14 @@ public class SwerveSubsystem extends SubsystemBase {
      * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
      */
     public Command getAutonomousCommand(String pathName, boolean setOdomToStart) {
+        swerveDrive.resetDriveEncoders(); // reset encoders - start from 0
+        zeroGyro(); // set gyro to 0
+
         // Load the path you want to follow using its name in the GUI
         PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
         if (setOdomToStart) {
-            resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
+            resetOdometry(path.getPreviewStartingHolonomicPose());
         }
 
         // Create a path following command using AutoBuilder. This will also trigger
@@ -206,6 +246,39 @@ public class SwerveSubsystem extends SubsystemBase {
                 0.0 // Rotation delay distance in meters. This is how far the robot should travel
                     // before attempting to rotate.
         );
+    }
+
+    /**
+     * Post the trajectory to the field.
+     *
+     * @param trajectory The trajectory to post.
+     */
+    public void postTrajectory(Trajectory trajectory) {
+        swerveDrive.postTrajectory(trajectory);
+    }
+
+    /**
+     * Post the trajectory to the field.
+     * TODO: kinda laggy and not a smooth path.
+     * 
+     * @param pathName Name of the pathpanner JSON file for the path
+     */
+    public void postTrajectory(String pathName) {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(pathName); // load path
+
+        List<PathPoint> pathPoints = path.getAllPathPoints(); // make a list of PathPlanner PathPoints
+        List<Pose2d> points = pathPoints.stream() // create a stream of PathPoints
+                .map(p -> new Pose2d(p.position, new Rotation2d())) // make a Pose2d point for each
+                                                                    // PathPoint
+                .collect(Collectors.toList()); // compile into a list
+
+        TrajectoryConfig config = new TrajectoryConfig(Constants.DriveConstants.MAX_VELOCITY_METERS,
+                Constants.DriveConstants.MAX_ACCELERATION_METERS) // make config file to generate path
+                .setKinematics(getKinematics()); // set kinematics for swerve
+        Trajectory traj = TrajectoryGenerator.generateTrajectory(points, config); // generate trajectory based on points
+                                                                                  // and config
+
+        postTrajectory(traj); // posts trajectory to the field
     }
 
     // ========================================================
@@ -377,15 +450,6 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Post the trajectory to the field.
-     *
-     * @param trajectory The trajectory to post.
-     */
-    public void postTrajectory(Trajectory trajectory) {
-        swerveDrive.postTrajectory(trajectory);
-    }
-
-    /**
      * Resets the gyro angle to zero and resets odometry to the same position, but
      * facing toward 0.
      */
@@ -513,17 +577,5 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public void addFakeVisionReading() {
         swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
-    }
-
-    // ========================================================
-    // ===================== PERIODIC =========================
-    // ========================================================
-
-    @Override
-    public void periodic() {
-    }
-
-    @Override
-    public void simulationPeriodic() {
     }
 }

@@ -72,6 +72,8 @@ public final class Constants {
 
         public static final double MAX_VELOCITY_FEET = 16.5;
         public static final double MAX_VELOCITY_METERS = Units.feetToMeters(MAX_VELOCITY_FEET);
+
+        public static final double MAX_ACCELERATION_METERS = 5.0;
     }
 
     public static class ArmConstants {
@@ -144,9 +146,9 @@ public final class Constants {
 
     public static class ShooterConstants {
         // ==== MOTORS ====
-        //----  MAXIMUM RPM ----
+        // ---- MAXIMUM RPM ----
         public static final double SHOOTER_MAX_RPM = 6000;
-        public static final double INDEX_MAX_RPM = 	11000;
+        public static final double INDEX_MAX_RPM = 11000;
     }
 
     public static class IntakeConstants {
