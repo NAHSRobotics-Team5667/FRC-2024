@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -24,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class ClimbSubsystem extends SubsystemBase {
     private TalonFX m_leftClimb, m_rightClimb; // declaring motors and global scope
-
+    private DutyCycleEncoder leftEncoder, rightEncoder;
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
 
@@ -35,7 +36,14 @@ public class ClimbSubsystem extends SubsystemBase {
     private ClimbSubsystem() {
         // Initialize motors
 
+        m_leftClimb = new TalonFX(0);
+        m_rightClimb = new TalonFX(0);
+
         // Initialize encoders
+
+        DutyCycleEncoder leftEncoder = new DutyCycleEncoder(0);
+        DutyCycleEncoder rightEncoder = new DutyCycleEncoder(0);
+    
     }
 
     public static ClimbSubsystem getInstance() {
@@ -50,11 +58,28 @@ public class ClimbSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+        rightEncoder.getAbsolutePosition();
+        leftEncoder.getAbsolutePosition();
     }
 
     // ========================================================
     // ================== MOTOR ACTIONS =======================
 
+    public void Distance(){
+
+        // Control the distance for every motor rotation 
+
+        leftEncoder.setDistancePerRotation(0);
+        rightEncoder.setDistancePerRotation(0);
+
+        double lDistance = leftEncoder.getDistance();
+        double rDistance = rightEncoder.getDistance();
+
+
+    }
+
+ 
+    
     /**
      * Sets relative velocity of the climb. Positive is upwards, negative is
      * downwards.
@@ -62,6 +87,11 @@ public class ClimbSubsystem extends SubsystemBase {
      * @param percentOutput % output of climb motor.
      */
     public void setClimbSpeed(double percentOutput) {
+        double motorSpeed = percentOutput / 100;
+
+        m_leftClimb.set(motorSpeed);
+        m_rightClimb.set(motorSpeed);
+
     }
 
     // ========================================================
@@ -72,6 +102,8 @@ public class ClimbSubsystem extends SubsystemBase {
      */
     public double getLeftClimbHeight() {
         return 0; // TODO: find height of left climb
+
+
     }
 
     /**
@@ -79,6 +111,8 @@ public class ClimbSubsystem extends SubsystemBase {
      */
     public double getRightClimbHeight() {
         return 0; // TODO: find height of right climb
+
+
     }
 
     // ========================================================
