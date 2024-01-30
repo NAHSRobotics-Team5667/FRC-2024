@@ -6,8 +6,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 /**
  * IntakeSubsystem.java
@@ -20,8 +22,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * - 2 Pistons connected to 1 Solenoid
  */
 public class IntakeSubsystem extends SubsystemBase {
-    private TalonFX m_intake; // declaring motors and global scope
-    private Solenoid m_piston; // declare solenoid
+    private TalonFX m_intake = new TalonFX(0); // declaring motors and global scope
+    private Solenoid m_piston = new Solenoid(null, 0); // declare solenoid
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -34,6 +36,7 @@ public class IntakeSubsystem extends SubsystemBase {
         // Initialize motors
 
         // Initialize piston
+    
     }
 
     public static IntakeSubsystem getInstance() {
@@ -59,6 +62,10 @@ public class IntakeSubsystem extends SubsystemBase {
      * @param percentOutput % output of intake motor.
      */
     public void setIntakeSpeed(double percentOutput) {
+
+        double motorSpeed = percentOutput / 100;
+        m_intake.set(motorSpeed);
+
     }
 
     /**
@@ -68,6 +75,12 @@ public class IntakeSubsystem extends SubsystemBase {
      *               retracting. true = extend, false = retract.
      */
     public void setPiston(boolean extend) {
+
+        if (extend = true){
+// Extend the piston
+        } else {
+// Retract the pistons
+        }
     }
 
     // ========================================================
