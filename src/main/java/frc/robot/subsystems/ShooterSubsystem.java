@@ -5,8 +5,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-
+import frc.robot.util.States.ShooterStates;
+import frc.robot.Constants.ShooterConstants;
+import com.revrobotics.AbsoluteEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 /**
  * ShooterSubsystem.java
@@ -25,6 +28,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class ShooterSubsystem extends SubsystemBase {
     private TalonFX m_leftShooter, m_rightShooter, m_index; // declaring motors and global scope
+    private DigitalInput beamBreak;
+    private ShooterStates shooterStates; //Shooter States
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -64,6 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param percentOutput
      */
     public void setIndexSpeed(double percentOutput) {
+        m_index.set(percentOutput);
     }
 
     // SHOOTER ------------------------------------------------
@@ -74,6 +80,8 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param percentOutput % output for both motors.
      */
     public void setShooterSpeed(double percentOutput) {
+        m_leftShooter.set(percentOutput);
+        m_rightShooter.set(percentOutput);
     }
 
     /**
@@ -84,6 +92,8 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param right % output for right motor.
      */
     public void setShooterSpeed(double left, double right) {
+        m_leftShooter.set(left);
+        m_rightShooter.set(right);
     }
 
     // ========================================================
@@ -95,7 +105,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return whether game piece is in index by consulting beam-break sensor.
      */
     public boolean hasGamePiece() {
-        return false; // TODO: fill placeholder
+        return !beamBreak.get();
     }
 
     // SHOOTER ------------------------------------------------
@@ -104,14 +114,16 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return RPM of left set of wheels.
      */
     public double getLeftShooterRPM() {
-        return 0; // TODO: fill placeholder
+        double leftSpeed = m_leftShooter.get();
+        return leftSpeed;
     }
 
     /**
      * @return RPM of right set of wheels.
      */
     public double getRightShooterRPM() {
-        return 0; // TODO: fill placeholder
+        double rightSpeed = m_rightShooter.get();
+        return rightSpeed;
     }
 
     /**
@@ -123,6 +135,6 @@ public class ShooterSubsystem extends SubsystemBase {
         return shooterRPMs;
     }
 
-    // ========================================================
+    // ======================================================== 
     // ======================= OTHER ==========================
 }
