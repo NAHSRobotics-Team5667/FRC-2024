@@ -38,11 +38,13 @@ public class ClimbSubsystem extends SubsystemBase {
 
         m_leftClimb = new TalonFX(0);
         m_rightClimb = new TalonFX(0);
+        //set ID's
 
         // Initialize encoders
 
         DutyCycleEncoder leftEncoder = new DutyCycleEncoder(0);
         DutyCycleEncoder rightEncoder = new DutyCycleEncoder(0);
+        //set channel
     
     }
 
@@ -71,11 +73,18 @@ public class ClimbSubsystem extends SubsystemBase {
 
         leftEncoder.setDistancePerRotation(0);
         rightEncoder.setDistancePerRotation(0);
+        //set rotation distance
 
         double lDistance = leftEncoder.getDistance();
         double rDistance = rightEncoder.getDistance();
 
         if (lDistance == 0) {
+              leftEncoder.setDistancePerRotation(0);
+        }
+
+
+         if (rDistance == 0) {
+              rightEncoder.setDistancePerRotation(0);
             
         }
 
@@ -104,13 +113,8 @@ public class ClimbSubsystem extends SubsystemBase {
      * @return left climb hook height.
      */
     public double getLeftClimbHeight() {
-<<<<<<< Updated upstream
-        return 0; // TODO: find height of left climb
-
-=======
-        return 0; //TODO: find height of left climb
-        
->>>>>>> Stashed changes
+        leftEncoder.getDistance();
+        return 0; 
 
     }
 
@@ -118,7 +122,8 @@ public class ClimbSubsystem extends SubsystemBase {
      * @return right climb hook height.
      */
     public double getRightClimbHeight() {
-        return 0; // TODO: find height of right climb
+        rightEncoder.getDistance();
+        return 0; 
 
 
     }
