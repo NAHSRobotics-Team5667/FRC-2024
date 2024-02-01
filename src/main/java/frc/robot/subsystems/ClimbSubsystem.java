@@ -104,8 +104,13 @@ public class ClimbSubsystem extends SubsystemBase {
      * @return left climb hook height.
      */
     public double getLeftClimbHeight() {
+<<<<<<< Updated upstream
         return 0; // TODO: find height of left climb
 
+=======
+        return 0; //TODO: find height of left climb
+        
+>>>>>>> Stashed changes
 
     }
 
