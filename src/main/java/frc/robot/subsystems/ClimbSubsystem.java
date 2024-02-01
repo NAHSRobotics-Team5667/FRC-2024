@@ -42,8 +42,8 @@ public class ClimbSubsystem extends SubsystemBase {
 
         // Initialize encoders
 
-        DutyCycleEncoder leftEncoder = new DutyCycleEncoder(0);
-        DutyCycleEncoder rightEncoder = new DutyCycleEncoder(0);
+        leftEncoder = new DutyCycleEncoder(0);
+        rightEncoder = new DutyCycleEncoder(0);
         //set channel
     
     }
