@@ -158,6 +158,7 @@ public final class Constants {
     }
 
     public static class IntakeConstants {
+        public static final int SparkMAX_ID = -1;
     }
 
     public static class ClimbConstants {
