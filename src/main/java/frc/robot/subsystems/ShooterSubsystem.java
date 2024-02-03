@@ -30,7 +30,7 @@ import frc.robot.util.States.ShooterStates;
 public class ShooterSubsystem extends SubsystemBase {
     private TalonFX m_leftShooter, m_rightShooter, m_index; // declaring motors and global scope
     private DigitalInput beamBreak;
-    private ShooterStates shooterStates; //Shooter States
+    private ShooterStates shooterStates; // Shooter States
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -106,7 +106,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return whether game piece is in index by consulting beam-break sensor.
      */
     public boolean hasGamePiece() {
-        return !beamBreak.get();
+        return !beamBreak.get(); // assuming broken beam = false and unbroken beam = true
     }
 
     // SHOOTER ------------------------------------------------
@@ -115,7 +115,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return RPM of left set of wheels.
      */
     public double getLeftShooterRPM() {
-        double leftSpeed = m_leftShooter.get();
+        double leftSpeed = m_leftShooter.getVelocity().getValueAsDouble();
         return leftSpeed;
     }
 
@@ -123,7 +123,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return RPM of right set of wheels.
      */
     public double getRightShooterRPM() {
-        double rightSpeed = m_rightShooter.get();
+        double rightSpeed = m_rightShooter.getVelocity().getValueAsDouble();
         return rightSpeed;
     }
 
@@ -136,6 +136,6 @@ public class ShooterSubsystem extends SubsystemBase {
         return shooterRPMs;
     }
 
-    // ======================================================== 
+    // ========================================================
     // ======================= OTHER ==========================
 }
