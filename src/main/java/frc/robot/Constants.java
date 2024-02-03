@@ -149,6 +149,9 @@ public final class Constants {
         public static final int SHOOTER_LEFT_ID = 0;
         public static final int SHOOTER_RIGHT_ID = 0;
 
+        // ---- BEAM BREAK ----
+        public static final int BEAM_BREAK_CHANNEL_ID = 0; // Goes into 2 Seperate Digital Inputs. We need to know which one is used here.
+
         // ---- MAXIMUM RPM ----
         public static final double SHOOTER_MAX_RPM = 6000;
         public static final double INDEX_MAX_RPM = 11000;

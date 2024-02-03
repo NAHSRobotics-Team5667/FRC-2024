@@ -11,7 +11,6 @@ import com.revrobotics.AbsoluteEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.util.States.ShooterStates;
-import frc.robot.Constants.ShooterConstants;
 
 /**
  * ShooterSubsystem.java
@@ -42,8 +41,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private ShooterSubsystem() {
         // Initialize motors
-
+        m_leftShooter = new TalonFX(frc.robot.Constants.ShooterConstants.SHOOTER_LEFT_ID);
+        m_rightShooter = new TalonFX(frc.robot.Constants.ShooterConstants.SHOOTER_RIGHT_ID);
         // Initialize Beam Break sensor
+        beamBreak = new DigitalInput(frc.robot.Constants.ShooterConstants.BEAM_BREAK_CHANNEL_ID);
     }
 
     public static ShooterSubsystem getInstance() {
