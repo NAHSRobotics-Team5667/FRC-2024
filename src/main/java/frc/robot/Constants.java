@@ -161,5 +161,12 @@ public final class Constants {
     }
 
     public static class ClimbConstants {
+        // ==== MOTORS ====
+        public static final int RIGHT_CLIMB_ID = -1;
+        public static final int LEFT_CLIMB_ID = -1;
+
+        // ==== ENCODERS ====
+        public static final int RIGHT_CLIMB_CHANNEL = -1;
+        public static final int LEFT_CLIMB_CHANNEL = -1;
     }
 }

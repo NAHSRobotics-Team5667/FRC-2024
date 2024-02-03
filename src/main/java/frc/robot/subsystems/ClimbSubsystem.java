@@ -6,8 +6,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 
 /**
  * ClimbSubsystem.java
@@ -25,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class ClimbSubsystem extends SubsystemBase {
     private TalonFX m_leftClimb, m_rightClimb; // declaring motors and global scope
-    private DutyCycleEncoder leftEncoder, rightEncoder; // absolute encoders
+    private CANcoder leftEncoder, rightEncoder; // absolute encoders
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
 
@@ -36,14 +37,14 @@ public class ClimbSubsystem extends SubsystemBase {
     private ClimbSubsystem() {
         // Initialize motors
 
-        m_leftClimb = new TalonFX(0); // P: make constants for all IDs
-        m_rightClimb = new TalonFX(0);
+        m_leftClimb = new TalonFX(-1); 
+        m_rightClimb = new TalonFX(-1);
         // set ID's
 
         // Initialize encoders
 
-        leftEncoder = new DutyCycleEncoder(0); // P: constants
-        rightEncoder = new DutyCycleEncoder(0);
+        leftEncoder = new CANcoder(-1); 
+        rightEncoder = new CANcoder(-1);
         // set channel
 
     }
@@ -61,36 +62,50 @@ public class ClimbSubsystem extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
 
-        // P: what is the purpose of these following lines?
-        rightEncoder.getAbsolutePosition();
-        leftEncoder.getAbsolutePosition();
     }
 
     // ========================================================
     // ================== MOTOR ACTIONS =======================
 
     public void Distance() {
+        
+        rightEncoder.setControl(null);
+        leftEncoder.setControl(null);
+
+        m_leftClimb.setInverted(false);
+        m_rightClimb.setInverted(true);
 
         // Control the distance for every motor rotation
 
-        // P: the distance per rotation method just sets up the conversion rate from
+        // the distance per rotation method just sets up the conversion rate from
         // encoder rotations to the distance that it travels linearly. e.g. a wheel's
         // distance per rotation would be its circumference
-        leftEncoder.setDistancePerRotation(0);
-        rightEncoder.setDistancePerRotation(0);
 
-        // set rotation distance
-        double lDistance = leftEncoder.getDistance();
-        double rDistance = rightEncoder.getDistance();
+        //get climb up onto chains
 
-        if (lDistance == 0) {
-            // P: this doesn't control the motor itself - it just sets the conversion factor
-            leftEncoder.setDistancePerRotation(0);
+        leftEncoder.setPosition(0);
+        rightEncoder.setPosition(0);
+        // set rotation distance ^
+
+        //set distances when ready
+        //this is to lift the rbt off the ground
+        
+        if (getLeftClimbHeight() == 0) {
+            leftEncoder.setPosition(-0);
+             
+             //when rbt reaches desired height off ground
+             if (getLeftClimbHeight() == 0) {
+                m_leftClimb.set(0);
+             }  
         }
 
-        if (rDistance == 0) {
-            rightEncoder.setDistancePerRotation(0);
+        if (getRightClimbHeight() == 0) {
+            rightEncoder.setPosition(-0); 
 
+             //when rbt reaches desired height off ground
+            if (getRightClimbHeight() == 0) {
+                m_rightClimb.set(0);
+            } 
         }
 
     }
@@ -116,16 +131,16 @@ public class ClimbSubsystem extends SubsystemBase {
      * @return left climb hook height.
      */
     public double getLeftClimbHeight() {
-        leftEncoder.getDistance();
-        return 0; // P: the method still returns 0, not the climb height
+        leftEncoder.getPosition();
+        return getLeftClimbHeight();
     }
 
     /**
      * @return right climb hook height.
      */
     public double getRightClimbHeight() {
-        rightEncoder.getDistance();
-        return 0; // P: the method still returns 0, not the climb height
+        rightEncoder.getPosition();
+        return getRightClimbHeight();
     }
 
     // ========================================================
