@@ -146,6 +146,9 @@ public final class Constants {
 
     public static class ShooterConstants {
         // ==== MOTORS ====
+        public static final int SHOOTER_LEFT_ID = 0;
+        public static final int SHOOTER_RIGHT_ID = 0;
+
         // ---- MAXIMUM RPM ----
         public static final double SHOOTER_MAX_RPM = 6000;
         public static final double INDEX_MAX_RPM = 11000;

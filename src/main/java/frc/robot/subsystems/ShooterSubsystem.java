@@ -11,6 +11,7 @@ import com.revrobotics.AbsoluteEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.util.States.ShooterStates;
+import frc.robot.Constants.ShooterConstants;
 
 /**
  * ShooterSubsystem.java
