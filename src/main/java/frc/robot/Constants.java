@@ -27,6 +27,7 @@ import frc.robot.util.States.ArmState;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    
     public static class OperatorConstants {
         // =======================================================
         // ==================== DRIVER ===========================
@@ -146,11 +147,11 @@ public final class Constants {
 
     public static class ShooterConstants {
         // ==== MOTORS ====
-        public static final int SHOOTER_LEFT_ID = 0;
-        public static final int SHOOTER_RIGHT_ID = 0;
+        public static final int SHOOTER_LEFT_ID = -1;
+        public static final int SHOOTER_RIGHT_ID = -1;
 
         // ---- BEAM BREAK ----
-        public static final int BEAM_BREAK_CHANNEL_ID = 0; // Goes into 2 Seperate Digital Inputs. We need to know which one is used here.
+        public static final int BEAM_BREAK_CHANNEL_ID = -1; // Goes into 2 Seperate Digital Inputs. We need to know which one is used here.
 
         // ---- MAXIMUM RPM ----
         public static final double SHOOTER_MAX_RPM = 6000;
@@ -158,15 +159,16 @@ public final class Constants {
     }
 
     public static class IntakeConstants {
+        // ==== MOTORS - NEO 1.1s ====
         public static final int SparkMAX_ID = -1;
     }
 
     public static class ClimbConstants {
-        // ==== MOTORS ====
+        // ==== MOTORS - FALCON 500s ====
         public static final int RIGHT_CLIMB_ID = -1;
         public static final int LEFT_CLIMB_ID = -1;
 
-        // ==== ENCODERS ====
+        // ==== ENCODERS - CANCoders ====
         public static final int RIGHT_CLIMB_CHANNEL = -1;
         public static final int LEFT_CLIMB_CHANNEL = -1;
     }
