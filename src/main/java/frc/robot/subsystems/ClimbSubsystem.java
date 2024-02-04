@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ClimbConstants;
 
 
 /**
@@ -21,8 +22,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * - Right Climb - Falcon 500
  * 
  * Sensors:
- * - Left Absolute Encoder (check WCP GreyT Elevator)
- * - Right Absolute Encoder (check WCP GreyT Elevator)
+ * - Left Absolute Encoder (check WCP GreyT Elevator) - CANcoder.
+ * - Right Absolute Encoder (check WCP GreyT Elevator) - CANcoder.
  */
 public class ClimbSubsystem extends SubsystemBase {
     private TalonFX m_leftClimb, m_rightClimb; // declaring motors and global scope
@@ -35,20 +36,21 @@ public class ClimbSubsystem extends SubsystemBase {
     private static ClimbSubsystem instance = null;
 
     private ClimbSubsystem() {
-        // Initialize motors
 
-        m_leftClimb = new TalonFX(-1); 
-        m_rightClimb = new TalonFX(-1);
-        // set ID's
+        // Initialize Falcon Motors by setting IDs.
+        m_leftClimb = new TalonFX(ClimbConstants.LEFT_CLIMB_ID); 
+        m_rightClimb = new TalonFX(ClimbConstants.RIGHT_CLIMB_ID);
 
-        // Initialize encoders
-
-        leftEncoder = new CANcoder(-1); 
-        rightEncoder = new CANcoder(-1);
-        // set channel
-
+        // Initialize encoders (CANcoders) by setting IDs.
+        leftEncoder = new CANcoder(ClimbConstants.LEFT_CLIMB_ENCODER_ID); 
+        rightEncoder = new CANcoder(ClimbConstants.RIGHT_CLIMB_ENCODER_ID);
     }
 
+    /*
+     * This method is invoked when the robot is first initialized.
+     * Checks if there is an instance. If there is, return that instance.
+     * If there's no instance, creates one.
+     */
     public static ClimbSubsystem getInstance() {
         if (instance == null)
             instance = new ClimbSubsystem();
@@ -60,8 +62,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
-
+        // This method will be called once per scheduler run. This is normally every 20ms.
     }
 
     // ========================================================
