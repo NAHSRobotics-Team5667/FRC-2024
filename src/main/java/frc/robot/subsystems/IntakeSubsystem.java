@@ -4,12 +4,13 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 
 /**
  * IntakeSubsystem.java
@@ -17,13 +18,14 @@ import frc.robot.Constants;
  * Refers to the Intake. Responsible for picking up rings off of the ground.
  * 
  * Motors:
- * - Intake - NEO
+ * - Intake - NEO 1.1 Brushless Motors
  * 
  * - 2 Pistons connected to 1 Solenoid
  */
 public class IntakeSubsystem extends SubsystemBase {
-    private TalonFX m_intake = new TalonFX(0); // declaring motors and global scope
-    private Solenoid m_piston = new Solenoid(null, 0); // declare solenoid
+
+    private CANSparkMax m_intake; // Declaring motor.
+    private Solenoid m_piston; // Declare solenoid.
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -33,12 +35,18 @@ public class IntakeSubsystem extends SubsystemBase {
     private static IntakeSubsystem instance = null;
 
     private IntakeSubsystem() {
-        // Initialize motors
+        // Initialize NEO 1.1 Motors.
+        m_intake = new CANSparkMax(IntakeConstants.SPARKMAX_ID, MotorType.kBrushless);
 
-        // Initialize piston
-    
+        // Initialize Pistons by setting IDs.
+        m_piston = new Solenoid(PneumaticsModuleType.REVPH, IntakeConstants.SOLENOID_PORT);
     }
 
+    /*
+     * This method is invoked when the robot is first initialized.
+     * Checks if there is an instance. If there is, return that instance.
+     * If there's no instance, creates one.
+     */
     public static IntakeSubsystem getInstance() {
         if (instance == null)
             instance = new IntakeSubsystem();
@@ -50,7 +58,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+        // This method will be called once per scheduler run - every 20ms.
     }
 
     // ========================================================

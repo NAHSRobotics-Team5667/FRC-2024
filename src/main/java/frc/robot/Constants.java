@@ -162,7 +162,10 @@ public final class Constants {
 
     public static class IntakeConstants {
         // ==== MOTORS - NEO 1.1s ====
-        public static final int SparkMAX_ID = -1;
+        public static final int SPARKMAX_ID = -1;
+
+        // ==== SOLENOID ====
+        public static final int SOLENOID_PORT = -1;
     }
 
     public static class ClimbConstants {
