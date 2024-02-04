@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.util.ArmAngle;
+import frc.robot.Constants.ArmConstants;
 
 /**
  * ArmSubsystem.java
@@ -36,8 +37,7 @@ import frc.robot.util.ArmAngle;
  * (one direction is reversed)
  */
 public class ArmSubsystem extends SubsystemBase {
-    private TalonFX m_firstStageLead, m_firstStageFollower,
-            m_secondStageLead, m_secondStageFollower; // declaring motors and global scope
+    private TalonFX m_firstStageLead, m_firstStageFollower, m_secondStageLead, m_secondStageFollower; // declaring motors and global scope
     private DutyCycleEncoder encoder1, encoder2; // declare encoders for arm actuation
 
     private ArmAngle armAngles;
@@ -50,13 +50,26 @@ public class ArmSubsystem extends SubsystemBase {
     private static ArmSubsystem instance = null;
 
     private ArmSubsystem() {
-        // Initialize motors
 
-        // Initialize encoders
+        //Initialize Falcon Motors by setting IDs.
+        m_firstStageLead = new TalonFX(ArmConstants.FIRST_PIVOT_LEAD_ID);
+        m_firstStageFollower = new TalonFX(ArmConstants.FIRST_PIVOT_FOLLOWER_ID);
+
+        m_secondStageLead = new TalonFX(ArmConstants.SECOND_PIVOT_LEAD_ID);
+        m_secondStageFollower = new TalonFX(ArmConstants.SECOND_PIVOT_FOLLOWER_ID);
+
+        // Initialize encoders (REV Through Bore Absolute Encoder) by setting IDs.
+        encoder1 = new DutyCycleEncoder(ArmConstants.FIRST_PIVIOT_PORT);
+        encoder2 = new DutyCycleEncoder(ArmConstants.SECOND_PIVIOT_PORT);
 
         // Initialize arm positions
     }
 
+    /*
+     * This method is invoked when the robot is first initialized.
+     * Checks if there is an instance. If there is, return that instance.
+     * If there's no instance, creates one.
+     */
     public static ArmSubsystem getInstance() {
         if (instance == null)
             instance = new ArmSubsystem();

@@ -94,10 +94,12 @@ public final class Constants {
         // ===================== ENCODERS ========================
 
         // ---- FIRST PIVOT ----
+        public static final int FIRST_PIVIOT_PORT = -1;
         public static final double FIRST_PIVOT_LEFT_OFFSET = -1;
         public static final double FIRST_PIVOT_RIGHT_OFFSET = -1;
 
         // ---- SECOND PIVOT ----
+        public static final int SECOND_PIVIOT_PORT = -1;
         public static final double SECOND_PIVOT_LEFT_OFFSET = -1;
         public static final double SECOND_PIVOT_RIGHT_OFFSET = -1;
 
