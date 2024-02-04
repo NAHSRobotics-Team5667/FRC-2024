@@ -72,8 +72,8 @@ public class IntakeSubsystem extends SubsystemBase {
     public void setIntakeSpeed(double percentOutput) {
 
         double motorSpeed = percentOutput / 100;
+        
         m_intake.set(motorSpeed);
-
     }
 
     /**
@@ -83,12 +83,7 @@ public class IntakeSubsystem extends SubsystemBase {
      *               retracting. true = extend, false = retract.
      */
     public void setPiston(boolean extend) {
-
-        if (extend = true){
-// Extend the piston
-        } else {
-// Retract the pistons
-        }
+        m_piston.set(extend);
     }
 
     // ========================================================
@@ -98,14 +93,22 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return whether intake is deployed.
      */
     public boolean isIntakeDeployed() {
-        return false; // TODO: check if intake is deployed
+        return m_piston.get();
     }
 
     /**
      * @return whether intake is running.
      */
     public boolean isIntakeRunning() {
-        return false; // TODO: check if motor is spinning via encoder
+
+        boolean isRunning = false;
+
+        //Checks the speed. If it's not 0, it's running the motors.
+        if (m_intake.get() != 0){
+            isRunning = true;
+        }
+
+        return isRunning;
     }
 
     // ========================================================
