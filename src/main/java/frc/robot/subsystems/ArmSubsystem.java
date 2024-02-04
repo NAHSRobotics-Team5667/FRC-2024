@@ -51,7 +51,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     private ArmSubsystem() {
 
-        //Initialize Falcon Motors by setting IDs.
+        // Initialize Falcon Motors by setting IDs.
         m_firstStageLead = new TalonFX(ArmConstants.FIRST_PIVOT_LEAD_ID);
         m_firstStageFollower = new TalonFX(ArmConstants.FIRST_PIVOT_FOLLOWER_ID);
 
@@ -62,7 +62,12 @@ public class ArmSubsystem extends SubsystemBase {
         encoder1 = new DutyCycleEncoder(ArmConstants.FIRST_PIVIOT_PORT);
         encoder2 = new DutyCycleEncoder(ArmConstants.SECOND_PIVIOT_PORT);
 
-        // Initialize arm positions
+        // Invert Motors.
+        m_firstStageLead.setInverted(true);
+
+        m_secondStageLead.setInverted(true);
+
+        //TODO: Initialize Arm Positions
     }
 
     /*
@@ -81,9 +86,9 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+        // This method will be called once per scheduler run - every 20ms.
 
-        // update arm position - run calculation to convert encoder reading to degrees
+        // update arm position - run calculation to convert encoder reading to degrees.
     }
 
     // ========================================================
@@ -95,6 +100,12 @@ public class ArmSubsystem extends SubsystemBase {
      * Stops all motors.
      */
     public void stopAllMotors() {
+
+        m_firstStageLead.stopMotor();
+        m_firstStageFollower.stopMotor();
+        
+        m_secondStageLead.stopMotor();
+        m_secondStageFollower.stopMotor();
     }
 
     // FIRST PIVOT --------------------------------------------
@@ -105,6 +116,10 @@ public class ArmSubsystem extends SubsystemBase {
      * @param percentOutput % output for both motors controlling first pivot.
      */
     public void setFirstPivotSpeed(double percentOutput) {
+        double motorSpeed = percentOutput / 100;
+
+        m_firstStageLead.set(motorSpeed);
+        m_firstStageFollower.set(motorSpeed);
     }
 
     // SECOND PIVOT -------------------------------------------
@@ -115,6 +130,10 @@ public class ArmSubsystem extends SubsystemBase {
      * @param percentOutput % output for both motors controlling second pivot.
      */
     public void setSecondPivotSpeed(double percentOutput) {
+        double motorSpeed = percentOutput / 100;
+
+        m_secondStageLead.set(motorSpeed);
+        m_secondStageFollower.set(motorSpeed);
     }
 
     // ========================================================
