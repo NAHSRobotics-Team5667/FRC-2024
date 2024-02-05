@@ -5,8 +5,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-
+import com.revrobotics.AbsoluteEncoder;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
+
+import edu.wpi.first.units.Power;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
 
@@ -27,7 +30,7 @@ import frc.robot.Constants.ClimbConstants;
  */
 public class ClimbSubsystem extends SubsystemBase {
     private TalonFX m_leftClimb, m_rightClimb; // declaring motors and global scope
-    private CANcoder leftEncoder, rightEncoder; // absolute encoders
+    private CANcoder leftEncoder, rightEncoder, absoluteEncoderLeft, absoluteEncoderRight; // absolute encoders
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
 
@@ -44,6 +47,10 @@ public class ClimbSubsystem extends SubsystemBase {
         // Initialize encoders (CANcoders) by setting IDs.
         leftEncoder = new CANcoder(ClimbConstants.LEFT_CLIMB_ENCODER_ID); 
         rightEncoder = new CANcoder(ClimbConstants.RIGHT_CLIMB_ENCODER_ID);
+        absoluteEncoderLeft = new CANcoder(ClimbConstants.LEFT_absolute_Encoder_ID);
+        absoluteEncoderRight = new CANcoder(ClimbConstants.RIGHT_absolute_Encoder_ID);
+        
+        
     }
 
     /*
@@ -138,6 +145,8 @@ public class ClimbSubsystem extends SubsystemBase {
         return getRightClimbHeight();
     }
 
+    
+
     // ========================================================
     // ======================= OTHER ==========================
 
@@ -151,5 +160,24 @@ public class ClimbSubsystem extends SubsystemBase {
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run. This is normally every 20ms. This only runs during simulation.
+    }
+    public double AbsoluteEncoderLeft(){
+        absoluteEncoderLeft.getAbsolutePosition();
+        return AbsoluteEncoderLeft();
+    }
+    public double AbsoluteEncoderRight(){
+        absoluteEncoderRight.getAbsolutePosition();
+        return AbsoluteEncoderRight();
+    }
+    public void motorRotations(){
+        double motorSpeed = ClimbConstants.percentOutput/100;
+       while (AbsoluteEncoderLeft() < ClimbConstants.NUM_OF_MOTOR_ROTATIONS){
+            m_leftClimb.set(motorSpeed);
+       }
+       while (AbsoluteEncoderRight() < ClimbConstants.NUM_OF_MOTOR_ROTATIONS) {
+            m_rightClimb.set(motorSpeed);
+       }
+      
+
     }
 }

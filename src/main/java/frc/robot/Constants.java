@@ -178,7 +178,12 @@ public final class Constants {
         // ==== ENCODERS - CANCoders ====
         public static final int RIGHT_CLIMB_ENCODER_ID = -1;
         public static final int LEFT_CLIMB_ENCODER_ID = -1;
+        public static final int LEFT_absolute_Encoder_ID = -1;
+        public static final int RIGHT_absolute_Encoder_ID = -1;
 
         public static final int DISTANCE_PER_ROTATION = -1;
+        public static final double NUM_OF_WINCH_ROTATIONS = -1; // input this once testing is done
+        public static final double NUM_OF_MOTOR_ROTATIONS = NUM_OF_WINCH_ROTATIONS/20.25;
+        public static final double percentOutput = -1;
     }
 }
