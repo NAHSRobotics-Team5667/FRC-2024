@@ -161,20 +161,20 @@ public class ClimbSubsystem extends SubsystemBase {
     public void simulationPeriodic() {
         // This method will be called once per scheduler run. This is normally every 20ms. This only runs during simulation.
     }
-    public double AbsoluteEncoderLeft(){
+    public double AbsoluteEncoderLeftPosition(){
         absoluteEncoderLeft.getAbsolutePosition();
-        return AbsoluteEncoderLeft();
+        return AbsoluteEncoderLeftPosition();
     }
-    public double AbsoluteEncoderRight(){
+    public double AbsoluteEncoderRightPosition(){
         absoluteEncoderRight.getAbsolutePosition();
-        return AbsoluteEncoderRight();
+        return AbsoluteEncoderRightPosition();
     }
     public void motorRotations(){
         double motorSpeed = ClimbConstants.percentOutput/100;
-       while (AbsoluteEncoderLeft() < ClimbConstants.NUM_OF_MOTOR_ROTATIONS){
+       while (AbsoluteEncoderLeftPosition() < ClimbConstants.NUM_OF_MOTOR_ROTATIONS){
             m_leftClimb.set(motorSpeed);
        }
-       while (AbsoluteEncoderRight() < ClimbConstants.NUM_OF_MOTOR_ROTATIONS) {
+       while (AbsoluteEncoderRightPosition() < ClimbConstants.NUM_OF_MOTOR_ROTATIONS) {
             m_rightClimb.set(motorSpeed);
        }
       
