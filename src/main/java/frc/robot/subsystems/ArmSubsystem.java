@@ -192,9 +192,9 @@ public class ArmSubsystem extends SubsystemBase {
      *         value is right.
      */
     public double[] getOffsetSecondEncoders() {
-        double[] pivotEncoders = getRawFirstEncoders();
-        double[] offsetEncoders = { pivotEncoders[0] + ArmConstants.FIRST_PIVOT_LEFT_OFFSET,
-                pivotEncoders[1] + ArmConstants.FIRST_PIVOT_RIGHT_OFFSET };
+        double[] pivotEncoders = getRawSecondEncoders();
+        double[] offsetEncoders = { pivotEncoders[0] + ArmConstants.SECOND_PIVOT_LEFT_OFFSET,
+                pivotEncoders[1] + ArmConstants.SECOND_PIVOT_RIGHT_OFFSET };
         return offsetEncoders;
     }
 
