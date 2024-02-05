@@ -5,6 +5,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import frc.robot.util.States.ShooterStates;
 import frc.robot.Constants.ShooterConstants;
 import com.revrobotics.AbsoluteEncoder;
@@ -18,7 +22,7 @@ import frc.robot.util.States.ShooterStates;
  * Refers to the Shooter, which serializes and shoots rings.
  * 
  * Motors:
- * - Belt Serialization - NEO 550
+ * - Belt Serialization / Index - NEO 1.1 Brushless
  * - Right Shooter - Falcon 500
  * - Left Shooter - Falcon 500
  * 
@@ -28,7 +32,8 @@ import frc.robot.util.States.ShooterStates;
  * - Beam Break Sensor to detect if ring is in possession.
  */
 public class ShooterSubsystem extends SubsystemBase {
-    private TalonFX m_leftShooter, m_rightShooter, m_index; // declaring motors and global scope
+    private TalonFX m_leftShooter, m_rightShooter; // declaring motors and global scope
+    private CANSparkMax m_index;
     private DigitalInput beamBreak;
     private ShooterStates shooterStates; // Shooter States
 
@@ -40,11 +45,16 @@ public class ShooterSubsystem extends SubsystemBase {
     private static ShooterSubsystem instance = null;
 
     private ShooterSubsystem() {
-        // Initialize motors
-        m_leftShooter = new TalonFX(frc.robot.Constants.ShooterConstants.SHOOTER_LEFT_ID);
-        m_rightShooter = new TalonFX(frc.robot.Constants.ShooterConstants.SHOOTER_RIGHT_ID);
+
+        // Initialize Motors (Falcon 500s).
+        m_leftShooter = new TalonFX(ShooterConstants.SHOOTER_LEFT_ID);
+        m_rightShooter = new TalonFX(ShooterConstants.SHOOTER_RIGHT_ID);
+
+        // Initialize Motors (NEO 1.1).
+        m_index = new CANSparkMax(ShooterConstants.BELT_INDEX_ID, MotorType.kBrushless);
+
         // Initialize Beam Break sensor
-        beamBreak = new DigitalInput(frc.robot.Constants.ShooterConstants.BEAM_BREAK_CHANNEL_ID);
+        beamBreak = new DigitalInput(ShooterConstants.BEAM_BREAK_CHANNEL_ID);
     }
 
     public static ShooterSubsystem getInstance() {

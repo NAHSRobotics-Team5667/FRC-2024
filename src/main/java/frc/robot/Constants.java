@@ -152,6 +152,8 @@ public final class Constants {
         public static final int SHOOTER_LEFT_ID = -1;
         public static final int SHOOTER_RIGHT_ID = -1;
 
+        public static final int BELT_INDEX_ID = -1;
+
         // ---- BEAM BREAK ----
         public static final int BEAM_BREAK_CHANNEL_ID = -1; // Goes into 2 Seperate Digital Inputs. We need to know which one is used here.
 
