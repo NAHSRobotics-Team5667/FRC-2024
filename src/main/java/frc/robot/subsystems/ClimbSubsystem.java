@@ -58,13 +58,6 @@ public class ClimbSubsystem extends SubsystemBase {
         return instance;
     }
 
-    // PERIODIC -----------------------------------------------
-
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run. This is normally every 20ms.
-    }
-
     // ========================================================
     // ================== MOTOR ACTIONS =======================
 
@@ -146,4 +139,16 @@ public class ClimbSubsystem extends SubsystemBase {
 
     // ========================================================
     // ======================= OTHER ==========================
+
+
+    // PERIODIC -----------------------------------------------
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run. This is normally every 20ms.
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        // This method will be called once per scheduler run. This is normally every 20ms. This only runs during simulation.
+    }
 }
