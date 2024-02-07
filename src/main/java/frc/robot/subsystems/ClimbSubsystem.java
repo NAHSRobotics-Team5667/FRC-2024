@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
 
@@ -44,7 +46,6 @@ public class ClimbSubsystem extends SubsystemBase {
         // Initialize encoders (CANcoders) by setting IDs.
         leftEncoder = new CANcoder(ClimbConstants.LEFT_CLIMB_ENCODER_ID); 
         rightEncoder = new CANcoder(ClimbConstants.RIGHT_CLIMB_ENCODER_ID);
-        
     }
 
     /*
@@ -68,11 +69,8 @@ public class ClimbSubsystem extends SubsystemBase {
         rightEncoder.setControl(null);
         leftEncoder.setControl(null);
 
-        m_leftClimb.setInverted(false);
+        //Invert right one.
         m_rightClimb.setInverted(true);
-
-        
-
 
         // Control the distance for every motor rotation
 
@@ -132,8 +130,8 @@ public class ClimbSubsystem extends SubsystemBase {
      * @return left climb hook height.
      */
     public double getLeftClimbHeight() {
-        double lreturnValue = (leftEncoder.getAbsolutePosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
-        return lreturnValue; //TODO: get gear ratio
+        double returnValue = (leftEncoder.getAbsolutePosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
+        return returnValue; //TODO: get gear ratio
     }
 
     
@@ -141,8 +139,8 @@ public class ClimbSubsystem extends SubsystemBase {
      * @return right climb hook height.
      */
     public double getRightClimbHeight() {
-        double RreturnValue = (rightEncoder.getAbsolutePosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
-        return RreturnValue; 
+        double returnValue = (rightEncoder.getAbsolutePosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
+        return returnValue; 
     }
 
 
