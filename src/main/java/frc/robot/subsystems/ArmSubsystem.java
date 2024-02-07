@@ -11,6 +11,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.util.ArmAngle;
 
+//44/60 - Gear for ratio for arm.
+//1 climb rotation is 20.25 motor rotations.
+
+
 /**
  * ArmSubsystem.java
  * 

@@ -1,33 +1,38 @@
-import frc.robot.commands;
-import edu.wpifirst.wpilibj.Timer;
+package frc.robot.commands;
 
-public class IntakeCommand extends CommandBase {
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.subsystems.IntakeSubsystem;
 
-    public IntakeSubsystem intake;
+public class IntakeCommand extends Command {
+
+    private IntakeSubsystem intakeSubsystem;
 
     //* Creates a new intake */
-    public setIntake() {
-        intake = IntakeSubsystem.getInstance();
+    public IntakeCommand() {
+        intakeSubsystem = IntakeSubsystem.getInstance();
         //addRequirement() - prevent two commands from being run at the same time
-        addRequirements(intake);
+        addRequirements(intakeSubsystem);
     }
 
     //Called when command is initiated/first scheduled
     @Override
     public void initialize() {
-        if (isIntakeDeployed() == true) { //the piston is already extended - want to retract and reset the motor
-            intake.setPiston(false);
-            intake.setIntakeSpeed(0);
+        if (intakeSubsystem.isIntakeDeployed() == true) { //the piston is already extended - want to retract and reset the motor
+            intakeSubsystem.setPiston(false);
+            intakeSubsystem.setIntakeSpeed(0);
         }
     }
 
     //Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
-        if (isIntakeDeployed == false) {
-            intake.setIntakeSpeed();
-            delay(2);
-            intake.setPiston(true);
+        if (intakeSubsystem.isIntakeDeployed() == false) {
+            intakeSubsystem.setIntakeSpeed(1);
+
+            Timer.delay(2);
+
+            intakeSubsystem.setPiston(true);
         }
         
     }
@@ -35,8 +40,8 @@ public class IntakeCommand extends CommandBase {
     //Called when the command is interruped or ended
     @Override
     public void end(boolean interrupted) {
-        intake.setIntakeSpeed(0);
-        intake.setPiston(false);
+        intakeSubsystem.setIntakeSpeed(0);
+        intakeSubsystem.setPiston(false);
     }
 
     //Called so it should return true when the command will end
@@ -44,6 +49,4 @@ public class IntakeCommand extends CommandBase {
     public boolean isFinished() {
         return false;
     }
-
-
 }
