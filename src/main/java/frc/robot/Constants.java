@@ -178,5 +178,8 @@ public final class Constants {
         // ==== ENCODERS - CANCoders ====
         public static final int RIGHT_CLIMB_ENCODER_ID = -1;
         public static final int LEFT_CLIMB_ENCODER_ID = -1;
+        
+        // ==== RATIOS ====
+        public static final double RATIO_WINCH = 20.25;
     }
 }

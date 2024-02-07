@@ -62,6 +62,7 @@ public class ClimbSubsystem extends SubsystemBase {
     // ========================================================
     // ================== MOTOR ACTIONS =======================
 
+
     public void Distance() {
         
         rightEncoder.setControl(null);
@@ -69,6 +70,9 @@ public class ClimbSubsystem extends SubsystemBase {
 
         m_leftClimb.setInverted(false);
         m_rightClimb.setInverted(true);
+
+        
+
 
         // Control the distance for every motor rotation
 
@@ -80,15 +84,16 @@ public class ClimbSubsystem extends SubsystemBase {
 
         leftEncoder.setPosition(0);
         rightEncoder.setPosition(0);
+
         // set rotation distance ^
 
         //set distances when ready
         //this is to lift the rbt off the ground
-        
+
         if (getLeftClimbHeight() == 0) {
             leftEncoder.setPosition(-0);
              
-             //when rbt reaches desired height off ground
+             //when rbt reaches 0 height off ground
              if (getLeftClimbHeight() == 0) {
                 m_leftClimb.set(0);
              }  
@@ -97,7 +102,7 @@ public class ClimbSubsystem extends SubsystemBase {
         if (getRightClimbHeight() == 0) {
             rightEncoder.setPosition(-0); 
 
-             //when rbt reaches desired height off ground
+             //when rbt reaches 0 height off ground
             if (getRightClimbHeight() == 0) {
                 m_rightClimb.set(0);
             } 
@@ -122,12 +127,13 @@ public class ClimbSubsystem extends SubsystemBase {
     // ========================================================
     // ===================== SENSORS ==========================
 
+    
     /**
      * @return left climb hook height.
      */
     public double getLeftClimbHeight() {
-        leftEncoder.getPosition();
-        return getLeftClimbHeight();
+        double lreturnValue = (leftEncoder.getAbsolutePosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
+        return lreturnValue; //TODO: get gear ratio
     }
 
     
@@ -135,11 +141,10 @@ public class ClimbSubsystem extends SubsystemBase {
      * @return right climb hook height.
      */
     public double getRightClimbHeight() {
-        rightEncoder.getPosition();
-        return getRightClimbHeight();
+        double RreturnValue = (rightEncoder.getAbsolutePosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
+        return RreturnValue; 
     }
 
-    
 
     // ========================================================
     // ======================= OTHER ==========================
