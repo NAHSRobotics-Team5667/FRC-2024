@@ -131,7 +131,7 @@ public class ClimbSubsystem extends SubsystemBase {
      */
     public double getLeftClimbHeight() {
         double returnValue = (leftEncoder.getAbsolutePosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
-        return returnValue; //TODO: get gear ratio
+        return returnValue;
     }
 
     
