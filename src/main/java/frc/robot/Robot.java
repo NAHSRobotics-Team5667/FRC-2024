@@ -9,6 +9,8 @@ import org.littletonrobotics.junction.LoggedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -35,6 +37,9 @@ public class Robot extends LoggedRobot {
         // and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
+
+        CameraServer.startAutomaticCapture(); //Starting Camera.
+        DriverStation.startDataLog(DataLogManager.getLog()); //Start taking DriverStation and Joystick Logging (AdvantageKit).
     }
 
     /**
@@ -109,8 +114,6 @@ public class Robot extends LoggedRobot {
     public void testInit() {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
-
-        CameraServer.startAutomaticCapture();
     }
 
     /** This function is called periodically during test mode. */
