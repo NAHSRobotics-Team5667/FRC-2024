@@ -12,11 +12,11 @@ import frc.robot.subsystems.ArmSubsystem;
  * 
  * Moves the arm automatically to a set position from a list in Constants.
  */
-public class SetArm extends Command {
+public class testing extends Command {
     private ArmSubsystem armSubsystem;
 
     /** Creates a new SetArm. */
-    public SetArm() {
+    public testing() {
         armSubsystem = ArmSubsystem.getInstance();
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(armSubsystem);
