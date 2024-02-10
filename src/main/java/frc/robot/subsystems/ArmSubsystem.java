@@ -140,13 +140,13 @@ public class ArmSubsystem extends SubsystemBase {
         firstEncoderL = new DutyCycleEncoder(ArmConstants.FIRST_ENC_PORT_1);
         firstEncoderL.setDistancePerRotation(ArmConstants.FIRST_ENC_DIST_PER_ROT);
 
-        firstEncoderR = new DutyCycleEncoder(ArmConstants.FIRST_ENC_PORT_2);
+        firstEncoderR = new DutyCycleEncoder(ArmConstants.FIRST_ENC_PORT_2); // one of them will have to be reversed
         firstEncoderR.setDistancePerRotation(ArmConstants.FIRST_ENC_DIST_PER_ROT);
 
         secondEncoderL = new DutyCycleEncoder(ArmConstants.SECOND_ENC_PORT_1);
         secondEncoderL.setDistancePerRotation(ArmConstants.SECOND_ENC_DIST_PER_ROT);
 
-        secondEncoderR = new DutyCycleEncoder(ArmConstants.SECOND_ENC_PORT_2);
+        secondEncoderR = new DutyCycleEncoder(ArmConstants.SECOND_ENC_PORT_2); // one of them will have to be reversed
         secondEncoderR.setDistancePerRotation(ArmConstants.SECOND_ENC_DIST_PER_ROT);
 
         // initialize arm position
