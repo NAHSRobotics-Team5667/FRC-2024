@@ -45,9 +45,6 @@ public class IntakeNote extends Command {
 
             intake.setIntakeSpeed(1);
 
-            Timer.delay(2); // P: I don't think this is a good idea. In practice, the intake won't be as
-                            // responsive and we won't be able to pick up notes as fast
-
             intake.setPiston(true);
         }
 
