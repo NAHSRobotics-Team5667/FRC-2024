@@ -1,6 +1,13 @@
 package frc.robot.commands.climb;
 
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.event.BooleanEvent;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.ClimbSubsystem;
 
 /**
@@ -22,7 +29,7 @@ public class setClimb extends Command {
     //Called when command is initiated/first scheduled
     @Override
     public void initialize() {
-
+        
     }
 
     //Called when scheduler runs while the command is scheduled
