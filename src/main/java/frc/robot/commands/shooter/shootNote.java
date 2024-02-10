@@ -8,12 +8,12 @@ import frc.robot.subsystems.ShooterSubsystem;
  * the note.
  * 
  */
-public class ShootNote extends Command {
+public class shootNote extends Command {
 
     public ShooterSubsystem shooter;
 
     // * Creates a new Shooter. */
-    public ShootNote() {
+    public shootNote() {
         shooter = ShooterSubsystem.getInstance();
 
         // addRequirement() - prevent two commands from being run at the same time.
