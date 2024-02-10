@@ -27,7 +27,7 @@ import frc.robot.util.States.ArmState;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    
+
     public static class OperatorConstants {
         // =======================================================
         // ==================== DRIVER ===========================
@@ -78,6 +78,13 @@ public final class Constants {
     }
 
     public static class ArmConstants {
+        // =======================================================
+        // ================== MECHANICAL =========================
+
+        /** Gear ratio between first motors and first pivot. */
+        public static final double FIRST_GEAR_RATIO = 100.0 * (60.0 / 44.0);
+        /** Gear ratio between second motors and second pivot. */
+        public static final double SECOND_GEAR_RATIO = 80.0; // 80:1 - torqued up by factor of 80
 
         // =======================================================
         // ================= MOTOR IDS ===========================
@@ -94,28 +101,34 @@ public final class Constants {
         // ===================== ENCODERS ========================
 
         // ---- FIRST PIVOT ----
-        public static final int FIRST_PIVIOT_PORT = -1;
-        public static final double FIRST_PIVOT_LEFT_OFFSET = -1;
-        public static final double FIRST_PIVOT_RIGHT_OFFSET = -1;
+        public static final int FIRST_ENC_PORT_1 = -1;
+        public static final int FIRST_ENC_PORT_2 = -1;
+        public static final double FIRST_LEFT_OFFSET = -1;
+        public static final double FIRST_RIGHT_OFFSET = -1;
+        /** Rotations of first pivot for each rotation of encoder. */
+        public static final double FIRST_ENC_DIST_PER_ROT = 44.0 / 60.0;
 
         // ---- SECOND PIVOT ----
-        public static final int SECOND_PIVIOT_PORT = -1;
-        public static final double SECOND_PIVOT_LEFT_OFFSET = -1;
-        public static final double SECOND_PIVOT_RIGHT_OFFSET = -1;
+        public static final int SECOND_ENC_PORT_1 = -1;
+        public static final int SECOND_ENC_PORT_2 = -1;
+        public static final double SECOND_LEFT_OFFSET = -1;
+        public static final double SECOND_RIGHT_OFFSET = -1;
+        /** Rotations of second pivot for each rotation of encoder. */
+        public static final double SECOND_ENC_DIST_PER_ROT = 1.0;
 
         // =======================================================
         // ================= ARM POSITION ========================
 
-        public static final ArmAngle INITIAL_POSITION = new ArmAngle(
+        public static final ArmAngle RESTING_POSITION = new ArmAngle(
                 -1,
                 -1); // TODO: determine initial angles of arm
 
         // create a map of goal states and their target arm positions
         public static final Map<ArmState, ArmAngle> GOAL_POSITIONS = Map.of(
-                ArmState.RESTING, INITIAL_POSITION, // arm position when at resting position
+                ArmState.RESTING, RESTING_POSITION, // arm position when at resting position
                 ArmState.DEFAULT_SPEAKER, new ArmAngle(), // default position for speaker
-                ArmState.AMP, new ArmAngle(), // position for amp
-                ArmState.TRAP, new ArmAngle(), // position for trap
+                ArmState.AMP, new ArmAngle(90, 75), // position for amp
+                ArmState.TRAP, new ArmAngle(100, 100), // position for trap
                 ArmState.HUMAN_PLAYER, new ArmAngle()); // position for human player intake
 
         /**
@@ -131,20 +144,35 @@ public final class Constants {
         // =======================================================
         // ====================== MOTION =========================
 
-        // ==== PID ====
-        // ---- FIRST PIVOT ----
-        public static final double FIRST_P = -1;
-        public static final double FIRST_I = -1;
-        public static final double FIRST_D = -1;
+        // ==== MOTION MAGIC ====
 
-        public static final double FIRST_F = -1; // if using feedforward
+        // ---- FIRST PIVOT ----
+        public static final double FIRST_kP = -1;
+        public static final double FIRST_kI = -1;
+        public static final double FIRST_kD = -1;
+        public static final double FIRST_kF = -1;
+        public static final double FIRST_kS = -1;
+        public static final double FIRST_kV = -1;
+        public static final double FIRST_kA = -1;
+
+        public static final double FIRST_MAX_VELOCITY = -1; // maximum achievable velocity (rots per sec)
+        public static final double FIRST_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
+        public static final double FIRST_MAX_ACCEL = -1; // target acceleration (rots / sec / sec)
+        public static final double FIRST_TARGET_JERK = -1; // target jerk (rots / sec / sec / sec)
 
         // ---- SECOND PIVOT ----
-        public static final double SECOND_P = -1;
-        public static final double SECOND_I = -1;
-        public static final double SECOND_D = -1;
+        public static final double SECOND_kP = -1;
+        public static final double SECOND_kI = -1;
+        public static final double SECOND_kD = -1;
+        public static final double SECOND_kF = -1;
+        public static final double SECOND_kS = -1;
+        public static final double SECOND_kV = -1;
+        public static final double SECOND_kA = -1;
 
-        public static final double SECOND_F = -1; // if using feedforward
+        public static final double SECOND_MAX_VELOCITY = -1; // maximum achievable velocity (rots per sec)
+        public static final double SECOND_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
+        public static final double SECOND_MAX_ACCEL = -1; // target acceleration (rots / sec / sec)
+        public static final double SECOND_TARGET_JERK = -1; // target jerk (rots / sec / sec / sec)
     }
 
     public static class ShooterConstants {
@@ -155,7 +183,8 @@ public final class Constants {
         public static final int BELT_INDEX_ID = -1;
 
         // ---- BEAM BREAK ----
-        public static final int BEAM_BREAK_CHANNEL_ID = -1; // Goes into 2 Seperate Digital Inputs. We need to know which one is used here.
+        public static final int BEAM_BREAK_CHANNEL_ID = -1; // Goes into 2 Seperate Digital Inputs. We need to know
+                                                            // which one is used here.
 
         // ---- MAXIMUM RPM ----
         public static final double SHOOTER_MAX_RPM = 6000;
@@ -178,7 +207,7 @@ public final class Constants {
         // ==== ENCODERS - CANCoders ====
         public static final int RIGHT_CLIMB_ENCODER_ID = -1;
         public static final int LEFT_CLIMB_ENCODER_ID = -1;
-        
+
         // ==== RATIOS ====
         public static final double RATIO_WINCH = 20.25;
     }

@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.Timer;
@@ -18,48 +18,49 @@ import frc.robot.subsystems.IntakeSubsystem;
  * 
  * Use the built in methods created in your subsystem to determine this.
  */
-public class intakeNote extends Command {
+public class IntakeNote extends Command {
 
     public IntakeSubsystem intake;
 
-    //* Creates a new intake */
-    public intakeNote() {
+    // * Creates a new intake */
+    public IntakeNote() {
         intake = IntakeSubsystem.getInstance();
-        //addRequirement() - prevent two commands from being run at the same time
+        // addRequirement() - prevent two commands from being run at the same time
         addRequirements(intake);
     }
 
-    //Called when command is initiated/first scheduled
+    // Called when command is initiated/first scheduled
     @Override
     public void initialize() {
-        if (intake.isIntakeDeployed() == true) { //the piston is already extended - want to retract and reset the motor
+        if (intake.isIntakeDeployed() == true) { // the piston is already extended - want to retract and reset the motor
             intake.setPiston(false);
             intake.setIntakeSpeed(0);
         }
     }
 
-    //Called when scheduler runs while the command is scheduled
+    // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
         if (intake.isIntakeDeployed() == false) {
 
             intake.setIntakeSpeed(1);
-            
-            Timer.delay(2);
+
+            Timer.delay(2); // P: I don't think this is a good idea. In practice, the intake won't be as
+                            // responsive and we won't be able to pick up notes as fast
 
             intake.setPiston(true);
         }
-        
+
     }
 
-    //Called when the command is interruped or ended
+    // Called when the command is interruped or ended
     @Override
     public void end(boolean interrupted) {
         intake.setIntakeSpeed(0);
         intake.setPiston(false);
     }
 
-    //Called so it should return true when the command will end
+    // Called so it should return true when the command will end
     @Override
     public boolean isFinished() {
         return false;
