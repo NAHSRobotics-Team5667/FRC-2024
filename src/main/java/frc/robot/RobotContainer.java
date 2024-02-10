@@ -99,6 +99,14 @@ public class RobotContainer {
      * Use this method to define your trigger->command mappings.
      */
     private void configureBindings() {
+        /*
+         * Driver Controller: 
+         * - Joystick 1 Movement - Movement on Field
+         * - Joystick 2 Movement - Direction on Field (Where robot front is facing).
+         * - 
+         */
+
+
         // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
         // new Trigger(m_exampleSubsystem::exampleCondition)
         // .onTrue(new ExampleCommand(m_exampleSubsystem));

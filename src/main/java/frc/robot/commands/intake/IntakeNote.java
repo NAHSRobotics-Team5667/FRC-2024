@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.Timer;
 
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /*
  * This command is going to trigger the intake to drop down and start spinning.
@@ -21,12 +23,17 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class IntakeNote extends Command {
 
     public IntakeSubsystem intake;
+    public ArmSubsystem arm;
+    public ShooterSubsystem shooter;
 
     // * Creates a new intake */
     public IntakeNote() {
         intake = IntakeSubsystem.getInstance();
+        arm = ArmSubsystem.getInstance();
+        shooter = ShooterSubsystem.getInstance();
+
         // addRequirement() - prevent two commands from being run at the same time
-        addRequirements(intake);
+        addRequirements(intake, arm, shooter);
     }
 
     // Called when command is initiated/first scheduled
