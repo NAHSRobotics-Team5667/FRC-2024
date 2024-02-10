@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
 
+
 /**
  * ClimbSubsystem.java
  * 
@@ -78,8 +79,8 @@ public class ClimbSubsystem extends SubsystemBase {
 
         // get climb up onto chains
 
-        leftEncoder.setPosition(0);
-        rightEncoder.setPosition(0);
+        leftEncoder.setPosition(-1);
+        rightEncoder.setPosition(-1);
 
         // set rotation distance ^
 
@@ -87,7 +88,7 @@ public class ClimbSubsystem extends SubsystemBase {
         // this is to lift the rbt off the ground
 
         if (getLeftClimbHeight() == 0) {
-            leftEncoder.setPosition(-0);
+            leftEncoder.setPosition(-1);
 
             // when rbt reaches 0 height off ground
             if (getLeftClimbHeight() == 0) {
@@ -96,7 +97,7 @@ public class ClimbSubsystem extends SubsystemBase {
         }
 
         if (getRightClimbHeight() == 0) {
-            rightEncoder.setPosition(-0);
+            rightEncoder.setPosition(-1);
 
             // when rbt reaches 0 height off ground
             if (getRightClimbHeight() == 0) {

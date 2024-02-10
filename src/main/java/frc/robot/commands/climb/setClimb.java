@@ -30,11 +30,31 @@ public class setClimb extends Command {
     @Override
     public void initialize() {
         
+
     }
 
     //Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
+       double positionLeft = climb.getLeftClimbHeight();
+       double positionRight = climb.getRightClimbHeight();
+       int maxClimbHeight = -1;
+
+       if (positionLeft == maxClimbHeight){
+        climb.setClimbSpeed(0.5);
+       }
+
+       if (positionRight == maxClimbHeight){
+        climb.setClimbSpeed(0.5);
+       }
+
+       if (positionLeft == 0){
+        climb.setClimbSpeed(-0.5);
+       }
+
+       if (positionRight == 0){
+        climb.setClimbSpeed(-0.5);
+       }
 
     }
 
