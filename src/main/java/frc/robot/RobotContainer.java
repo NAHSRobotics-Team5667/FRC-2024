@@ -36,6 +36,7 @@ public class RobotContainer {
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController driverXbox = new CommandXboxController(0);
+    private final CommandXboxController secondaryXbox = new CommandXboxController(1);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
