@@ -12,7 +12,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.ArmAngle;
-import frc.robot.util.States.ArmState;
+import frc.robot.util.States.ArmPosState;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -124,12 +124,12 @@ public final class Constants {
                 -1); // TODO: determine initial angles of arm
 
         // create a map of goal states and their target arm positions
-        public static final Map<ArmState, ArmAngle> GOAL_POSITIONS = Map.of(
-                ArmState.RESTING, RESTING_POSITION, // arm position when at resting position
-                ArmState.DEFAULT_SPEAKER, new ArmAngle(), // default position for speaker
-                ArmState.AMP, new ArmAngle(90, 75), // position for amp
-                ArmState.TRAP, new ArmAngle(100, 100), // position for trap
-                ArmState.HUMAN_PLAYER, new ArmAngle()); // position for human player intake
+        public static Map<ArmPosState, ArmAngle> GOAL_POSITIONS = Map.of(
+                ArmPosState.TRANSFER, RESTING_POSITION, // arm position when at resting position
+                ArmPosState.SPEAKER, new ArmAngle(), // default position for speaker
+                ArmPosState.AMP, new ArmAngle(90, 75), // position for amp
+                ArmPosState.TRAP, new ArmAngle(100, 100), // position for trap
+                ArmPosState.HUMAN_PLAYER, new ArmAngle()); // position for human player intake
 
         /**
          * Returns the goal position for a given target.
@@ -137,9 +137,25 @@ public final class Constants {
          * @param key target position.
          * @return goal position associated with target.
          */
-        public static ArmAngle getGoalPosition(ArmState key) {
+        public static ArmAngle getGoalPosition(ArmPosState key) {
             return GOAL_POSITIONS.get(key);
         }
+
+        /**
+         * Updates ArmAngle linked to a given arm position. Only use when aiming shooter
+         * at speaker.
+         * 
+         * @param key    arm position state to update.
+         * @param newPos new position to link to arm position state.
+         */
+        public static void setGoalPosition(ArmPosState key, ArmAngle newPos) {
+            GOAL_POSITIONS.put(key, newPos);
+        }
+
+        // ==== POSITION ERROR MARGINS ====
+
+        public static final double FIRST_ERR_MARGIN_DEG = 1.0;
+        public static final double SECOND_ERR_MARGIN_DEG = 1.0;
 
         // =======================================================
         // ====================== MOTION =========================
@@ -173,6 +189,19 @@ public final class Constants {
         public static final double SECOND_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
         public static final double SECOND_MAX_ACCEL = -1; // target acceleration (rots / sec / sec)
         public static final double SECOND_TARGET_JERK = -1; // target jerk (rots / sec / sec / sec)
+
+        // ==== VELOCITY THRESHOLDS ====
+
+        /**
+         * Minimum motor velocity to be considered as arm motion on first pivot. Used
+         * for updating Arm motion and position states.
+         */
+        public static final double FIRST_VEL_THRESHOLD = 1E-6;
+        /**
+         * Minimum motor velocity to be considered as arm motion on second pivot. Used
+         * for updating Arm motion and position states.
+         */
+        public static final double SECOND_VEL_THRESHOLD = 1E-6;
     }
 
     public static class ShooterConstants {

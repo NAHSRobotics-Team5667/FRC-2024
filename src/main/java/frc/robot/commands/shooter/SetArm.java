@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.util.ArmAngle;
-import frc.robot.util.States.ArmState;
+import frc.robot.util.States.ArmPosState;
 
 /**
  * SetArm.java
@@ -37,7 +37,7 @@ public class SetArm extends Command {
      * 
      * @param targetState target arm position based on pre-configured positions.
      */
-    public SetArm(ArmState targetState) {
+    public SetArm(ArmPosState targetState) {
         this(ArmConstants.getGoalPosition(targetState));
     }
 

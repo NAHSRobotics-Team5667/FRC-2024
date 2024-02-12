@@ -1,17 +1,24 @@
 package frc.robot.util;
 
 public class States {
-    public static enum ArmMotion {
+    public static enum ArmMotionState {
         IDLE,
-        MOVING_TO_POSITION
+        MOVING
     }
 
-    public static enum ArmState {
-        RESTING,
-        DEFAULT_SPEAKER,
+    public static enum ArmPosState {
+        /** Transfer state between intake and shooter. */
+        TRANSFER,
+        /** State for scoring in speaker. */
+        SPEAKER,
+        /** State for scoring in amp. */
         AMP,
+        /** State for scoring in trap. */
         TRAP,
-        HUMAN_PLAYER
+        /** State for intaking from human player elevated station. */
+        HUMAN_PLAYER,
+        /** State that represents an undefined position. */
+        INTERMEDIATE
     }
 
     public static enum ShooterStates {

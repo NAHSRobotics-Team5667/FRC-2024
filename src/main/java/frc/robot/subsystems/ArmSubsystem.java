@@ -14,7 +14,8 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.util.ArmAngle;
-import frc.robot.util.States.ArmState;
+import frc.robot.util.States.ArmMotionState;
+import frc.robot.util.States.ArmPosState;
 
 //44/60 - Gear for ratio for arm.
 //1 climb rotation is 20.25 motor rotations.
@@ -53,7 +54,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     private ArmAngle armPos;
 
-    private ArmState state;
+    private ArmPosState positionState = null;
+    private ArmMotionState motionState = null;
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -268,7 +270,13 @@ public class ArmSubsystem extends SubsystemBase {
      *         is right.
      */
     public double[] getRawFirstEncoders() {
-        double[] pivotEncoders = { firstEncoderL.getAbsolutePosition(), firstEncoderR.getAbsolutePosition() };
+        double[] pivotEncoders = {
+                (firstEncoderL.isConnected())
+                        ? firstEncoderL.getAbsolutePosition()
+                        : firstEncoderR.getAbsolutePosition(),
+                (firstEncoderR.isConnected())
+                        ? firstEncoderR.getAbsolutePosition()
+                        : firstEncoderL.getAbsolutePosition() };
         return pivotEncoders;
     }
 
@@ -286,7 +294,7 @@ public class ArmSubsystem extends SubsystemBase {
     /**
      * @return fist pivot angle in degrees.
      */
-    public double getFirstPivot() {
+    public double getFirstPivotReading() {
         return armPos.getFirstPivot();
     }
 
@@ -297,7 +305,13 @@ public class ArmSubsystem extends SubsystemBase {
      *         is right.
      */
     public double[] getRawSecondEncoders() {
-        double[] pivotEncoders = { secondEncoderL.getAbsolutePosition(), secondEncoderR.getAbsolutePosition() };
+        double[] pivotEncoders = {
+                (secondEncoderL.isConnected())
+                        ? secondEncoderL.getAbsolutePosition()
+                        : secondEncoderR.getAbsolutePosition(),
+                (secondEncoderR.isConnected())
+                        ? secondEncoderR.getAbsolutePosition()
+                        : secondEncoderL.getAbsolutePosition() };
         return pivotEncoders;
     }
 
@@ -315,7 +329,7 @@ public class ArmSubsystem extends SubsystemBase {
     /**
      * @return second pivot angle in degrees.
      */
-    public double getSecondPivot() {
+    public double getSecondPivotReading() {
         return armPos.getSecondPivot();
     }
 
@@ -323,17 +337,31 @@ public class ArmSubsystem extends SubsystemBase {
     // ======================= STATE ==========================
 
     /**
-     * @param newState new state of the arm
+     * @param newState new positon state of the arm
      */
-    public void setState(ArmState newState) {
-        state = newState;
+    public void updatePositionState(ArmPosState newState) {
+        positionState = newState;
     }
 
     /**
-     * @return current state of the arm.
+     * @return current position state of the arm.
      */
-    public ArmState getState() {
-        return state;
+    public ArmPosState getPositionState() {
+        return positionState;
+    }
+
+    /**
+     * @param newState new motion state of the arm
+     */
+    public void updateMotionState(ArmMotionState newState) {
+        motionState = newState;
+    }
+
+    /**
+     * @return current motion state of the arm.
+     */
+    public ArmMotionState getMotionState() {
+        return motionState;
     }
 
     // ========================================================
@@ -350,6 +378,89 @@ public class ArmSubsystem extends SubsystemBase {
                         (getOffsetSecondEncoders()[0] + getOffsetSecondEncoders()[1]) / 2)); // average second pivot
                                                                                              // encoders
 
-        // TODO: update state
+        // ---------------------------------------------------
+        // -------------- UPDATE MOTION STATE ----------------
+
+        if (Math.abs(m_firstStageLead.getVelocity().getValueAsDouble()) >= ArmConstants.FIRST_VEL_THRESHOLD
+                || Math.abs(m_secondStageLead.getVelocity().getValueAsDouble()) >= ArmConstants.SECOND_VEL_THRESHOLD) {
+            // set arm motion state to moving if any velocities are over thresholds
+            updateMotionState(ArmMotionState.MOVING);
+        } else {
+            // set arm motion state to idle if both velocities are under thresholds
+            updateMotionState(ArmMotionState.IDLE);
+        }
+
+        // ---------------------------------------------------
+        // ------------- UPDATE POSITION STATE ---------------
+
+        if (getFirstPivotReading() <= ArmConstants.getGoalPosition(ArmPosState.TRANSFER).getFirstPivot()
+                + ArmConstants.FIRST_ERR_MARGIN_DEG
+                && getFirstPivotReading() >= ArmConstants.getGoalPosition(ArmPosState.TRANSFER).getFirstPivot()
+                        - ArmConstants.FIRST_ERR_MARGIN_DEG) {
+            // check second pivot
+            if (getSecondPivotReading() <= ArmConstants.getGoalPosition(ArmPosState.TRANSFER).getSecondPivot()
+                    + ArmConstants.SECOND_ERR_MARGIN_DEG
+                    && getSecondPivotReading() >= ArmConstants.getGoalPosition(ArmPosState.TRANSFER).getSecondPivot()
+                            - ArmConstants.SECOND_ERR_MARGIN_DEG) {
+
+                updatePositionState(ArmPosState.TRANSFER); // TRANSFER
+            }
+
+        } else if (getFirstPivotReading() <= ArmConstants.getGoalPosition(ArmPosState.SPEAKER).getFirstPivot()
+                + ArmConstants.FIRST_ERR_MARGIN_DEG
+                && getFirstPivotReading() >= ArmConstants.getGoalPosition(ArmPosState.SPEAKER).getFirstPivot()
+                        - ArmConstants.FIRST_ERR_MARGIN_DEG) {
+            // check second pivot
+            if (getSecondPivotReading() <= ArmConstants.getGoalPosition(ArmPosState.SPEAKER).getSecondPivot()
+                    + ArmConstants.SECOND_ERR_MARGIN_DEG
+                    && getSecondPivotReading() >= ArmConstants.getGoalPosition(ArmPosState.SPEAKER).getSecondPivot()
+                            - ArmConstants.SECOND_ERR_MARGIN_DEG) {
+
+                updatePositionState(ArmPosState.SPEAKER); // SPEAKER
+            }
+
+        } else if (getFirstPivotReading() <= ArmConstants.getGoalPosition(ArmPosState.AMP).getFirstPivot()
+                + ArmConstants.FIRST_ERR_MARGIN_DEG
+                && getFirstPivotReading() >= ArmConstants.getGoalPosition(ArmPosState.AMP).getFirstPivot()
+                        - ArmConstants.FIRST_ERR_MARGIN_DEG) {
+            // check second pivot
+            if (getSecondPivotReading() <= ArmConstants.getGoalPosition(ArmPosState.AMP).getSecondPivot()
+                    + ArmConstants.SECOND_ERR_MARGIN_DEG
+                    && getSecondPivotReading() >= ArmConstants.getGoalPosition(ArmPosState.AMP).getSecondPivot()
+                            - ArmConstants.SECOND_ERR_MARGIN_DEG) {
+
+                updatePositionState(ArmPosState.AMP); // AMP
+            }
+
+        } else if (getFirstPivotReading() <= ArmConstants.getGoalPosition(ArmPosState.TRAP).getFirstPivot()
+                + ArmConstants.FIRST_ERR_MARGIN_DEG
+                && getFirstPivotReading() >= ArmConstants.getGoalPosition(ArmPosState.TRAP).getFirstPivot()
+                        - ArmConstants.FIRST_ERR_MARGIN_DEG) {
+            // check second pivot
+            if (getSecondPivotReading() <= ArmConstants.getGoalPosition(ArmPosState.TRAP).getSecondPivot()
+                    + ArmConstants.SECOND_ERR_MARGIN_DEG
+                    && getSecondPivotReading() >= ArmConstants.getGoalPosition(ArmPosState.TRAP).getSecondPivot()
+                            - ArmConstants.SECOND_ERR_MARGIN_DEG) {
+
+                updatePositionState(ArmPosState.TRAP); // TRAP
+            }
+
+        } else if (getFirstPivotReading() <= ArmConstants.getGoalPosition(ArmPosState.HUMAN_PLAYER).getFirstPivot()
+                + ArmConstants.FIRST_ERR_MARGIN_DEG
+                && getFirstPivotReading() >= ArmConstants.getGoalPosition(ArmPosState.HUMAN_PLAYER).getFirstPivot()
+                        - ArmConstants.FIRST_ERR_MARGIN_DEG) {
+            // check second pivot
+            if (getSecondPivotReading() <= ArmConstants.getGoalPosition(ArmPosState.HUMAN_PLAYER).getSecondPivot()
+                    + ArmConstants.SECOND_ERR_MARGIN_DEG
+                    && getSecondPivotReading() >= ArmConstants.getGoalPosition(ArmPosState.HUMAN_PLAYER)
+                            .getSecondPivot()
+                            - ArmConstants.SECOND_ERR_MARGIN_DEG) {
+
+                updatePositionState(ArmPosState.HUMAN_PLAYER); // HUMAN PLAYER
+            }
+
+        } else {
+            updatePositionState(ArmPosState.INTERMEDIATE); // INTERMEDIATE if not at any of the other positions
+        }
     }
 }
