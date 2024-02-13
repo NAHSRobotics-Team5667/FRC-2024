@@ -135,7 +135,11 @@ public class ClimbSubsystem extends SubsystemBase {
         // position and use the motor encoders to determine the height of the climb
         // itself. You can also use the continuous non-absolute reading from the encoder
         // if you want!
-        double returnValue = (leftEncoder.getAbsolutePosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
+
+        //New one that uses non-absolute so it's continuous - doens't reset to 0
+        double returnValue = (leftEncoder.getPositon().getValueAsDouble()) * ClimbConstants.RATIO_WINCH);
+
+        //double returnValue = (leftEncoder.getAbsolutePosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
         return returnValue;
     }
 
@@ -144,7 +148,11 @@ public class ClimbSubsystem extends SubsystemBase {
      */
     public double getRightClimbHeight() {
         // P: see previous method comment
-        double returnValue = (rightEncoder.getAbsolutePosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
+        
+        //same as above
+        double returnValue = (leftEncoder.getPosition().getValueAsDouble()) * ClimbConstants.RATIO_WINCH);
+
+       //double returnValue = (rightEncoder.getAbsolutePosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
         return returnValue;
     }
 
