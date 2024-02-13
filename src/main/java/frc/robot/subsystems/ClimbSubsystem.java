@@ -8,7 +8,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
 
@@ -137,7 +136,7 @@ public class ClimbSubsystem extends SubsystemBase {
         // if you want!
 
         //New one that uses non-absolute so it's continuous - doens't reset to 0
-        double returnValue = (leftEncoder.getPositon().getValueAsDouble()) * ClimbConstants.RATIO_WINCH);
+        double returnValue = (leftEncoder.getPosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
 
         //double returnValue = (leftEncoder.getAbsolutePosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
         return returnValue;
@@ -150,7 +149,7 @@ public class ClimbSubsystem extends SubsystemBase {
         // P: see previous method comment
         
         //same as above
-        double returnValue = (leftEncoder.getPosition().getValueAsDouble()) * ClimbConstants.RATIO_WINCH);
+        double returnValue = (leftEncoder.getPosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
 
        //double returnValue = (rightEncoder.getAbsolutePosition().getValueAsDouble() * ClimbConstants.RATIO_WINCH);
         return returnValue;
