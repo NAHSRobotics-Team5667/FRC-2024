@@ -6,10 +6,6 @@ package frc.robot;
 
 import java.util.Map;
 
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.ArmAngle;
 import frc.robot.util.States.ArmPosState;

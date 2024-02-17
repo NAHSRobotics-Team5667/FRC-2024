@@ -62,7 +62,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     // ========================================================
-    // ================== MOTOR ACTIONS =======================
+    // ====================== ACTIONS =========================
 
     /**
      * Sets relative velocity of the intake.
@@ -100,15 +100,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return whether intake is running.
      */
     public boolean isIntakeRunning() {
-
-        boolean isRunning = false;
-
-        // Checks the speed. If it's not 0, it's running the motors.
-        if (m_intake.get() != 0) {
-            isRunning = true;
-        }
-
-        return isRunning;
+        return m_intake.get() != 0;
     }
 
     // ========================================================

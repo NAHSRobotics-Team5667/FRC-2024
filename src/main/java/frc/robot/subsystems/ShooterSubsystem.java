@@ -15,7 +15,6 @@ import frc.robot.Constants.ShooterConstants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.robot.util.States.ShooterStates;
 
 /**
  * ShooterSubsystem.java
@@ -75,7 +74,8 @@ public class ShooterSubsystem extends SubsystemBase {
     // PERIODIC -----------------------------------------------
 
     @Override
-    public void periodic() {
+    public void periodic() { // This method will be called once per scheduler run
+
         // adjust index state passively
         if (hasGamePiece()) {
             indexState = IndexStates.FULL;
@@ -97,8 +97,6 @@ public class ShooterSubsystem extends SubsystemBase {
         } else {
             shooterState = ShooterStates.ADJUST_VEL; // shooter not at correct speed
         }
-
-        // This method will be called once per scheduler run
     }
 
     // ========================================================
@@ -126,20 +124,30 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public void setShooterSpeed(double percentOutput) {
         double output = percentOutput / 100;
+
+        targetLeftRPM = percentOutput * ShooterConstants.SHOOTER_MAX_RPM;
+        targetRightRPM = percentOutput * ShooterConstants.SHOOTER_MAX_RPM;
+
         m_leftShooter.set(output);
         m_rightShooter.set(output);
     }
 
     /**
      * Sets speed of shooter wheels with separate speeds for each. Use for spin and
-     * lateral adjustments.
+     * lateral adjustments. 0-100;
      * 
      * @param left  % output for left motor.
      * @param right % output for right motor.
      */
     public void setShooterSpeed(double left, double right) {
-        m_leftShooter.set(left);
-        m_rightShooter.set(right);
+        double leftOutput = left / 100;
+        double rightOutput = right / 100;
+
+        targetLeftRPM = leftOutput * ShooterConstants.SHOOTER_MAX_RPM;
+        targetRightRPM = rightOutput * ShooterConstants.SHOOTER_MAX_RPM;
+
+        m_leftShooter.set(leftOutput);
+        m_rightShooter.set(rightOutput);
     }
 
     // ========================================================
@@ -162,6 +170,20 @@ public class ShooterSubsystem extends SubsystemBase {
     public double getLeftShooterRPM() {
         double leftSpeed = m_leftShooter.getVelocity().getValueAsDouble();
         return leftSpeed;
+    }
+
+    /**
+     * @return target left RPM.
+     */
+    public double getTargetLeftRPM() {
+        return targetLeftRPM;
+    }
+
+    /**
+     * @return target right RPM.
+     */
+    public double getTargetRightRPM() {
+        return targetRightRPM;
     }
 
     /**

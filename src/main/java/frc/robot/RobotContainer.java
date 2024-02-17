@@ -89,23 +89,23 @@ public class RobotContainer {
         // ========================================================
         // ===================== INTAKE ===========================
 
-        intake = IntakeSubsystem.getInstance();
+        // intake = IntakeSubsystem.getInstance();
 
         // ========================================================
         // ====================== ARM =============================
 
-        arm = ArmSubsystem.getInstance();
-        arm.setDefaultCommand(new SetArm());
+        // arm = ArmSubsystem.getInstance();
+        // arm.setDefaultCommand(new SetArm());
 
         // ========================================================
         // ==================== SHOOTER ===========================
 
-        shooter = ShooterSubsystem.getInstance();
+        // shooter = ShooterSubsystem.getInstance();
 
         // ========================================================
         // ====================== CLIMB ===========================
 
-        climb = ClimbSubsystem.getInstance();
+        // climb = ClimbSubsystem.getInstance();
 
         // ========================================================
         // ================== CONTROLLER ==========================
