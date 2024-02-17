@@ -8,13 +8,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.States.ShooterStates;
 
-public class ShooterCommand extends Command {
+public class ShootCommand extends Command {
 
     public ShooterSubsystem shooter;
     public ShooterStates shooterState;
     public double[] shooterRPMs = shooter.getShooterRPM();
+
     /** Creates a new ShooterCommand. */
-    public ShooterCommand() {
+    public ShootCommand() {
+        shooter = ShooterSubsystem.getInstance();
+
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(shooter);
     }
@@ -22,37 +25,23 @@ public class ShooterCommand extends Command {
     // Called when command is initiated/first scheduled
     @Override
     public void initialize() {
-        shooterState = ShooterStates.STOPPED;
+        shooter.setShooterSpeed(0.00);
     }
 
     // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
-        shooter.setShooterSpeed(1.00);
-        
-        //Checking Shooter RPMs until it reaches Max RPM to set Shooter State to FULL_SPEED
-        while (shooterRPMs[0] <= 5900 && shooterRPMs[1] <= 5900) {
-            shooterState = ShooterStates.SPEEDING_UP;
+        shooter.setShooterSpeed(100);
+
+        if (shooter.getShooterState().equals(ShooterStates.READY)) {
+            shooter.setIndexSpeed(50);
         }
-        shooterState = ShooterStates.FULL_SPEED;
-        
     }
 
     // Called when the command is interruped or ended
     @Override
     public void end(boolean interrupted) {
-        boolean hasGamePiece = shooter.hasGamePiece();        
-        if (hasGamePiece == false) {
-            shooter.setShooterSpeed(0.00);
-
-            //Checking Shooter RPMs until its at 0 to set Shooter State to STOPPED
-            while (shooterRPMs[0] > 0 && shooterRPMs[1] > 0) {
-                shooterState = ShooterStates.SLOWING_DOWN;
-        }
-            shooterState = ShooterStates.STOPPED;
-
-        }
-
+        shooter.setShooterSpeed(0.00);
     }
 
     // Called so it should return true when the command will end

@@ -1,11 +1,10 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj.Timer;
-
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.util.States.ArmPosState;
 
 /*
  * This command is going to trigger the intake to drop down and start spinning.
@@ -23,38 +22,30 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class IntakeNote extends Command {
 
     public IntakeSubsystem intake;
-    public ArmSubsystem arm;
     public ShooterSubsystem shooter;
 
     // * Creates a new intake */
     public IntakeNote() {
         intake = IntakeSubsystem.getInstance();
-        arm = ArmSubsystem.getInstance();
         shooter = ShooterSubsystem.getInstance();
 
         // addRequirement() - prevent two commands from being run at the same time
-        addRequirements(intake, arm, shooter);
+        addRequirements(intake, shooter);
     }
 
     // Called when command is initiated/first scheduled
     @Override
     public void initialize() {
-        if (intake.isIntakeDeployed() == true) { // the piston is already extended - want to retract and reset the motor
-            intake.setPiston(false);
-            intake.setIntakeSpeed(0);
-        }
+        intake.setIntakeSpeed(0);
+        ArmSubsystem.getInstance().setTargetPosition(ArmPosState.TRANSFER);
     }
 
     // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
-        if (intake.isIntakeDeployed() == false) {
-
-            intake.setIntakeSpeed(1);
-
-            intake.setPiston(true);
-        }
-
+        intake.setPiston(true);
+        intake.setIntakeSpeed(50);
+        shooter.setIndexSpeed(30);
     }
 
     // Called when the command is interruped or ended
@@ -62,11 +53,12 @@ public class IntakeNote extends Command {
     public void end(boolean interrupted) {
         intake.setIntakeSpeed(0);
         intake.setPiston(false);
+        shooter.setIndexSpeed(0);
     }
 
     // Called so it should return true when the command will end
     @Override
     public boolean isFinished() {
-        return false;
+        return shooter.hasGamePiece(); // finishes intake command once game piece is collected
     }
 }

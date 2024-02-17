@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.util.ArmAngle;
@@ -53,6 +54,7 @@ public class ArmSubsystem extends SubsystemBase {
             secondEncoderL, secondEncoderR; // declare encoders for arm actuation
 
     private ArmAngle armPos;
+    private ArmAngle targetArmPos = ArmConstants.getGoalPosition(ArmPosState.TRANSFER);
 
     private ArmPosState positionState = null;
     private ArmMotionState motionState = null;
@@ -263,6 +265,31 @@ public class ArmSubsystem extends SubsystemBase {
         return armPos;
     }
 
+    /**
+     * @return target arm position.
+     */
+    public ArmAngle getTargetPosition() {
+        return targetArmPos;
+    }
+
+    /**
+     * Sets target arm position for use by the SetArm command.
+     * 
+     * @param target target arm position.
+     */
+    public void setTargetPosition(ArmAngle target) {
+        targetArmPos = target;
+    }
+
+    /**
+     * Sets target arm position for use by the SetArm command.
+     * 
+     * @param targetState target arm state - gets associated arm position.
+     */
+    public void setTargetPosition(ArmPosState targetState) {
+        targetArmPos = ArmConstants.getGoalPosition(targetState);
+    }
+
     // FIRST PIVOT --------------------------------------------
 
     /**
@@ -292,7 +319,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     /**
-     * @return fist pivot angle in degrees.
+     * @return first pivot angle in degrees. Reading updated using the encoder.
      */
     public double getFirstPivotReading() {
         return armPos.getFirstPivot();
@@ -369,6 +396,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() { // This method will be called once per scheduler run - every 20ms.
+
         // update arm position with encoders
         updateArmPosition(
                 Units.rotationsToDegrees(
@@ -462,5 +490,29 @@ public class ArmSubsystem extends SubsystemBase {
         } else {
             updatePositionState(ArmPosState.INTERMEDIATE); // INTERMEDIATE if not at any of the other positions
         }
+
+        // ---------------------------------------------------
+        // ------------------- TELEMETRY ---------------------
+
+        SmartDashboard.putNumber("[ARM] First Pivot Deg", getFirstPivotReading());
+        SmartDashboard.putNumber("[ARM] Second Pivot Deg", getSecondPivotReading());
+
+        // First Encoder -------------------------------------
+        SmartDashboard.putNumber("[ARM] Raw First Encoder 1", getRawFirstEncoders()[0]);
+        SmartDashboard.putNumber("[ARM] Raw First Encoder 2", getRawFirstEncoders()[1]);
+
+        SmartDashboard.putNumber("[ARM] Offset First Encoder 1", getOffsetFirstEncoders()[0]);
+        SmartDashboard.putNumber("[ARM] Offset First Encoder 2", getOffsetFirstEncoders()[1]);
+
+        // Second Encoder ------------------------------------
+        SmartDashboard.putNumber("[ARM] Raw Second Encoder 1", getRawSecondEncoders()[0]);
+        SmartDashboard.putNumber("[ARM] Raw Second Encoder 2", getRawSecondEncoders()[1]);
+
+        SmartDashboard.putNumber("[ARM] Offset Second Encoder 1", getOffsetSecondEncoders()[0]);
+        SmartDashboard.putNumber("[ARM] Offset Second Encoder 2", getOffsetSecondEncoders()[1]);
+
+        // States --------------------------------------------
+        SmartDashboard.putString("[ARM] Curr Pos State", positionState.toString());
+        SmartDashboard.putString("[ARM] Curr Motion State", motionState.toString());
     }
 }

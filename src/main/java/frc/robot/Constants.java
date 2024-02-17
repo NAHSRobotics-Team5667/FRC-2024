@@ -218,6 +218,8 @@ public final class Constants {
         // ---- MAXIMUM RPM ----
         public static final double SHOOTER_MAX_RPM = 6000;
         public static final double INDEX_MAX_RPM = 11000;
+
+        public static final double RPM_ERROR_MARGIN = 5;
     }
 
     public static class IntakeConstants {

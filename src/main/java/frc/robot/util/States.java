@@ -23,9 +23,8 @@ public class States {
 
     public static enum ShooterStates {
         STOPPED,
-        SPEEDING_UP,
-        FULL_SPEED,
-        SLOWING_DOWN
+        ADJUST_VEL,
+        READY
     }
 
     public static enum IndexStates {

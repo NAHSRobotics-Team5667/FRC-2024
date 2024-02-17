@@ -5,7 +5,13 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.shooter.SetArm;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.States.ArmPosState;
 
 import java.io.File;
 
@@ -32,7 +38,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private SwerveSubsystem m_drive;
+    private SwerveSubsystem drive;
+    private IntakeSubsystem intake;
+    private ArmSubsystem arm;
+    private ShooterSubsystem shooter;
+    private ClimbSubsystem climb;
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -49,14 +59,14 @@ public class RobotContainer {
 
         // configure dt based on JSON config files
         SwerveSubsystem.initialize(new File(Filesystem.getDeployDirectory(), "swerve"));
-        m_drive = SwerveSubsystem.getInstance();
+        drive = SwerveSubsystem.getInstance();
 
-        m_drive.setupPathPlanner();
+        drive.setupPathPlanner();
 
         // ---- DRIVE COMMANDS ----
 
         // Real drive command
-        Command driveFieldOrientedAnglularVelocity = m_drive.driveCommand(
+        Command driveFieldOrientedAnglularVelocity = drive.driveCommand(
                 () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), // X direction
                                                                                                         // is front
                 () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), // Y direction
@@ -64,7 +74,7 @@ public class RobotContainer {
                 () -> driverXbox.getRightX()); // right stick horizontal value
 
         // Simulation drive command
-        Command driveFieldOrientedAnglularVelocitySim = m_drive.simDriveCommand(
+        Command driveFieldOrientedAnglularVelocitySim = drive.simDriveCommand(
                 () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), // X direction
                                                                                                         // is front
                 () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), // Y direction
@@ -73,20 +83,29 @@ public class RobotContainer {
 
         // Sets default DT command to the real command when robot is IRL
         // Sets default DT command to the sim command when robot is simulated
-        m_drive.setDefaultCommand(
+        drive.setDefaultCommand(
                 RobotBase.isReal() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedAnglularVelocitySim);
 
         // ========================================================
         // ===================== INTAKE ===========================
 
+        intake = IntakeSubsystem.getInstance();
+
         // ========================================================
         // ====================== ARM =============================
+
+        arm = ArmSubsystem.getInstance();
+        arm.setDefaultCommand(new SetArm());
 
         // ========================================================
         // ==================== SHOOTER ===========================
 
+        shooter = ShooterSubsystem.getInstance();
+
         // ========================================================
         // ====================== CLIMB ===========================
+
+        climb = ClimbSubsystem.getInstance();
 
         // ========================================================
         // ================== CONTROLLER ==========================
@@ -100,12 +119,11 @@ public class RobotContainer {
      */
     private void configureBindings() {
         /*
-         * Driver Controller: 
+         * Driver Controller:
          * - Joystick 1 Movement - Movement on Field
          * - Joystick 2 Movement - Direction on Field (Where robot front is facing).
-         * - 
+         * -
          */
-
 
         // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
         // new Trigger(m_exampleSubsystem::exampleCondition)
@@ -126,7 +144,7 @@ public class RobotContainer {
         // An example command will be run in autonomous
         // return Autos.exampleAuto(m_exampleSubsystem);
         // return null;
-        m_drive.postTrajectory("Test1");
-        return m_drive.getAutonomousCommand("Test1", true);
+        drive.postTrajectory("Test1");
+        return drive.getAutonomousCommand("Test1", true);
     }
 }

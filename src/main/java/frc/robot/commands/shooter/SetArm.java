@@ -5,10 +5,7 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.util.ArmAngle;
-import frc.robot.util.States.ArmPosState;
 
 /**
  * SetArm.java
@@ -17,35 +14,17 @@ import frc.robot.util.States.ArmPosState;
  */
 public class SetArm extends Command {
     private ArmSubsystem armSubsystem;
-    private ArmAngle target;
 
     /**
      * Creates a new SetArm.
      * 
      * @param target target arm position.
      */
-    public SetArm(ArmAngle target) {
+    public SetArm() {
         armSubsystem = ArmSubsystem.getInstance();
-        this.target = target;
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(armSubsystem);
-    }
-
-    /**
-     * Creates a new SetArm.
-     * 
-     * @param targetState target arm position based on pre-configured positions.
-     */
-    public SetArm(ArmPosState targetState) {
-        this(ArmConstants.getGoalPosition(targetState));
-    }
-
-    /**
-     * @return target pivot angles.
-     */
-    public ArmAngle getTarget() {
-        return target;
     }
 
     // Called when the command is initially scheduled.
@@ -57,8 +36,8 @@ public class SetArm extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        armSubsystem.firstPivotToTarget(target.getFirstPivot());
-        armSubsystem.secondPivotToTarget(target.getSecondPivot());
+        armSubsystem.firstPivotToTarget(armSubsystem.getTargetPosition().getFirstPivot());
+        armSubsystem.secondPivotToTarget(armSubsystem.getTargetPosition().getSecondPivot());
     }
 
     // Called once the command ends or is interrupted.
@@ -70,6 +49,7 @@ public class SetArm extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false; // TODO: finished when another command involving arm is called
+        return false; // never stops - always running. If need to adjust arm position, set
+                      // target using methods.
     }
 }

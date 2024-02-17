@@ -67,12 +67,12 @@ public class IntakeSubsystem extends SubsystemBase {
     /**
      * Sets relative velocity of the intake.
      * 
-     * @param percentOutput % output of intake motor.
+     * @param percentOutput % output of intake motor. 0-100.
      */
     public void setIntakeSpeed(double percentOutput) {
 
         double motorSpeed = percentOutput / 100;
-        
+
         m_intake.set(motorSpeed);
     }
 
@@ -103,8 +103,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
         boolean isRunning = false;
 
-        //Checks the speed. If it's not 0, it's running the motors.
-        if (m_intake.get() != 0){
+        // Checks the speed. If it's not 0, it's running the motors.
+        if (m_intake.get() != 0) {
             isRunning = true;
         }
 

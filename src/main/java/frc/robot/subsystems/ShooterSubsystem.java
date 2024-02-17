@@ -5,13 +5,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import frc.robot.util.States.IndexStates;
 import frc.robot.util.States.ShooterStates;
 import frc.robot.Constants.ShooterConstants;
-import com.revrobotics.AbsoluteEncoder;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.util.States.ShooterStates;
@@ -35,7 +36,11 @@ public class ShooterSubsystem extends SubsystemBase {
     private TalonFX m_leftShooter, m_rightShooter; // declaring motors and global scope
     private CANSparkMax m_index;
     private DigitalInput beamBreak;
-    private ShooterStates shooterStates; // Shooter States
+    private ShooterStates shooterState = null; // Shooter States
+    private IndexStates indexState = null; // current state of index
+
+    private double targetLeftRPM = ShooterConstants.SHOOTER_MAX_RPM;
+    private double targetRightRPM = ShooterConstants.SHOOTER_MAX_RPM;
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -48,7 +53,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
         // Initialize Motors (Falcon 500s).
         m_leftShooter = new TalonFX(ShooterConstants.SHOOTER_LEFT_ID);
+        m_leftShooter.setNeutralMode(NeutralModeValue.Coast);
+
         m_rightShooter = new TalonFX(ShooterConstants.SHOOTER_RIGHT_ID);
+        m_rightShooter.setNeutralMode(NeutralModeValue.Coast);
 
         // Initialize Motors (NEO 1.1).
         m_index = new CANSparkMax(ShooterConstants.BELT_INDEX_ID, MotorType.kBrushless);
@@ -68,6 +76,28 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // adjust index state passively
+        if (hasGamePiece()) {
+            indexState = IndexStates.FULL;
+        } else {
+            indexState = IndexStates.EMPTY;
+        }
+
+        // adjust shooter state passively
+        if (getLeftShooterRPM() > targetLeftRPM - ShooterConstants.RPM_ERROR_MARGIN
+                && getLeftShooterRPM() < targetLeftRPM + ShooterConstants.RPM_ERROR_MARGIN) {
+
+            if (getRightShooterRPM() > targetRightRPM - ShooterConstants.RPM_ERROR_MARGIN
+                    && getRightShooterRPM() < targetRightRPM + ShooterConstants.RPM_ERROR_MARGIN) {
+
+                shooterState = ShooterStates.READY; // shooter ready to shoot
+            }
+        } else if (getLeftShooterRPM() == 0 || getRightShooterRPM() == 0) {
+            shooterState = ShooterStates.STOPPED; // shooter stopped
+        } else {
+            shooterState = ShooterStates.ADJUST_VEL; // shooter not at correct speed
+        }
+
         // This method will be called once per scheduler run
     }
 
@@ -78,23 +108,26 @@ public class ShooterSubsystem extends SubsystemBase {
 
     /**
      * Sets speed of index. Positive -> into shooter. Negative -> away from shooter.
+     * 0-100.
      * 
      * @param percentOutput
      */
     public void setIndexSpeed(double percentOutput) {
-        m_index.set(percentOutput);
+        double output = percentOutput / 100;
+        m_index.set(output);
     }
 
     // SHOOTER ------------------------------------------------
 
     /**
-     * Sets speed of the shooter for both sets of wheels.
+     * Sets speed of the shooter for both sets of wheels. 0-100.
      * 
      * @param percentOutput % output for both motors.
      */
     public void setShooterSpeed(double percentOutput) {
-        m_leftShooter.set(percentOutput);
-        m_rightShooter.set(percentOutput);
+        double output = percentOutput / 100;
+        m_leftShooter.set(output);
+        m_rightShooter.set(output);
     }
 
     /**
@@ -150,4 +183,18 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // ========================================================
     // ======================= OTHER ==========================
+
+    /**
+     * @return current shooter state.
+     */
+    public ShooterStates getShooterState() {
+        return shooterState;
+    }
+
+    /**
+     * @return current index state.
+     */
+    public IndexStates getIndexState() {
+        return indexState;
+    }
 }
