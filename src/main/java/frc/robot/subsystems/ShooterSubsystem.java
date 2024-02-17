@@ -15,6 +15,7 @@ import frc.robot.Constants.ShooterConstants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * ShooterSubsystem.java
@@ -57,6 +58,8 @@ public class ShooterSubsystem extends SubsystemBase {
         m_rightShooter = new TalonFX(ShooterConstants.SHOOTER_RIGHT_ID);
         m_rightShooter.setNeutralMode(NeutralModeValue.Coast);
 
+        m_rightShooter.setInverted(true);
+
         // Initialize Motors (NEO 1.1).
         m_index = new CANSparkMax(ShooterConstants.BELT_INDEX_ID, MotorType.kBrushless);
 
@@ -97,6 +100,16 @@ public class ShooterSubsystem extends SubsystemBase {
         } else {
             shooterState = ShooterStates.ADJUST_VEL; // shooter not at correct speed
         }
+
+        // Telemetry ------------------------------------------
+
+        SmartDashboard.putNumber("[SHOOTER] Right RPM", getRightShooterRPM());
+        SmartDashboard.putNumber("[SHOOTER] Left RPM", getLeftShooterRPM());
+
+        SmartDashboard.putNumber("[SHOOTER] Target Right RPM", targetRightRPM);
+        SmartDashboard.putNumber("[SHOOTER] Target Left RPM", targetLeftRPM);
+
+        SmartDashboard.putString("[SHOOTER] State", shooterState.toString());
     }
 
     // ========================================================
@@ -125,8 +138,8 @@ public class ShooterSubsystem extends SubsystemBase {
     public void setShooterSpeed(double percentOutput) {
         double output = percentOutput / 100;
 
-        targetLeftRPM = percentOutput * ShooterConstants.SHOOTER_MAX_RPM;
-        targetRightRPM = percentOutput * ShooterConstants.SHOOTER_MAX_RPM;
+        targetLeftRPM = output * ShooterConstants.SHOOTER_MAX_RPM;
+        targetRightRPM = output * ShooterConstants.SHOOTER_MAX_RPM;
 
         m_leftShooter.set(output);
         m_rightShooter.set(output);

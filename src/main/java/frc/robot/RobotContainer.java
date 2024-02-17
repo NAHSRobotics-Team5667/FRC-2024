@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.shooter.SetArm;
+import frc.robot.commands.shooter.ShootCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -101,6 +102,7 @@ public class RobotContainer {
         // ==================== SHOOTER ===========================
 
         // shooter = ShooterSubsystem.getInstance();
+        // shooter.setDefaultCommand(new ShootCommand());
 
         // ========================================================
         // ====================== CLIMB ===========================

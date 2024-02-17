@@ -38,7 +38,7 @@ public class Robot extends LoggedRobot {
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
 
-        CameraServer.startAutomaticCapture(); //Starting Camera.
+        //CameraServer.startAutomaticCapture(); //Starting Camera.
         DriverStation.startDataLog(DataLogManager.getLog()); //Start taking DriverStation and Joystick Logging (AdvantageKit).
     }
 
@@ -113,6 +113,7 @@ public class Robot extends LoggedRobot {
     public void testInit() {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
+
     }
 
     /** This function is called periodically during test mode. */

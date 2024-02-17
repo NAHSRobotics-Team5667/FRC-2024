@@ -12,7 +12,6 @@ public class ShootCommand extends Command {
 
     public ShooterSubsystem shooter;
     public ShooterStates shooterState;
-    public double[] shooterRPMs = shooter.getShooterRPM();
 
     /** Creates a new ShooterCommand. */
     public ShootCommand() {
@@ -31,10 +30,12 @@ public class ShootCommand extends Command {
     // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
-        shooter.setShooterSpeed(100);
+        shooter.setShooterSpeed(90, 60);
 
         if (shooter.getShooterState().equals(ShooterStates.READY)) {
             shooter.setIndexSpeed(50);
+        } else {
+            shooter.setIndexSpeed(0);
         }
     }
 
