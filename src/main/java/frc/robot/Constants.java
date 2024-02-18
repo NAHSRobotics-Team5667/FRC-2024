@@ -41,20 +41,20 @@ public final class Constants {
         // ================= MOTOR IDS ===========================
 
         // ---- FRONT LEFT ----
-        public static final int FRONT_LEFT_DRIVE_ID = -1;
-        public static final int FRONT_LEFT_TURN_ID = -1;
+        public static final int FRONT_LEFT_DRIVE_ID = 36;
+        public static final int FRONT_LEFT_TURN_ID = 11;
 
         // ---- FRONT RIGHT ----
-        public static final int FRONT_RIGHT_DRIVE_ID = -1;
-        public static final int FRONT_RIGHT_TURN_ID = -1;
+        public static final int FRONT_RIGHT_DRIVE_ID = 30;
+        public static final int FRONT_RIGHT_TURN_ID = 30;
 
         // ---- BACK LEFT ----
-        public static final int BACK_LEFT_DRIVE_ID = -1;
-        public static final int BACK_LEFT_TURN_ID = -1;
+        public static final int BACK_LEFT_DRIVE_ID = 37;
+        public static final int BACK_LEFT_TURN_ID = 4;
 
         // ---- BACK RIGHT ----
-        public static final int BACK_RIGHT_DRIVE_ID = -1;
-        public static final int BACK_RIGHT_TURN_ID = -1;
+        public static final int BACK_RIGHT_DRIVE_ID = 34;
+        public static final int BACK_RIGHT_TURN_ID = 32;
 
         // =======================================================
         // ====================== PID ============================
