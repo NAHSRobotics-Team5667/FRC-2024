@@ -41,19 +41,19 @@ public final class Constants {
         // ================= MOTOR IDS ===========================
 
         // ---- FRONT LEFT ----
-        public static final int FRONT_LEFT_DRIVE_ID = 36;
-        public static final int FRONT_LEFT_TURN_ID = 11;
+        // public static final int FRONT_LEFT_DRIVE_ID = 36;
+        // static final int FRONT_LEFT_TURN_ID = 11;
 
         // ---- FRONT RIGHT ----
-        public static final int FRONT_RIGHT_DRIVE_ID = 30;
-        public static final int FRONT_RIGHT_TURN_ID = 30;
+        //public static final int FRONT_RIGHT_DRIVE_ID = 30;
+        //public static final int FRONT_RIGHT_TURN_ID = 30;
 
         // ---- BACK LEFT ----
-        public static final int BACK_LEFT_DRIVE_ID = 37;
-        public static final int BACK_LEFT_TURN_ID = 4;
+        //public static final int BACK_LEFT_DRIVE_ID = 37;
+        //public static final int BACK_LEFT_TURN_ID = 4;
 
         // ---- BACK RIGHT ----
-        public static final int BACK_RIGHT_DRIVE_ID = 34;
+        //public static final int BACK_RIGHT_DRIVE_ID = 34;
         public static final int BACK_RIGHT_TURN_ID = 32;
 
         // =======================================================
@@ -202,10 +202,10 @@ public final class Constants {
 
     public static class ShooterConstants {
         // ==== MOTORS ====
-        public static final int SHOOTER_LEFT_ID = 39;
-        public static final int SHOOTER_RIGHT_ID = 12; //The actual is 9.
+        public static final int SHOOTER_LEFT_ID = 11;
+        public static final int SHOOTER_RIGHT_ID = 10;
 
-        public static final int BELT_INDEX_ID = 10;
+        public static final int BELT_INDEX_ID = 19;
 
         // ---- BEAM BREAK ----
         public static final int BEAM_BREAK_CHANNEL_ID = 1; // Goes into 2 Seperate Digital Inputs. We need to know

@@ -101,8 +101,8 @@ public class RobotContainer {
         // ========================================================
         // ==================== SHOOTER ===========================
 
-        // shooter = ShooterSubsystem.getInstance();
-        // shooter.setDefaultCommand(new ShootCommand());
+        shooter = ShooterSubsystem.getInstance();
+        shooter.setDefaultCommand(new ShootCommand());
 
         // ========================================================
         // ====================== CLIMB ===========================
