@@ -39,6 +39,8 @@ public final class Constants {
 
         // =======================================================
         // ================= MOTOR IDS ===========================
+        // The following IDs constants have been commented out.
+        // The IDs for motors are located in src/main/deploy/swerve/* files.
 
         // ---- FRONT LEFT ----
         // public static final int FRONT_LEFT_DRIVE_ID = 36;
@@ -54,7 +56,7 @@ public final class Constants {
 
         // ---- BACK RIGHT ----
         //public static final int BACK_RIGHT_DRIVE_ID = 34;
-        public static final int BACK_RIGHT_TURN_ID = 32;
+        // public static final int BACK_RIGHT_TURN_ID = 32;
 
         // =======================================================
         // ====================== PID ============================
@@ -117,7 +119,7 @@ public final class Constants {
 
         public static final ArmAngle RESTING_POSITION = new ArmAngle(
                 -1,
-                -1); // TODO: determine initial angles of arm
+                -1); // TODO: Determine initial angles of arm.
 
         // create a map of goal states and their target arm positions
         public static Map<ArmPosState, ArmAngle> GOAL_POSITIONS = Map.of(
@@ -208,8 +210,7 @@ public final class Constants {
         public static final int BELT_INDEX_ID = 19;
 
         // ---- BEAM BREAK ----
-        public static final int BEAM_BREAK_CHANNEL_ID = 1; // Goes into 2 Seperate Digital Inputs. We need to know
-                                                            // which one is used here.
+        public static final int BEAM_BREAK_CHANNEL_ID = 1; // Goes into 2 Seperate Digital Inputs.
 
         // ---- MAXIMUM RPM ----
         public static final double SHOOTER_MAX_RPM = 87;
@@ -220,7 +221,7 @@ public final class Constants {
 
     public static class IntakeConstants {
         // ==== MOTORS - NEO 1.1s ====
-        public static final int SPARKMAX_ID = -1;
+        public static final int SPARKMAX_ID = 18; //TODO: This needs to be double checked.
 
         // ==== SOLENOID ====
         public static final int SOLENOID_PORT = -1;
@@ -228,12 +229,12 @@ public final class Constants {
 
     public static class ClimbConstants {
         // ==== MOTORS - FALCON 500s ====
-        public static final int RIGHT_CLIMB_ID = -1;
-        public static final int LEFT_CLIMB_ID = -1;
+        public static final int RIGHT_CLIMB_ID = 16; //TODO: This needs to be double checked.
+        public static final int LEFT_CLIMB_ID = 17;  //TODO: This needs to be double checked.
 
         // ==== ENCODERS - CANCoders ====
-        public static final int RIGHT_CLIMB_ENCODER_ID = -1;
-        public static final int LEFT_CLIMB_ENCODER_ID = -1;
+        public static final int RIGHT_CLIMB_ENCODER_ID = 24; //TODO: This needs to be double checked.
+        public static final int LEFT_CLIMB_ENCODER_ID = 25;  //TODO: This needs to be double checked.
 
         // ==== RATIOS ====
         public static final double RATIO_WINCH = 20.25;

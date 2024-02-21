@@ -25,11 +25,6 @@
         "header": {
           "open": true
         }
-      },
-      "navX-Sensor[0]": {
-        "header": {
-          "open": true
-        }
       }
     }
   },
@@ -39,9 +34,22 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/navX-Sensor[1]": "Gyro",
       "/SmartDashboard/navX-Sensor[4]": "Gyro"
+    },
+    "windows": {
+      "/SmartDashboard/navX-Sensor[1]": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
+    "Transitory Values": {
+      "open": false
+    },
     "transitory": {
       "SmartDashboard": {
         "IMU": {
