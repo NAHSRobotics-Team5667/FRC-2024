@@ -39,7 +39,7 @@ public class Robot extends LoggedRobot {
         m_robotContainer = new RobotContainer();
 
         //CameraServer.startAutomaticCapture(); //Starting Camera.
-        DriverStation.startDataLog(DataLogManager.getLog()); //Start taking DriverStation and Joystick Logging (AdvantageKit).
+        //DriverStation.startDataLog(DataLogManager.getLog()); //Start taking DriverStation and Joystick Logging (AdvantageKit).
     }
 
     /**

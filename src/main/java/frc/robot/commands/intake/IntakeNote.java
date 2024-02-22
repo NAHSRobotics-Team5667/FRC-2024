@@ -37,14 +37,16 @@ public class IntakeNote extends Command {
     @Override
     public void initialize() {
         intake.setIntakeSpeed(0);
-        ArmSubsystem.getInstance().setTargetPosition(ArmPosState.TRANSFER);
+
+        //ArmSubsystem.getInstance().setTargetPosition(ArmPosState.TRANSFER);
     }
 
     // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
-        intake.setPiston(true);
+        //intake.setPiston(true);
         intake.setIntakeSpeed(50);
+
         shooter.setIndexSpeed(30);
     }
 
@@ -52,8 +54,8 @@ public class IntakeNote extends Command {
     @Override
     public void end(boolean interrupted) {
         intake.setIntakeSpeed(0);
-        intake.setPiston(false);
         shooter.setIndexSpeed(0);
+        //intake.setPiston(false);
     }
 
     // Called so it should return true when the command will end

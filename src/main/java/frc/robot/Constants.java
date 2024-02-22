@@ -210,7 +210,7 @@ public final class Constants {
         public static final int BELT_INDEX_ID = 19;
 
         // ---- BEAM BREAK ----
-        public static final int BEAM_BREAK_CHANNEL_ID = 1; // Goes into 2 Seperate Digital Inputs.
+        public static final int BEAM_BREAK_CHANNEL_ID = 5;
 
         // ---- MAXIMUM RPM ----
         public static final double SHOOTER_MAX_RPM = 87;
@@ -224,7 +224,7 @@ public final class Constants {
         public static final int SPARKMAX_ID = 18; //TODO: This needs to be double checked.
 
         // ==== SOLENOID ====
-        public static final int SOLENOID_PORT = -1;
+        public static final int SOLENOID_PORT = 1;
     }
 
     public static class ClimbConstants {

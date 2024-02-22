@@ -38,6 +38,8 @@ public class IntakeSubsystem extends SubsystemBase {
         // Initialize NEO 1.1 Motors.
         m_intake = new CANSparkMax(IntakeConstants.SPARKMAX_ID, MotorType.kBrushless);
 
+        m_intake.setInverted(true); //Inverts the motor to actual take in the note.
+
         // Initialize Pistons by setting IDs.
         m_piston = new Solenoid(PneumaticsModuleType.REVPH, IntakeConstants.SOLENOID_PORT);
     }

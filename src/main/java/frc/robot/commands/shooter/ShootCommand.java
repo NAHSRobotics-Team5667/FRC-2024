@@ -27,10 +27,11 @@ public class ShootCommand extends Command {
         shooter.setShooterSpeed(0.00);
     }
 
+
     // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
-        shooter.setShooterSpeed(90, 60);
+        shooter.setShooterSpeed(10, 90);
 
         if (shooter.getShooterState().equals(ShooterStates.READY)) {
             shooter.setIndexSpeed(50);

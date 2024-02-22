@@ -110,6 +110,7 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("[SHOOTER] Target Left RPM", targetLeftRPM);
 
         SmartDashboard.putString("[SHOOTER] State", shooterState.toString());
+        SmartDashboard.putBoolean("[SHOOTER] Beambreak", this.hasGamePiece());
     }
 
     // ========================================================

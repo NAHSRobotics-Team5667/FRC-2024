@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.shooter.SetArm;
 import frc.robot.commands.shooter.ShootCommand;
+import frc.robot.commands.intake.IntakeNote;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -25,6 +26,9 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -90,7 +94,7 @@ public class RobotContainer {
         // ========================================================
         // ===================== INTAKE ===========================
 
-        // intake = IntakeSubsystem.getInstance();
+        intake = IntakeSubsystem.getInstance();
 
         // ========================================================
         // ====================== ARM =============================
@@ -102,7 +106,6 @@ public class RobotContainer {
         // ==================== SHOOTER ===========================
 
         shooter = ShooterSubsystem.getInstance();
-        shooter.setDefaultCommand(new ShootCommand());
 
         // ========================================================
         // ====================== CLIMB ===========================
@@ -114,6 +117,9 @@ public class RobotContainer {
 
         // Configure the trigger bindings
         configureBindings();
+
+        //intake.setDefaultCommand(new IntakeNote());
+        shooter.setDefaultCommand(new ShootCommand());
     }
 
     /**
@@ -128,8 +134,7 @@ public class RobotContainer {
          */
 
         // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-        // new Trigger(m_exampleSubsystem::exampleCondition)
-        // .onTrue(new ExampleCommand(m_exampleSubsystem));
+        //new Trigger(::exampleCondition).onTrue(new ExampleCommand(m_exampleSubsystem));
 
         // Schedule `exampleMethodCommand` when the Xbox controller's B button is
         // pressed,
