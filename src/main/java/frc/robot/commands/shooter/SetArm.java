@@ -4,8 +4,10 @@
 
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.util.ArmAngle;
 
 /**
  * SetArm.java
@@ -20,8 +22,9 @@ public class SetArm extends Command {
      * 
      * @param target target arm position.
      */
-    public SetArm() {
+    public SetArm(ArmAngle target) {
         armSubsystem = ArmSubsystem.getInstance();
+        armSubsystem.setTargetPosition(target);
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(armSubsystem);
@@ -36,8 +39,8 @@ public class SetArm extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        armSubsystem.firstPivotToTarget(armSubsystem.getTargetPosition().getFirstPivot());
-        armSubsystem.secondPivotToTarget(armSubsystem.getTargetPosition().getSecondPivot());
+        armSubsystem.firstPivotToTarget(Units.degreesToRotations(armSubsystem.getTargetPosition().getFirstPivot()));
+        // armSubsystem.secondPivotToTarget(armSubsystem.getTargetPosition().getSecondPivot());
     }
 
     // Called once the command ends or is interrupted.

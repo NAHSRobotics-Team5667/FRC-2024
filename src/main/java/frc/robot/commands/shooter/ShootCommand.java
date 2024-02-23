@@ -4,6 +4,7 @@
 
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.States.ShooterStates;
@@ -13,9 +14,12 @@ public class ShootCommand extends Command {
     public ShooterSubsystem shooter;
     public ShooterStates shooterState;
 
+    private double initialTime;
+
     /** Creates a new ShooterCommand. */
     public ShootCommand() {
         shooter = ShooterSubsystem.getInstance();
+        initialTime = Timer.getFPGATimestamp();
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(shooter);
@@ -27,14 +31,17 @@ public class ShootCommand extends Command {
         shooter.setShooterSpeed(0.00);
     }
 
-
     // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
         shooter.setShooterSpeed(10, 90);
 
-        if (shooter.getShooterState().equals(ShooterStates.READY)) {
-            shooter.setIndexSpeed(50);
+        if (Timer.getFPGATimestamp() - initialTime >= 1) {
+            if (shooter.getShooterState().equals(ShooterStates.READY)) {
+                shooter.setIndexSpeed(50);
+            } else {
+                shooter.setIndexSpeed(0);
+            }
         } else {
             shooter.setIndexSpeed(0);
         }

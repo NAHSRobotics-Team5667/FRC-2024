@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -52,6 +53,7 @@ public class ArmSubsystem extends SubsystemBase {
                                                                                                       // global scope
     private DutyCycleEncoder firstEncoderL, firstEncoderR,
             secondEncoderL, secondEncoderR; // declare encoders for arm actuation
+    private DigitalInput limitSwitch;
 
     private ArmAngle armPos;
     private ArmAngle targetArmPos = ArmConstants.getGoalPosition(ArmPosState.TRANSFER);
@@ -71,6 +73,7 @@ public class ArmSubsystem extends SubsystemBase {
 
         // Initialize Falcon Motors by setting IDs.
         m_firstStageLead = new TalonFX(ArmConstants.FIRST_PIVOT_LEAD_ID);
+        m_firstStageLead.setInverted(true);
 
         m_firstStageFollower = new TalonFX(ArmConstants.FIRST_PIVOT_FOLLOWER_ID);
 
@@ -153,8 +156,23 @@ public class ArmSubsystem extends SubsystemBase {
         secondEncoderR = new DutyCycleEncoder(ArmConstants.SECOND_ENC_PORT_2); // one of them will have to be reversed
         secondEncoderR.setDistancePerRotation(ArmConstants.SECOND_ENC_DIST_PER_ROT);
 
+        // initialize limit switch
+        limitSwitch = new DigitalInput((int) ArmConstants.LIMIT_SWITCH);
+
         // initialize arm position
         armPos = ArmConstants.RESTING_POSITION;
+
+        // initial motor positions - first stage
+        m_firstStageLead.getConfigurator()
+                .setPosition(((getOffsetFirstEncoders()[0] + getOffsetFirstEncoders()[1]) / 2) * (44.0 / 60.0));
+        m_firstStageFollower.getConfigurator()
+                .setPosition(((getOffsetFirstEncoders()[0] + getOffsetFirstEncoders()[1]) / 2) * (44.0 / 60.0));
+
+        // initial motor positions - second stage
+        m_secondStageLead.getConfigurator()
+                .setPosition(((getOffsetSecondEncoders()[0] + getOffsetSecondEncoders()[1]) / 2));
+        m_secondStageFollower.getConfigurator()
+                .setPosition(((getOffsetSecondEncoders()[0] + getOffsetSecondEncoders()[1]) / 2));
     }
 
     /*
@@ -299,11 +317,11 @@ public class ArmSubsystem extends SubsystemBase {
     public double[] getRawFirstEncoders() {
         double[] pivotEncoders = {
                 (firstEncoderL.isConnected())
-                        ? firstEncoderL.getAbsolutePosition()
+                        ? -firstEncoderL.getAbsolutePosition()
                         : firstEncoderR.getAbsolutePosition(),
                 (firstEncoderR.isConnected())
                         ? firstEncoderR.getAbsolutePosition()
-                        : firstEncoderL.getAbsolutePosition() };
+                        : -firstEncoderL.getAbsolutePosition() };
         return pivotEncoders;
     }
 
@@ -313,8 +331,8 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public double[] getOffsetFirstEncoders() {
         double[] pivotEncoders = getRawFirstEncoders();
-        double[] offsetEncoders = { pivotEncoders[0] + ArmConstants.FIRST_LEFT_OFFSET,
-                pivotEncoders[1] + ArmConstants.FIRST_RIGHT_OFFSET };
+        double[] offsetEncoders = { pivotEncoders[0] - ArmConstants.FIRST_LEFT_OFFSET,
+                pivotEncoders[1] - ArmConstants.FIRST_RIGHT_OFFSET };
         return offsetEncoders;
     }
 
@@ -323,6 +341,13 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public double getFirstPivotReading() {
         return armPos.getFirstPivot();
+    }
+
+    /**
+     * @return whether first arm is touching limit switch.
+     */
+    public boolean getLimitSwitch() {
+        return !limitSwitch.get();
     }
 
     // SECOND PIVOT -------------------------------------------
@@ -334,11 +359,11 @@ public class ArmSubsystem extends SubsystemBase {
     public double[] getRawSecondEncoders() {
         double[] pivotEncoders = {
                 (secondEncoderL.isConnected())
-                        ? secondEncoderL.getAbsolutePosition()
+                        ? -secondEncoderL.getAbsolutePosition()
                         : secondEncoderR.getAbsolutePosition(),
                 (secondEncoderR.isConnected())
                         ? secondEncoderR.getAbsolutePosition()
-                        : secondEncoderL.getAbsolutePosition() };
+                        : -secondEncoderL.getAbsolutePosition() };
         return pivotEncoders;
     }
 
@@ -348,8 +373,8 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public double[] getOffsetSecondEncoders() {
         double[] pivotEncoders = getRawSecondEncoders();
-        double[] offsetEncoders = { pivotEncoders[0] + ArmConstants.SECOND_LEFT_OFFSET,
-                pivotEncoders[1] + ArmConstants.SECOND_RIGHT_OFFSET };
+        double[] offsetEncoders = { pivotEncoders[0] - ArmConstants.SECOND_LEFT_OFFSET,
+                pivotEncoders[1] - ArmConstants.SECOND_RIGHT_OFFSET };
         return offsetEncoders;
     }
 
@@ -400,8 +425,10 @@ public class ArmSubsystem extends SubsystemBase {
         // update arm position with encoders
         updateArmPosition(
                 Units.rotationsToDegrees(
-                        (getOffsetFirstEncoders()[0] + getOffsetFirstEncoders()[1]) / 2), // average first pivot
-                                                                                          // encoders
+                        ((getOffsetFirstEncoders()[0] + getOffsetFirstEncoders()[1]) / 2) * (44.0 / 60.0)), // average
+                                                                                                            // first
+                                                                                                            // pivot
+                // encoders
                 Units.rotationsToDegrees(
                         (getOffsetSecondEncoders()[0] + getOffsetSecondEncoders()[1]) / 2)); // average second pivot
                                                                                              // encoders
@@ -514,5 +541,8 @@ public class ArmSubsystem extends SubsystemBase {
         // States --------------------------------------------
         SmartDashboard.putString("[ARM] Curr Pos State", positionState.toString());
         SmartDashboard.putString("[ARM] Curr Motion State", motionState.toString());
+
+        // Limit Switch --------------------------------------
+        SmartDashboard.putBoolean("[ARM] Limit Switch", getLimitSwitch());
     }
 }

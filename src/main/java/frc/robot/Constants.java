@@ -47,15 +47,15 @@ public final class Constants {
         // static final int FRONT_LEFT_TURN_ID = 11;
 
         // ---- FRONT RIGHT ----
-        //public static final int FRONT_RIGHT_DRIVE_ID = 30;
-        //public static final int FRONT_RIGHT_TURN_ID = 30;
+        // public static final int FRONT_RIGHT_DRIVE_ID = 30;
+        // public static final int FRONT_RIGHT_TURN_ID = 30;
 
         // ---- BACK LEFT ----
-        //public static final int BACK_LEFT_DRIVE_ID = 37;
-        //public static final int BACK_LEFT_TURN_ID = 4;
+        // public static final int BACK_LEFT_DRIVE_ID = 37;
+        // public static final int BACK_LEFT_TURN_ID = 4;
 
         // ---- BACK RIGHT ----
-        //public static final int BACK_RIGHT_DRIVE_ID = 34;
+        // public static final int BACK_RIGHT_DRIVE_ID = 34;
         // public static final int BACK_RIGHT_TURN_ID = 32;
 
         // =======================================================
@@ -88,31 +88,33 @@ public final class Constants {
         // ================= MOTOR IDS ===========================
 
         // ---- FIRST PIVOT ----
-        public static final int FIRST_PIVOT_LEAD_ID = -1;
-        public static final int FIRST_PIVOT_FOLLOWER_ID = -1;
+        public static final int FIRST_PIVOT_LEAD_ID = 13;
+        public static final int FIRST_PIVOT_FOLLOWER_ID = 12;
 
         // ---- SECOND PIVOT ----
-        public static final int SECOND_PIVOT_LEAD_ID = -1;
-        public static final int SECOND_PIVOT_FOLLOWER_ID = -1;
+        public static final int SECOND_PIVOT_LEAD_ID = 15;
+        public static final int SECOND_PIVOT_FOLLOWER_ID = 14;
 
         // =======================================================
         // ===================== ENCODERS ========================
 
         // ---- FIRST PIVOT ----
-        public static final int FIRST_ENC_PORT_1 = -1;
-        public static final int FIRST_ENC_PORT_2 = -1;
-        public static final double FIRST_LEFT_OFFSET = -1;
-        public static final double FIRST_RIGHT_OFFSET = -1;
+        public static final int FIRST_ENC_PORT_1 = 7; // left side
+        public static final int FIRST_ENC_PORT_2 = 8; // right side
+        public static final double FIRST_LEFT_OFFSET = -0.362;
+        public static final double FIRST_RIGHT_OFFSET = 0.813;
         /** Rotations of first pivot for each rotation of encoder. */
-        public static final double FIRST_ENC_DIST_PER_ROT = 44.0 / 60.0;
+        public static final double FIRST_ENC_DIST_PER_ROT = (44.0 / 60.0) * 360.0;
+
+        public static final double LIMIT_SWITCH = 0;
 
         // ---- SECOND PIVOT ----
-        public static final int SECOND_ENC_PORT_1 = -1;
-        public static final int SECOND_ENC_PORT_2 = -1;
+        public static final int SECOND_ENC_PORT_1 = 6; // left side
+        public static final int SECOND_ENC_PORT_2 = 9; // right side
         public static final double SECOND_LEFT_OFFSET = -1;
         public static final double SECOND_RIGHT_OFFSET = -1;
         /** Rotations of second pivot for each rotation of encoder. */
-        public static final double SECOND_ENC_DIST_PER_ROT = 1.0;
+        public static final double SECOND_ENC_DIST_PER_ROT = 1.0 * 360.0;
 
         // =======================================================
         // ================= ARM POSITION ========================
@@ -161,27 +163,27 @@ public final class Constants {
         // ==== MOTION MAGIC ====
 
         // ---- FIRST PIVOT ----
-        public static final double FIRST_kP = -1;
-        public static final double FIRST_kI = -1;
-        public static final double FIRST_kD = -1;
-        public static final double FIRST_kF = -1;
-        public static final double FIRST_kS = -1;
-        public static final double FIRST_kV = -1;
-        public static final double FIRST_kA = -1;
+        public static final double FIRST_kP = 1;
+        public static final double FIRST_kI = 0;
+        public static final double FIRST_kD = 0;
+        public static final double FIRST_kF = 0.5;
+        public static final double FIRST_kS = 0;
+        public static final double FIRST_kV = 0;
+        public static final double FIRST_kA = 0;
 
-        public static final double FIRST_MAX_VELOCITY = -1; // maximum achievable velocity (rots per sec)
+        public static final double FIRST_MAX_VELOCITY = 0.3; // maximum achievable velocity (rots per sec)
         public static final double FIRST_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
-        public static final double FIRST_MAX_ACCEL = -1; // target acceleration (rots / sec / sec)
-        public static final double FIRST_TARGET_JERK = -1; // target jerk (rots / sec / sec / sec)
+        public static final double FIRST_MAX_ACCEL = 0.2; // target acceleration (rots / sec / sec)
+        public static final double FIRST_TARGET_JERK = 0.1; // target jerk (rots / sec / sec / sec)
 
         // ---- SECOND PIVOT ----
-        public static final double SECOND_kP = -1;
-        public static final double SECOND_kI = -1;
-        public static final double SECOND_kD = -1;
-        public static final double SECOND_kF = -1;
-        public static final double SECOND_kS = -1;
-        public static final double SECOND_kV = -1;
-        public static final double SECOND_kA = -1;
+        public static final double SECOND_kP = 0;
+        public static final double SECOND_kI = 0;
+        public static final double SECOND_kD = 0;
+        public static final double SECOND_kF = 0;
+        public static final double SECOND_kS = 0;
+        public static final double SECOND_kV = 0;
+        public static final double SECOND_kA = 0;
 
         public static final double SECOND_MAX_VELOCITY = -1; // maximum achievable velocity (rots per sec)
         public static final double SECOND_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
@@ -221,7 +223,7 @@ public final class Constants {
 
     public static class IntakeConstants {
         // ==== MOTORS - NEO 1.1s ====
-        public static final int SPARKMAX_ID = 18; //TODO: This needs to be double checked.
+        public static final int SPARKMAX_ID = 18; // TODO: This needs to be double checked.
 
         // ==== SOLENOID ====
         public static final int SOLENOID_PORT = 1;
@@ -229,12 +231,12 @@ public final class Constants {
 
     public static class ClimbConstants {
         // ==== MOTORS - FALCON 500s ====
-        public static final int RIGHT_CLIMB_ID = 16; //TODO: This needs to be double checked.
-        public static final int LEFT_CLIMB_ID = 17;  //TODO: This needs to be double checked.
+        public static final int RIGHT_CLIMB_ID = 16; // TODO: This needs to be double checked.
+        public static final int LEFT_CLIMB_ID = 17; // TODO: This needs to be double checked.
 
         // ==== ENCODERS - CANCoders ====
-        public static final int RIGHT_CLIMB_ENCODER_ID = 24; //TODO: This needs to be double checked.
-        public static final int LEFT_CLIMB_ENCODER_ID = 25;  //TODO: This needs to be double checked.
+        public static final int RIGHT_CLIMB_ENCODER_ID = 24; // TODO: This needs to be double checked.
+        public static final int LEFT_CLIMB_ENCODER_ID = 25; // TODO: This needs to be double checked.
 
         // ==== RATIOS ====
         public static final double RATIO_WINCH = 20.25;

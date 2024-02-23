@@ -5,12 +5,12 @@
     },
     "absoluteEncoderOffset": 299.84,
     "drive": {
-        "type": "falcon",
+        "type": "talonfx",
         "id": 3,
         "canbus": null
     },
     "angle": {
-        "type": "falcon",
+        "type": "talonfx",
         "id": 7,
         "canbus": null
     },
