@@ -4,7 +4,7 @@
 
 package frc.robot.commands.shooter;
 
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.util.ArmAngle;
@@ -17,14 +17,15 @@ import frc.robot.util.ArmAngle;
 public class SetArm extends Command {
     private ArmSubsystem armSubsystem;
 
+    private double initTime;
+
     /**
      * Creates a new SetArm.
      * 
      * @param target target arm position.
      */
-    public SetArm(ArmAngle target) {
+    public SetArm() {
         armSubsystem = ArmSubsystem.getInstance();
-        armSubsystem.setTargetPosition(target);
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(armSubsystem);
@@ -34,13 +35,16 @@ public class SetArm extends Command {
     @Override
     public void initialize() {
         armSubsystem.stopAllMotors();
+        initTime = Timer.getFPGATimestamp();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        armSubsystem.firstPivotToTarget(Units.degreesToRotations(armSubsystem.getTargetPosition().getFirstPivot()));
-        // armSubsystem.secondPivotToTarget(armSubsystem.getTargetPosition().getSecondPivot());
+        armSubsystem.firstPivotToTargetPID(armSubsystem.getFirstPivotMotorDeg(),
+                armSubsystem.getTargetPosition().getFirstPivot());
+        armSubsystem.secondPivotToTargetPID(armSubsystem.getSecondPivotMotorDeg(),
+                armSubsystem.getTargetPosition().getSecondPivot());
     }
 
     // Called once the command ends or is interrupted.

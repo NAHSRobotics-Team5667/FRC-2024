@@ -43,20 +43,20 @@ public final class Constants {
         // The IDs for motors are located in src/main/deploy/swerve/* files.
 
         // ---- FRONT LEFT ----
-        // public static final int FRONT_LEFT_DRIVE_ID = 36;
-        // static final int FRONT_LEFT_TURN_ID = 11;
+        public static final int FRONT_LEFT_DRIVE_ID = 3;
+        public static final int FRONT_LEFT_TURN_ID = 7;
 
         // ---- FRONT RIGHT ----
-        // public static final int FRONT_RIGHT_DRIVE_ID = 30;
-        // public static final int FRONT_RIGHT_TURN_ID = 30;
+        public static final int FRONT_RIGHT_DRIVE_ID = 2;
+        public static final int FRONT_RIGHT_TURN_ID = 6;
 
         // ---- BACK LEFT ----
-        // public static final int BACK_LEFT_DRIVE_ID = 37;
-        // public static final int BACK_LEFT_TURN_ID = 4;
+        public static final int BACK_LEFT_DRIVE_ID = 5;
+        public static final int BACK_LEFT_TURN_ID = 9;
 
         // ---- BACK RIGHT ----
-        // public static final int BACK_RIGHT_DRIVE_ID = 34;
-        // public static final int BACK_RIGHT_TURN_ID = 32;
+        public static final int BACK_RIGHT_DRIVE_ID = 4;
+        public static final int BACK_RIGHT_TURN_ID = 8;
 
         // =======================================================
         // ====================== PID ============================
@@ -80,7 +80,7 @@ public final class Constants {
         // ================== MECHANICAL =========================
 
         /** Gear ratio between first motors and first pivot. */
-        public static final double FIRST_GEAR_RATIO = 100.0 * (60.0 / 44.0);
+        public static final double FIRST_GEAR_RATIO = 100.0 * (60.0 / 44.0); // 100*(60/44):1
         /** Gear ratio between second motors and second pivot. */
         public static final double SECOND_GEAR_RATIO = 80.0; // 80:1 - torqued up by factor of 80
 
@@ -101,8 +101,8 @@ public final class Constants {
         // ---- FIRST PIVOT ----
         public static final int FIRST_ENC_PORT_1 = 7; // left side
         public static final int FIRST_ENC_PORT_2 = 8; // right side
-        public static final double FIRST_LEFT_OFFSET = -0.362;
-        public static final double FIRST_RIGHT_OFFSET = 0.813;
+        public static final double FIRST_LEFT_OFFSET = -0.703;
+        public static final double FIRST_RIGHT_OFFSET = 0.472;
         /** Rotations of first pivot for each rotation of encoder. */
         public static final double FIRST_ENC_DIST_PER_ROT = (44.0 / 60.0) * 360.0;
 
@@ -111,23 +111,19 @@ public final class Constants {
         // ---- SECOND PIVOT ----
         public static final int SECOND_ENC_PORT_1 = 6; // left side
         public static final int SECOND_ENC_PORT_2 = 9; // right side
-        public static final double SECOND_LEFT_OFFSET = -1;
-        public static final double SECOND_RIGHT_OFFSET = -1;
+        public static final double SECOND_LEFT_OFFSET = -0.162;
+        public static final double SECOND_RIGHT_OFFSET = 0.936;
         /** Rotations of second pivot for each rotation of encoder. */
         public static final double SECOND_ENC_DIST_PER_ROT = 1.0 * 360.0;
 
         // =======================================================
         // ================= ARM POSITION ========================
 
-        public static final ArmAngle RESTING_POSITION = new ArmAngle(
-                -1,
-                -1); // TODO: Determine initial angles of arm.
-
         // create a map of goal states and their target arm positions
         public static Map<ArmPosState, ArmAngle> GOAL_POSITIONS = Map.of(
-                ArmPosState.TRANSFER, RESTING_POSITION, // arm position when at resting position
-                ArmPosState.SPEAKER, new ArmAngle(), // default position for speaker
-                ArmPosState.AMP, new ArmAngle(90, 75), // position for amp
+                ArmPosState.TRANSFER, new ArmAngle(12.2, -11.25), // arm position when at resting position
+                ArmPosState.SPEAKER, new ArmAngle(50, 0), // default position for speaker
+                ArmPosState.AMP, new ArmAngle(108.1, -122.7), // position for amp
                 ArmPosState.TRAP, new ArmAngle(100, 100), // position for trap
                 ArmPosState.HUMAN_PLAYER, new ArmAngle()); // position for human player intake
 
@@ -154,8 +150,8 @@ public final class Constants {
 
         // ==== POSITION ERROR MARGINS ====
 
-        public static final double FIRST_ERR_MARGIN_DEG = 1.0;
-        public static final double SECOND_ERR_MARGIN_DEG = 1.0;
+        public static final double FIRST_ERR_MARGIN_DEG = 5.0;
+        public static final double SECOND_ERR_MARGIN_DEG = 5.0;
 
         // =======================================================
         // ====================== MOTION =========================
@@ -163,7 +159,7 @@ public final class Constants {
         // ==== MOTION MAGIC ====
 
         // ---- FIRST PIVOT ----
-        public static final double FIRST_kP = 1;
+        public static final double FIRST_kP = 0.015;
         public static final double FIRST_kI = 0;
         public static final double FIRST_kD = 0;
         public static final double FIRST_kF = 0.5;
@@ -171,13 +167,13 @@ public final class Constants {
         public static final double FIRST_kV = 0;
         public static final double FIRST_kA = 0;
 
-        public static final double FIRST_MAX_VELOCITY = 0.3; // maximum achievable velocity (rots per sec)
+        public static final double FIRST_MAX_VELOCITY = 20; // maximum achievable velocity (deg per sec)
         public static final double FIRST_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
-        public static final double FIRST_MAX_ACCEL = 0.2; // target acceleration (rots / sec / sec)
-        public static final double FIRST_TARGET_JERK = 0.1; // target jerk (rots / sec / sec / sec)
+        public static final double FIRST_MAX_ACCEL = 20; // target acceleration (deg / sec / sec)
+        public static final double FIRST_TARGET_JERK = 0.1; // target jerk (deg / sec / sec / sec)
 
         // ---- SECOND PIVOT ----
-        public static final double SECOND_kP = 0;
+        public static final double SECOND_kP = 0.01;
         public static final double SECOND_kI = 0;
         public static final double SECOND_kD = 0;
         public static final double SECOND_kF = 0;
@@ -185,10 +181,10 @@ public final class Constants {
         public static final double SECOND_kV = 0;
         public static final double SECOND_kA = 0;
 
-        public static final double SECOND_MAX_VELOCITY = -1; // maximum achievable velocity (rots per sec)
+        public static final double SECOND_MAX_VELOCITY = 30; // maximum achievable velocity (deg per sec)
         public static final double SECOND_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
-        public static final double SECOND_MAX_ACCEL = -1; // target acceleration (rots / sec / sec)
-        public static final double SECOND_TARGET_JERK = -1; // target jerk (rots / sec / sec / sec)
+        public static final double SECOND_MAX_ACCEL = 10; // target acceleration (deg / sec / sec)
+        public static final double SECOND_TARGET_JERK = -1; // target jerk (deg / sec / sec / sec)
 
         // ==== VELOCITY THRESHOLDS ====
 

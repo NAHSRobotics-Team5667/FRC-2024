@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 
 import java.io.File;
@@ -77,7 +78,7 @@ public class SwerveSubsystem extends SubsystemBase {
         // meters to get meters/second.
         // The gear ratio is 6.75 motor revolutions per wheel rotation.
         // The encoder resolution per motor revolution is 2048 per motor revolution.
-        double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75, 2048);
+        double driveConversionFactor = SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75, 1);
         System.out.println("\"conversionFactor\": {");
         System.out.println("\t\"angle\": " + angleConversionFactor + ",");
         System.out.println("\t\"drive\": " + driveConversionFactor);
@@ -153,6 +154,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (RobotContainer.getDriverController().x().getAsBoolean()) {
+            resetGyro();
+        }
     }
 
     @Override
@@ -209,7 +213,7 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public Command getAutonomousCommand(String pathName, boolean setOdomToStart) {
         swerveDrive.resetDriveEncoders(); // reset encoders - start from 0
-        zeroGyro(); // set gyro to 0
+        resetGyro(); // set gyro to 0
 
         // Load the path you want to follow using its name in the GUI
         PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
@@ -302,11 +306,17 @@ public class SwerveSubsystem extends SubsystemBase {
             double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth controll out
             double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
             // Make the robot move
-            driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
+            drive(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
                     headingX.getAsDouble(),
                     headingY.getAsDouble(),
                     swerveDrive.getOdometryHeading().getRadians(),
                     swerveDrive.getMaximumVelocity()));
+            // driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput,
+            // yInput,
+            // headingX.getAsDouble(),
+            // headingY.getAsDouble(),
+            // swerveDrive.getOdometryHeading().getRadians(),
+            // swerveDrive.getMaximumVelocity()));
         });
     }
 
@@ -450,7 +460,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * Resets the gyro angle to zero and resets odometry to the same position, but
      * facing toward 0.
      */
-    public void zeroGyro() {
+    public void resetGyro() {
         swerveDrive.zeroGyro();
     }
 
