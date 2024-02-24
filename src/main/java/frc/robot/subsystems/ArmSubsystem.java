@@ -224,7 +224,7 @@ public class ArmSubsystem extends SubsystemBase {
     public double calculateFirstPivotPID(double currentPos, double targetPos) {
         return MathUtil.clamp(
                 firstPivotPID.calculate(getFirstPivotMotorDeg(), targetPos),
-                -1, 1);
+                -0.4, 1);
     }
 
     /**
@@ -283,7 +283,7 @@ public class ArmSubsystem extends SubsystemBase {
     public double calculateSecondPivotPID(double currentPos, double targetPos) {
         return MathUtil.clamp(
                 secondPivotPID.calculate(getSecondPivotMotorDeg(), targetPos),
-                -1, 1);
+                -0.4, 1);
     }
 
     /**

@@ -170,8 +170,8 @@ public final class Constants {
 
         // ==== POSITION ERROR MARGINS ====
 
-        public static final double FIRST_ERR_MARGIN_DEG = 5.0;
-        public static final double SECOND_ERR_MARGIN_DEG = 5.0;
+        public static final double FIRST_ERR_MARGIN_DEG = 8.0;
+        public static final double SECOND_ERR_MARGIN_DEG = 8.0;
 
         // =======================================================
         // ====================== MOTION =========================
@@ -203,13 +203,13 @@ public final class Constants {
         public static final double FIRST_kV = 0;
         public static final double FIRST_kA = 0;
 
-        public static final double FIRST_MAX_VELOCITY = 20; // maximum achievable velocity (deg per sec)
+        public static final double FIRST_MAX_VELOCITY = 40; // maximum achievable velocity (deg per sec)
         public static final double FIRST_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
-        public static final double FIRST_MAX_ACCEL = 20; // target acceleration (deg / sec / sec)
+        public static final double FIRST_MAX_ACCEL = 30; // target acceleration (deg / sec / sec)
         public static final double FIRST_TARGET_JERK = 0.1; // target jerk (deg / sec / sec / sec)
 
         // ---- SECOND PIVOT ----
-        public static final double SECOND_kP = 0.01;
+        public static final double SECOND_kP = 0.005;
         public static final double SECOND_kI = 0;
         public static final double SECOND_kD = 0;
         public static final double SECOND_kF = 0;
@@ -217,9 +217,9 @@ public final class Constants {
         public static final double SECOND_kV = 0;
         public static final double SECOND_kA = 0;
 
-        public static final double SECOND_MAX_VELOCITY = 30; // maximum achievable velocity (deg per sec)
+        public static final double SECOND_MAX_VELOCITY = 60; // maximum achievable velocity (deg per sec)
         public static final double SECOND_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
-        public static final double SECOND_MAX_ACCEL = 10; // target acceleration (deg / sec / sec)
+        public static final double SECOND_MAX_ACCEL = 20; // target acceleration (deg / sec / sec)
         public static final double SECOND_TARGET_JERK = -1; // target jerk (deg / sec / sec / sec)
 
         // ==== VELOCITY THRESHOLDS ====

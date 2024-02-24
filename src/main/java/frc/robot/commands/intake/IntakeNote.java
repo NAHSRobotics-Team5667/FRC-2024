@@ -41,6 +41,7 @@ public class IntakeNote extends Command {
     @Override
     public void initialize() {
         intake.setIntakeSpeed(0);
+        shooter.setIndexSpeed(0);
         ArmSubsystem.getInstance().setTargetPosition(ArmPosState.TRANSFER);
     }
 

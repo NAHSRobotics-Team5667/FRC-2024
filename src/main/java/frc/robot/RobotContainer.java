@@ -142,7 +142,7 @@ public class RobotContainer {
 
         driverXbox.a().toggleOnTrue(new IntakeNote(true));
         driverXbox.b().toggleOnTrue(new IntakeNote(false)); // watch for errors bc of overlapping commands
-        driverXbox.rightBumper().toggleOnTrue(new ShootCommand(100, 100, false));
+        driverXbox.rightBumper().toggleOnTrue(new ShootCommand(80, 100, false));
         driverXbox.leftBumper().toggleOnTrue(new ShootCommand(30, 30, true));
     }
 

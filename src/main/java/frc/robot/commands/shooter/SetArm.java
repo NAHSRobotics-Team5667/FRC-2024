@@ -18,8 +18,6 @@ public class SetArm extends Command {
 
     /**
      * Creates a new SetArm.
-     * 
-     * @param target target arm position.
      */
     public SetArm() {
         armSubsystem = ArmSubsystem.getInstance();
@@ -51,14 +49,14 @@ public class SetArm extends Command {
             }
         } else { // if first pivot has priority
             // run first pivot
-            armSubsystem.firstPivotToTargetPID(armSubsystem.getSecondPivotMotorDeg(),
-                    armSubsystem.getTargetPosition().getSecondPivot());
+            armSubsystem.firstPivotToTargetPID(armSubsystem.getFirstPivotMotorDeg(),
+                    armSubsystem.getTargetPosition().getFirstPivot());
 
             // run second pivot after first pivot at desired location
             if (armSubsystem.firstPivotAtTarget()) {
 
-                armSubsystem.secondPivotToTargetPID(armSubsystem.getFirstPivotMotorDeg(),
-                        armSubsystem.getTargetPosition().getFirstPivot());
+                armSubsystem.secondPivotToTargetPID(armSubsystem.getSecondPivotMotorDeg(),
+                        armSubsystem.getTargetPosition().getSecondPivot());
             }
         }
     }
