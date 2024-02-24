@@ -24,10 +24,14 @@ public class IntakeNote extends Command {
     public IntakeSubsystem intake;
     public ShooterSubsystem shooter;
 
+    private boolean goingIn = true;
+
     // * Creates a new intake */
-    public IntakeNote() {
+    public IntakeNote(boolean goingIn) {
         intake = IntakeSubsystem.getInstance();
         shooter = ShooterSubsystem.getInstance();
+
+        this.goingIn = goingIn;
 
         // addRequirement() - prevent two commands from being run at the same time
         addRequirements(intake, shooter);
@@ -45,8 +49,8 @@ public class IntakeNote extends Command {
     public void execute() {
         // intake.setPiston(true);
         if (ArmSubsystem.getInstance().getPositionState().equals(ArmPosState.TRANSFER)) {
-            intake.setIntakeSpeed(70);
-            shooter.setIndexSpeed(30);
+            intake.setIntakeSpeed((goingIn) ? 70 : -50);
+            shooter.setIndexSpeed((goingIn) ? 30 : -30);
         }
     }
 

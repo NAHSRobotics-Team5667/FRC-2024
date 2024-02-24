@@ -4,10 +4,9 @@
 
 package frc.robot.commands.shooter;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.util.ArmAngle;
 
 /**
  * SetArm.java
@@ -16,8 +15,6 @@ import frc.robot.util.ArmAngle;
  */
 public class SetArm extends Command {
     private ArmSubsystem armSubsystem;
-
-    private double initTime;
 
     /**
      * Creates a new SetArm.
@@ -35,16 +32,35 @@ public class SetArm extends Command {
     @Override
     public void initialize() {
         armSubsystem.stopAllMotors();
-        initTime = Timer.getFPGATimestamp();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        armSubsystem.firstPivotToTargetPID(armSubsystem.getFirstPivotMotorDeg(),
-                armSubsystem.getTargetPosition().getFirstPivot());
-        armSubsystem.secondPivotToTargetPID(armSubsystem.getSecondPivotMotorDeg(),
-                armSubsystem.getTargetPosition().getSecondPivot());
+        // check if second pivot has priority in the maneuver
+        if (ArmConstants.getSecondPivotPriority(ArmConstants.getState(armSubsystem.getTargetPosition()))) {
+            // run second pivot
+            armSubsystem.secondPivotToTargetPID(armSubsystem.getSecondPivotMotorDeg(),
+                    armSubsystem.getTargetPosition().getSecondPivot());
+
+            // run first pivot after second pivot at desired location
+            if (armSubsystem.secondPivotAtTarget()) {
+
+                armSubsystem.firstPivotToTargetPID(armSubsystem.getFirstPivotMotorDeg(),
+                        armSubsystem.getTargetPosition().getFirstPivot());
+            }
+        } else { // if first pivot has priority
+            // run first pivot
+            armSubsystem.firstPivotToTargetPID(armSubsystem.getSecondPivotMotorDeg(),
+                    armSubsystem.getTargetPosition().getSecondPivot());
+
+            // run second pivot after first pivot at desired location
+            if (armSubsystem.firstPivotAtTarget()) {
+
+                armSubsystem.secondPivotToTargetPID(armSubsystem.getFirstPivotMotorDeg(),
+                        armSubsystem.getTargetPosition().getFirstPivot());
+            }
+        }
     }
 
     // Called once the command ends or is interrupted.
@@ -57,6 +73,6 @@ public class SetArm extends Command {
     @Override
     public boolean isFinished() {
         return false; // never stops - always running. If need to adjust arm position, set
-                      // target using methods.
+                      // target using methods inside other commands.
     }
 }

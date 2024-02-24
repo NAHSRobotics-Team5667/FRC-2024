@@ -19,11 +19,19 @@ public class ShootCommand extends Command {
     private double initialTime;
 
     private double left, right;
+    private boolean amp;
 
-    /** Creates a new ShooterCommand. */
-    public ShootCommand(double left, double right) {
+    /**
+     * Creates a new ShootCommand.
+     * 
+     * @param left  left wheel percent output. 0-100.
+     * @param right right wheel percent output. 0-100.
+     * @param amp   whether shooting into amp or not.
+     */
+    public ShootCommand(double left, double right, boolean amp) {
         this.left = left;
         this.right = right;
+        this.amp = amp;
 
         shooter = ShooterSubsystem.getInstance();
 
@@ -36,7 +44,11 @@ public class ShootCommand extends Command {
     public void initialize() {
         initialTime = Timer.getFPGATimestamp();
 
-        ArmSubsystem.getInstance().setTargetPosition(ArmPosState.SPEAKER);
+        if (amp) {
+            ArmSubsystem.getInstance().setTargetPosition(ArmPosState.AMP);
+        } else {
+            ArmSubsystem.getInstance().setTargetPosition(ArmPosState.SPEAKER);
+        }
 
         shooter.setShooterSpeed(0.00);
         shooter.setIndexSpeed(0);
@@ -47,7 +59,9 @@ public class ShootCommand extends Command {
     public void execute() {
         shooter.setShooterSpeed(left, right);
 
-        if (ArmSubsystem.getInstance().getPositionState().equals(ArmPosState.SPEAKER)) {
+        // start indexing checks if the arm is at target
+        if (ArmSubsystem.getInstance().firstPivotAtTarget() && ArmSubsystem.getInstance().secondPivotAtTarget()) {
+            // wait for shooter to rev up
             if (Timer.getFPGATimestamp() - initialTime >= 1) {
                 if (shooter.getShooterState().equals(ShooterStates.READY)) {
                     shooter.setIndexSpeed(50);
@@ -64,6 +78,7 @@ public class ShootCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         ArmSubsystem.getInstance().setTargetPosition(ArmPosState.TRANSFER);
+
         shooter.setShooterSpeed(0.00);
         shooter.setIndexSpeed(0);
     }

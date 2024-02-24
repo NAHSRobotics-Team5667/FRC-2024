@@ -358,6 +358,22 @@ public class ArmSubsystem extends SubsystemBase {
         setTargetPosition(ArmConstants.getGoalPosition(targetState));
     }
 
+    /**
+     * @return whether first pivot is at target.
+     */
+    public boolean firstPivotAtTarget() {
+        return getFirstPivotAbsDeg() >= getTargetPosition().getFirstPivot() - ArmConstants.FIRST_ERR_MARGIN_DEG
+                && getFirstPivotAbsDeg() <= getTargetPosition().getFirstPivot() + ArmConstants.FIRST_ERR_MARGIN_DEG;
+    }
+
+    /**
+     * @return whether second pivot is at target.
+     */
+    public boolean secondPivotAtTarget() {
+        return getSecondPivotAbsDeg() >= getTargetPosition().getSecondPivot() - ArmConstants.SECOND_ERR_MARGIN_DEG
+                && getSecondPivotAbsDeg() <= getTargetPosition().getSecondPivot() + ArmConstants.SECOND_ERR_MARGIN_DEG;
+    }
+
     // FIRST PIVOT --------------------------------------------
 
     /**
@@ -526,7 +542,7 @@ public class ArmSubsystem extends SubsystemBase {
         }
 
         // ---------------------------------------------------
-        // ------------- UPDATE POSITION STATE ---------------
+        // ---------- UPDATE CURR POSITION STATE -------------
 
         if (getFirstPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.TRANSFER).getFirstPivot()
                 + ArmConstants.FIRST_ERR_MARGIN_DEG
@@ -580,18 +596,18 @@ public class ArmSubsystem extends SubsystemBase {
                 updatePositionState(ArmPosState.TRAP); // TRAP
             }
 
-        } else if (getFirstPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.HUMAN_PLAYER).getFirstPivot()
+        } else if (getFirstPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.CLIMB).getFirstPivot()
                 + ArmConstants.FIRST_ERR_MARGIN_DEG
-                && getFirstPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.HUMAN_PLAYER).getFirstPivot()
+                && getFirstPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.CLIMB).getFirstPivot()
                         - ArmConstants.FIRST_ERR_MARGIN_DEG) {
             // check second pivot
-            if (getSecondPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.HUMAN_PLAYER).getSecondPivot()
+            if (getSecondPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.CLIMB).getSecondPivot()
                     + ArmConstants.SECOND_ERR_MARGIN_DEG
-                    && getSecondPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.HUMAN_PLAYER)
+                    && getSecondPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.CLIMB)
                             .getSecondPivot()
                             - ArmConstants.SECOND_ERR_MARGIN_DEG) {
 
-                updatePositionState(ArmPosState.HUMAN_PLAYER); // HUMAN PLAYER
+                updatePositionState(ArmPosState.CLIMB); // HUMAN PLAYER
             }
 
         } else {

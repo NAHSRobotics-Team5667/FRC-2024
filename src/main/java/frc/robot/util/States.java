@@ -16,7 +16,7 @@ public class States {
         /** State for scoring in trap. */
         TRAP,
         /** State for intaking from human player elevated station. */
-        HUMAN_PLAYER,
+        CLIMB,
         /** State that represents an undefined position. */
         INTERMEDIATE
     }

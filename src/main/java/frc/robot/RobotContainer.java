@@ -134,22 +134,16 @@ public class RobotContainer {
          * Driver Controller:
          * - Joystick 1 Movement - Movement on Field
          * - Joystick 2 Movement - Direction on Field (Where robot front is facing).
-         * -
-         * /
-         * 
-         * // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-         * //new Trigger(::exampleCondition).onTrue(new
-         * ExampleCommand(m_exampleSubsystem));
-         * 
-         * // Schedule `exampleMethodCommand` when the Xbox controller's B button is
-         * // pressed,
-         * // cancelling on release.
-         * //
-         * m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+         * - Press A - toggle intake
+         * - Press B - toggle outtake
+         * - Press RB - toggle shooter (speaker)
+         * - Press LB - toggle amp
          */
 
-        driverXbox.a().toggleOnTrue(new IntakeNote());
-        driverXbox.rightBumper().toggleOnTrue(new ShootCommand(100, 100));
+        driverXbox.a().toggleOnTrue(new IntakeNote(true));
+        driverXbox.b().toggleOnTrue(new IntakeNote(false)); // watch for errors bc of overlapping commands
+        driverXbox.rightBumper().toggleOnTrue(new ShootCommand(100, 100, false));
+        driverXbox.leftBumper().toggleOnTrue(new ShootCommand(30, 30, true));
     }
 
     public static CommandXboxController getDriverController() {

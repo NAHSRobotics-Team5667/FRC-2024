@@ -125,7 +125,17 @@ public final class Constants {
                 ArmPosState.SPEAKER, new ArmAngle(50, 0), // default position for speaker
                 ArmPosState.AMP, new ArmAngle(108.1, -122.7), // position for amp
                 ArmPosState.TRAP, new ArmAngle(100, 100), // position for trap
-                ArmPosState.HUMAN_PLAYER, new ArmAngle()); // position for human player intake
+                ArmPosState.CLIMB, new ArmAngle()); // position for human player intake
+
+        // create a map of arm positions and their target goal states - maps aren't
+        // bi-directional :(
+        public static Map<ArmAngle, ArmPosState> ARM_STATES = Map.of(
+                getGoalPosition(ArmPosState.TRANSFER), ArmPosState.TRANSFER, // arm position when at resting position
+                getGoalPosition(ArmPosState.SPEAKER), ArmPosState.SPEAKER, // default position for speaker
+                getGoalPosition(ArmPosState.AMP), ArmPosState.AMP, // position for amp
+                getGoalPosition(ArmPosState.TRAP), ArmPosState.TRAP, // position for trap
+                getGoalPosition(ArmPosState.CLIMB), ArmPosState.CLIMB); // position for human player
+                                                                        // intake
 
         /**
          * Returns the goal position for a given target.
@@ -148,6 +158,16 @@ public final class Constants {
             GOAL_POSITIONS.put(key, newPos);
         }
 
+        /**
+         * Returns the goal position for a given target.
+         * 
+         * @param key arm angles that you want the linked state of.
+         * @return linked state to arm angles.
+         */
+        public static ArmPosState getState(ArmAngle key) {
+            return ARM_STATES.get(key);
+        }
+
         // ==== POSITION ERROR MARGINS ====
 
         public static final double FIRST_ERR_MARGIN_DEG = 5.0;
@@ -155,6 +175,22 @@ public final class Constants {
 
         // =======================================================
         // ====================== MOTION =========================
+
+        // ==== POSITION-MOTION MAPPED PROCEDURES ====
+
+        public static final Map<ArmPosState, Boolean> SECOND_PIVOT_PRIORITY_MAP = Map.of(
+                ArmPosState.TRANSFER, true, // move second pivot first when going to transfer
+                ArmPosState.SPEAKER, true, // move second pivot first when going to speaker
+                ArmPosState.AMP, false, // move first pivot first when going to amp
+                ArmPosState.TRAP, false); // move first pivot first when going to trap
+
+        /**
+         * @param state state to check second pivot's priority for.
+         * @return whether second pivot has priority in the given state.
+         */
+        public static boolean getSecondPivotPriority(ArmPosState state) {
+            return SECOND_PIVOT_PRIORITY_MAP.get(state);
+        }
 
         // ==== MOTION MAGIC ====
 
