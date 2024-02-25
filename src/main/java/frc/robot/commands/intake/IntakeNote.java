@@ -24,7 +24,7 @@ public class IntakeNote extends Command { // TODO: make outtake functional
     public IntakeSubsystem intake;
     public ShooterSubsystem shooter;
 
-    private boolean goingIn = true;
+    private boolean goingIn;
 
     // * Creates a new intake */
     public IntakeNote(boolean goingIn) {
@@ -50,8 +50,13 @@ public class IntakeNote extends Command { // TODO: make outtake functional
     public void execute() {
         // intake.setPiston(true);
         if (ArmSubsystem.getInstance().getPositionState().equals(ArmPosState.TRANSFER)) {
-            intake.setIntakeSpeed((goingIn) ? 70 : -50);
-            shooter.setIndexSpeed((goingIn) ? 30 : -30);
+            if (goingIn) {
+                intake.setIntakeSpeed(70);
+                shooter.setIndexSpeed(30);
+            } else {
+                intake.setIntakeSpeed(-50);
+                shooter.setIndexSpeed(-30);
+            }
         }
     }
 
