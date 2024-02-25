@@ -170,8 +170,21 @@ public final class Constants {
 
         // ==== POSITION ERROR MARGINS ====
 
-        public static final double FIRST_ERR_MARGIN_DEG = 8.0;
-        public static final double SECOND_ERR_MARGIN_DEG = 8.0;
+        /**
+         * Acceptable difference between motor encoder measurement and absolute encoder
+         * for first pivot (deg).
+         */
+        public static final double ACC_FIRST_PIVOT_DIFF = 1.0; // TODO: find how many degrees of play exist
+        /**
+         * Acceptable difference between motor encoder measurement and absolute encoder
+         * for first pivot (deg).
+         */
+        public static final double ACC_SECOND_PIVOT_DIFF = 1.0; // TODO: find how many degrees of play exist
+
+        /** Acceptable margin of error in PID control for first pivot (deg). */
+        public static final double FIRST_ERR_MARGIN_DEG = 8.0; // TODO: fine tune
+        /** Acceptable margin of error in PID control for first pivot (deg). */
+        public static final double SECOND_ERR_MARGIN_DEG = 8.0; // TODO: fine tune
 
         // =======================================================
         // ====================== MOTION =========================
@@ -255,10 +268,10 @@ public final class Constants {
 
     public static class IntakeConstants {
         // ==== MOTORS - NEO 1.1s ====
-        public static final int SPARKMAX_ID = 18; // TODO: This needs to be double checked.
+        public static final int SPARKMAX_ID = 18;
 
         // ==== SOLENOID ====
-        public static final int SOLENOID_PORT = 1;
+        public static final int SOLENOID_PORT = 1; // TODO: double check
     }
 
     public static class ClimbConstants {

@@ -9,7 +9,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import frc.robot.util.States.IndexStates;
 import frc.robot.util.States.ShooterStates;
 import frc.robot.Constants.ShooterConstants;
 
@@ -37,7 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private CANSparkMax m_index;
     private DigitalInput beamBreak;
     private ShooterStates shooterState = null; // Shooter States
-    private IndexStates indexState = null; // current state of index
+    // private IndexStates indexState = null; // current state of index
 
     private double targetLeftRPM = ShooterConstants.SHOOTER_MAX_RPM;
     private double targetRightRPM = ShooterConstants.SHOOTER_MAX_RPM;
@@ -72,45 +71,6 @@ public class ShooterSubsystem extends SubsystemBase {
             instance = new ShooterSubsystem();
 
         return instance;
-    }
-
-    // PERIODIC -----------------------------------------------
-
-    @Override
-    public void periodic() { // This method will be called once per scheduler run
-
-        // adjust index state passively
-        if (hasGamePiece()) {
-            indexState = IndexStates.FULL;
-        } else {
-            indexState = IndexStates.EMPTY;
-        }
-
-        // adjust shooter state passively
-        if (getLeftShooterRPM() > targetLeftRPM - ShooterConstants.RPM_ERROR_MARGIN
-                && getLeftShooterRPM() < targetLeftRPM + ShooterConstants.RPM_ERROR_MARGIN) {
-
-            if (getRightShooterRPM() > targetRightRPM - ShooterConstants.RPM_ERROR_MARGIN
-                    && getRightShooterRPM() < targetRightRPM + ShooterConstants.RPM_ERROR_MARGIN) {
-
-                shooterState = ShooterStates.READY; // shooter ready to shoot
-            }
-        } else if (getLeftShooterRPM() == 0 || getRightShooterRPM() == 0) {
-            shooterState = ShooterStates.STOPPED; // shooter stopped
-        } else {
-            shooterState = ShooterStates.ADJUST_VEL; // shooter not at correct speed
-        }
-
-        // Telemetry ------------------------------------------
-
-        SmartDashboard.putNumber("[SHOOTER] Right RPM", getRightShooterRPM());
-        SmartDashboard.putNumber("[SHOOTER] Left RPM", getLeftShooterRPM());
-
-        SmartDashboard.putNumber("[SHOOTER] Target Right RPM", targetRightRPM);
-        SmartDashboard.putNumber("[SHOOTER] Target Left RPM", targetLeftRPM);
-
-        SmartDashboard.putString("[SHOOTER] State", shooterState.toString());
-        SmartDashboard.putBoolean("[SHOOTER] Beambreak", this.hasGamePiece());
     }
 
     // ========================================================
@@ -209,16 +169,23 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     /**
-     * @return shooter RPMs for left and right flywheels. Format - {leftRPM,
-     *         rightRPM}
+     * @return whether left wheels are at target RPM.
      */
-    public double[] getShooterRPM() {
-        double[] shooterRPMs = { getLeftShooterRPM(), getRightShooterRPM() };
-        return shooterRPMs;
+    public boolean leftWheelsReady() {
+        return getLeftShooterRPM() >= targetLeftRPM - ShooterConstants.RPM_ERROR_MARGIN
+                && getLeftShooterRPM() <= targetLeftRPM + ShooterConstants.RPM_ERROR_MARGIN;
+    }
+
+    /**
+     * @return whether right wheels are at target RPM.
+     */
+    public boolean rightWheelsReady() {
+        return getRightShooterRPM() >= targetRightRPM - ShooterConstants.RPM_ERROR_MARGIN
+                && getRightShooterRPM() <= targetRightRPM + ShooterConstants.RPM_ERROR_MARGIN;
     }
 
     // ========================================================
-    // ======================= OTHER ==========================
+    // ======================= STATE ==========================
 
     /**
      * @return current shooter state.
@@ -227,10 +194,30 @@ public class ShooterSubsystem extends SubsystemBase {
         return shooterState;
     }
 
-    /**
-     * @return current index state.
-     */
-    public IndexStates getIndexState() {
-        return indexState;
+    // ========================================================
+    // ====================== PERIODIC ========================
+
+    @Override
+    public void periodic() { // This method will be called once per scheduler run
+
+        // adjust shooter state passively
+        if (leftWheelsReady() && rightWheelsReady()) {
+            shooterState = ShooterStates.READY;
+        } else if (getLeftShooterRPM() == 0 && getRightShooterRPM() == 0) {
+            shooterState = ShooterStates.STOPPED; // shooter stopped
+        } else {
+            shooterState = ShooterStates.ADJUST_VEL; // shooter not at correct speed
+        }
+
+        // Telemetry ------------------------------------------
+
+        SmartDashboard.putNumber("[SHOOTER] Right RPM", getRightShooterRPM());
+        SmartDashboard.putNumber("[SHOOTER] Left RPM", getLeftShooterRPM());
+
+        SmartDashboard.putNumber("[SHOOTER] Target Right RPM", targetRightRPM);
+        SmartDashboard.putNumber("[SHOOTER] Target Left RPM", targetLeftRPM);
+
+        SmartDashboard.putString("[SHOOTER] State", shooterState.toString());
+        SmartDashboard.putBoolean("[SHOOTER] Beambreak", this.hasGamePiece());
     }
 }

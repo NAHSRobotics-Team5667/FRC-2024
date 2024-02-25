@@ -36,13 +36,13 @@ public class SetArm extends Command {
     @Override
     public void execute() {
         // check if second pivot has priority in the maneuver
-        if (ArmConstants.getSecondPivotPriority(ArmConstants.getState(armSubsystem.getTargetPosition()))) {
+        if (ArmConstants.getSecondPivotPriority(armSubsystem.getTargetState())) {
             // run second pivot
             armSubsystem.secondPivotToTargetPID(armSubsystem.getSecondPivotMotorDeg(),
                     armSubsystem.getTargetPosition().getSecondPivot());
 
             // run first pivot after second pivot at desired location
-            if (armSubsystem.secondPivotAtTarget()) {
+            if (armSubsystem.secondPivotAtTarget(armSubsystem.getTargetState())) {
 
                 armSubsystem.firstPivotToTargetPID(armSubsystem.getFirstPivotMotorDeg(),
                         armSubsystem.getTargetPosition().getFirstPivot());
@@ -53,7 +53,7 @@ public class SetArm extends Command {
                     armSubsystem.getTargetPosition().getFirstPivot());
 
             // run second pivot after first pivot at desired location
-            if (armSubsystem.firstPivotAtTarget()) {
+            if (armSubsystem.firstPivotAtTarget(armSubsystem.getTargetState())) {
 
                 armSubsystem.secondPivotToTargetPID(armSubsystem.getSecondPivotMotorDeg(),
                         armSubsystem.getTargetPosition().getSecondPivot());

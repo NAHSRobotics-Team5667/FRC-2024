@@ -1,10 +1,10 @@
 package frc.robot.util;
 
 public class States {
-    public static enum ArmMotionState {
-        IDLE,
-        MOVING
-    }
+    // public static enum ArmMotionState {
+    // IDLE,
+    // MOVING
+    // }
 
     public static enum ArmPosState {
         /** Transfer state between intake and shooter. */
@@ -27,8 +27,8 @@ public class States {
         READY
     }
 
-    public static enum IndexStates {
-        EMPTY,
-        FULL
-    }
+    // public static enum IndexStates {
+    // EMPTY,
+    // FULL
+    // }
 }

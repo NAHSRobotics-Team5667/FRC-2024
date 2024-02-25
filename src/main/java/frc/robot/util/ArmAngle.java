@@ -53,14 +53,6 @@ public class ArmAngle {
     }
 
     /**
-     * @param armPosition arm position to be evaluated.
-     * @return whether position is legal.
-     */
-    public static boolean isLegal(ArmAngle armPosition) {
-        return false; // TODO: functionality for determining if an arm position is legal
-    }
-
-    /**
      * Prints the Arm Position attributes.
      */
     public String toString() {

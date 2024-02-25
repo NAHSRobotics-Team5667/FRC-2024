@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -12,19 +11,15 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Time;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.util.ArmAngle;
-import frc.robot.util.States.ArmMotionState;
 import frc.robot.util.States.ArmPosState;
 
 //44/60 - Gear for ratio for arm.
@@ -66,11 +61,11 @@ public class ArmSubsystem extends SubsystemBase {
 
     private ProfiledPIDController firstPivotPID, secondPivotPID;
 
-    private ArmAngle armPos = new ArmAngle();
-    private ArmAngle targetArmPos = ArmConstants.getGoalPosition(ArmPosState.TRANSFER);
-
     private ArmPosState positionState = null;
-    private ArmMotionState motionState = null;
+    private ArmPosState targetState = ArmPosState.TRANSFER;
+
+    private ArmAngle armPos = new ArmAngle();
+    private ArmAngle targetArmPos = ArmConstants.getGoalPosition(targetState);
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -86,16 +81,17 @@ public class ArmSubsystem extends SubsystemBase {
                 ArmConstants.FIRST_kP,
                 ArmConstants.FIRST_kI,
                 ArmConstants.FIRST_kD,
-                new TrapezoidProfile.Constraints(ArmConstants.FIRST_MAX_VELOCITY,
+                new TrapezoidProfile.Constraints( // sets trapezoid profile for first pivot velocity
+                        ArmConstants.FIRST_MAX_VELOCITY,
                         ArmConstants.FIRST_MAX_ACCEL));
 
         secondPivotPID = new ProfiledPIDController(
                 ArmConstants.SECOND_kP,
                 ArmConstants.SECOND_kI,
                 ArmConstants.SECOND_kD,
-                new TrapezoidProfile.Constraints(ArmConstants.SECOND_MAX_VELOCITY, ArmConstants.SECOND_MAX_ACCEL));
-
-        setFirstPivotSetpoint(getTargetPosition().getFirstPivot());
+                new TrapezoidProfile.Constraints( // trapezoid second pivot velocity
+                        ArmConstants.SECOND_MAX_VELOCITY,
+                        ArmConstants.SECOND_MAX_ACCEL));
 
         // ====== FIRST PIVOT ======
 
@@ -341,12 +337,10 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     /**
-     * Sets target arm position for use by the SetArm command.
-     * 
-     * @param target target arm position.
+     * @return target position state of arm.
      */
-    public void setTargetPosition(ArmAngle target) {
-        targetArmPos = target;
+    public ArmPosState getTargetState() {
+        return targetState;
     }
 
     /**
@@ -355,23 +349,38 @@ public class ArmSubsystem extends SubsystemBase {
      * @param targetState target arm state - gets associated arm position.
      */
     public void setTargetPosition(ArmPosState targetState) {
-        setTargetPosition(ArmConstants.getGoalPosition(targetState));
+        this.targetState = targetState;
+        targetArmPos = ArmConstants.getGoalPosition(targetState);
     }
 
     /**
+     * @param target target arm position state.
      * @return whether first pivot is at target.
      */
-    public boolean firstPivotAtTarget() {
-        return getFirstPivotAbsDeg() >= getTargetPosition().getFirstPivot() - ArmConstants.FIRST_ERR_MARGIN_DEG
-                && getFirstPivotAbsDeg() <= getTargetPosition().getFirstPivot() + ArmConstants.FIRST_ERR_MARGIN_DEG;
+    public boolean firstPivotAtTarget(ArmPosState target) {
+        return getFirstPivotAbsDeg() >= ArmConstants.getGoalPosition(target).getFirstPivot()
+                - ArmConstants.FIRST_ERR_MARGIN_DEG
+                && getFirstPivotAbsDeg() <= ArmConstants.getGoalPosition(target).getFirstPivot()
+                        + ArmConstants.FIRST_ERR_MARGIN_DEG;
     }
 
     /**
+     * @param target target arm position state.
      * @return whether second pivot is at target.
      */
-    public boolean secondPivotAtTarget() {
-        return getSecondPivotAbsDeg() >= getTargetPosition().getSecondPivot() - ArmConstants.SECOND_ERR_MARGIN_DEG
-                && getSecondPivotAbsDeg() <= getTargetPosition().getSecondPivot() + ArmConstants.SECOND_ERR_MARGIN_DEG;
+    public boolean secondPivotAtTarget(ArmPosState target) {
+        return getSecondPivotAbsDeg() >= ArmConstants.getGoalPosition(target).getSecondPivot()
+                - ArmConstants.SECOND_ERR_MARGIN_DEG
+                && getSecondPivotAbsDeg() <= ArmConstants.getGoalPosition(target).getSecondPivot()
+                        + ArmConstants.SECOND_ERR_MARGIN_DEG;
+    }
+
+    /**
+     * @param target target arm position state.
+     * @return whether both pivots are at targets.
+     */
+    public boolean armAtTarget(ArmPosState target) {
+        return firstPivotAtTarget(target) && secondPivotAtTarget(target);
     }
 
     // FIRST PIVOT --------------------------------------------
@@ -482,20 +491,6 @@ public class ArmSubsystem extends SubsystemBase {
         return positionState;
     }
 
-    /**
-     * @param newState new motion state of the arm
-     */
-    public void updateMotionState(ArmMotionState newState) {
-        motionState = newState;
-    }
-
-    /**
-     * @return current motion state of the arm.
-     */
-    public ArmMotionState getMotionState() {
-        return motionState;
-    }
-
     // ========================================================
     // ===================== PERIODIC =========================
 
@@ -514,14 +509,15 @@ public class ArmSubsystem extends SubsystemBase {
 
         // set motor encoders ---------------------------------
 
-        if ((Math.abs(getFirstPivotAbsDeg() - getFirstPivotMotorDeg()) > 1)
-                || (Math.abs(getSecondPivotAbsDeg() - getSecondPivotMotorDeg())) > 1) {
+        if (Math.abs(getFirstPivotAbsDeg() - getFirstPivotMotorDeg()) > 1) {
             // initial motor positions - first stage
             m_firstStageLead.getConfigurator()
                     .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
             m_firstStageFollower.getConfigurator()
                     .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
+        }
 
+        if (Math.abs(getSecondPivotAbsDeg() - getSecondPivotMotorDeg()) > 1) {
             // initial motor positions - second stage
             m_secondStageLead.getConfigurator()
                     .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));
@@ -530,85 +526,22 @@ public class ArmSubsystem extends SubsystemBase {
         }
 
         // ---------------------------------------------------
-        // -------------- UPDATE MOTION STATE ----------------
+        // ------------ UPDATE POSITION STATE ----------------
 
-        if (Math.abs(m_firstStageLead.getVelocity().getValueAsDouble()) >= ArmConstants.FIRST_VEL_THRESHOLD
-                || Math.abs(m_secondStageLead.getVelocity().getValueAsDouble()) >= ArmConstants.SECOND_VEL_THRESHOLD) {
-            // set arm motion state to moving if any velocities are over thresholds
-            updateMotionState(ArmMotionState.MOVING);
-        } else {
-            // set arm motion state to idle if both velocities are under thresholds
-            updateMotionState(ArmMotionState.IDLE);
-        }
+        if (armAtTarget(ArmPosState.TRANSFER)) {
+            updatePositionState(ArmPosState.TRANSFER); // TRANSFER
 
-        // ---------------------------------------------------
-        // ---------- UPDATE CURR POSITION STATE -------------
+        } else if (armAtTarget(ArmPosState.SPEAKER)) {
+            updatePositionState(ArmPosState.SPEAKER); // SPEAKER
 
-        if (getFirstPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.TRANSFER).getFirstPivot()
-                + ArmConstants.FIRST_ERR_MARGIN_DEG
-                && getFirstPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.TRANSFER).getFirstPivot()
-                        - ArmConstants.FIRST_ERR_MARGIN_DEG) {
-            // check second pivot
-            if (getSecondPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.TRANSFER).getSecondPivot()
-                    + ArmConstants.SECOND_ERR_MARGIN_DEG
-                    && getSecondPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.TRANSFER).getSecondPivot()
-                            - ArmConstants.SECOND_ERR_MARGIN_DEG) {
+        } else if (armAtTarget(ArmPosState.AMP)) {
+            updatePositionState(ArmPosState.AMP); // AMP
 
-                updatePositionState(ArmPosState.TRANSFER); // TRANSFER
-            }
+        } else if (armAtTarget(ArmPosState.TRAP)) {
+            updatePositionState(ArmPosState.TRAP); // TRAP
 
-        } else if (getFirstPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.SPEAKER).getFirstPivot()
-                + ArmConstants.FIRST_ERR_MARGIN_DEG
-                && getFirstPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.SPEAKER).getFirstPivot()
-                        - ArmConstants.FIRST_ERR_MARGIN_DEG) {
-            // check second pivot
-            if (getSecondPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.SPEAKER).getSecondPivot()
-                    + ArmConstants.SECOND_ERR_MARGIN_DEG
-                    && getSecondPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.SPEAKER).getSecondPivot()
-                            - ArmConstants.SECOND_ERR_MARGIN_DEG) {
-
-                updatePositionState(ArmPosState.SPEAKER); // SPEAKER
-            }
-
-        } else if (getFirstPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.AMP).getFirstPivot()
-                + ArmConstants.FIRST_ERR_MARGIN_DEG
-                && getFirstPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.AMP).getFirstPivot()
-                        - ArmConstants.FIRST_ERR_MARGIN_DEG) {
-            // check second pivot
-            if (getSecondPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.AMP).getSecondPivot()
-                    + ArmConstants.SECOND_ERR_MARGIN_DEG
-                    && getSecondPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.AMP).getSecondPivot()
-                            - ArmConstants.SECOND_ERR_MARGIN_DEG) {
-
-                updatePositionState(ArmPosState.AMP); // AMP
-            }
-
-        } else if (getFirstPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.TRAP).getFirstPivot()
-                + ArmConstants.FIRST_ERR_MARGIN_DEG
-                && getFirstPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.TRAP).getFirstPivot()
-                        - ArmConstants.FIRST_ERR_MARGIN_DEG) {
-            // check second pivot
-            if (getSecondPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.TRAP).getSecondPivot()
-                    + ArmConstants.SECOND_ERR_MARGIN_DEG
-                    && getSecondPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.TRAP).getSecondPivot()
-                            - ArmConstants.SECOND_ERR_MARGIN_DEG) {
-
-                updatePositionState(ArmPosState.TRAP); // TRAP
-            }
-
-        } else if (getFirstPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.CLIMB).getFirstPivot()
-                + ArmConstants.FIRST_ERR_MARGIN_DEG
-                && getFirstPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.CLIMB).getFirstPivot()
-                        - ArmConstants.FIRST_ERR_MARGIN_DEG) {
-            // check second pivot
-            if (getSecondPivotAbsDeg() <= ArmConstants.getGoalPosition(ArmPosState.CLIMB).getSecondPivot()
-                    + ArmConstants.SECOND_ERR_MARGIN_DEG
-                    && getSecondPivotAbsDeg() >= ArmConstants.getGoalPosition(ArmPosState.CLIMB)
-                            .getSecondPivot()
-                            - ArmConstants.SECOND_ERR_MARGIN_DEG) {
-
-                updatePositionState(ArmPosState.CLIMB); // HUMAN PLAYER
-            }
+        } else if (armAtTarget(ArmPosState.CLIMB)) {
+            updatePositionState(ArmPosState.CLIMB); // HUMAN PLAYER
 
         } else {
             updatePositionState(ArmPosState.INTERMEDIATE); // INTERMEDIATE if not at any of the other positions
@@ -617,30 +550,46 @@ public class ArmSubsystem extends SubsystemBase {
         // ---------------------------------------------------
         // ------------------- TELEMETRY ---------------------
 
-        SmartDashboard.putNumber("[ARM] Abs First Pivot Deg", getFirstPivotAbsDeg());
-        SmartDashboard.putNumber("[ARM] Abs Second Pivot Deg", getSecondPivotAbsDeg());
-
         // First Encoder -------------------------------------
-        SmartDashboard.putNumber("[ARM] Raw First Abs Encoder 1", getRawFirstEncoders()[0]);
-        SmartDashboard.putNumber("[ARM] Raw First Abs Encoder 2", getRawFirstEncoders()[1]);
 
-        SmartDashboard.putNumber("[ARM] Offset First Abs Encoder 1", getOffsetFirstEncoders()[0]);
-        SmartDashboard.putNumber("[ARM] Offset First Abs Encoder 2", getOffsetFirstEncoders()[1]);
+        /* USE FOR TROUBLESHOOTING */
 
-        SmartDashboard.putNumber("[ARM] First Stage Motor Encoder Deg", getFirstPivotMotorDeg());
+        // SmartDashboard.putNumber("[ARM] Raw First Abs Encoder 1",
+        // getRawFirstEncoders()[0]);
+        // SmartDashboard.putNumber("[ARM] Raw First Abs Encoder 2",
+        // getRawFirstEncoders()[1]);
+
+        // SmartDashboard.putNumber("[ARM] Offset First Abs Encoder 1",
+        // getOffsetFirstEncoders()[0]);
+        // SmartDashboard.putNumber("[ARM] Offset First Abs Encoder 2",
+        // getOffsetFirstEncoders()[1]);
+
+        /*------------------------ */
+
+        SmartDashboard.putNumber("[ARM] Abs First Pivot Deg", getFirstPivotAbsDeg());
+        SmartDashboard.putNumber("[ARM] Motor First Pivot Deg", getFirstPivotMotorDeg());
 
         // Second Encoder ------------------------------------
-        SmartDashboard.putNumber("[ARM] Raw Second Abs Encoder 1", getRawSecondEncoders()[0]);
-        SmartDashboard.putNumber("[ARM] Raw Second Abs Encoder 2", getRawSecondEncoders()[1]);
 
-        SmartDashboard.putNumber("[ARM] Offset Second Abs Encoder 1", getOffsetSecondEncoders()[0]);
-        SmartDashboard.putNumber("[ARM] Offset Second Abs Encoder 2", getOffsetSecondEncoders()[1]);
+        /* USE FOR TROUBLESHOOTING */
 
-        SmartDashboard.putNumber("[ARM] Second Stage Motor Encoder Deg", getSecondPivotMotorDeg());
+        // SmartDashboard.putNumber("[ARM] Raw Second Abs Encoder 1",
+        // getRawSecondEncoders()[0]);
+        // SmartDashboard.putNumber("[ARM] Raw Second Abs Encoder 2",
+        // getRawSecondEncoders()[1]);
+
+        // SmartDashboard.putNumber("[ARM] Offset Second Abs Encoder 1",
+        // getOffsetSecondEncoders()[0]);
+        // SmartDashboard.putNumber("[ARM] Offset Second Abs Encoder 2",
+        // getOffsetSecondEncoders()[1]);
+
+        /*------------------------ */
+
+        SmartDashboard.putNumber("[ARM] Abs Second Pivot Deg", getSecondPivotAbsDeg());
+        SmartDashboard.putNumber("[ARM] Motor Second Pivot Deg", getSecondPivotMotorDeg());
 
         // States --------------------------------------------
         SmartDashboard.putString("[ARM] Curr Pos State", positionState.toString());
-        SmartDashboard.putString("[ARM] Curr Motion State", motionState.toString());
 
         // Limit Switch --------------------------------------
         SmartDashboard.putBoolean("[ARM] Limit Switch", getLimitSwitch());
@@ -650,12 +599,14 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("[ARM] 1st PID Output",
                 calculateFirstPivotPID(getFirstPivotMotorDeg(), getTargetPosition().getFirstPivot()));
         SmartDashboard.putNumber("[ARM] 1st PID Error", firstPivotPID.getPositionError());
-        SmartDashboard.putNumber("[ARM] 1st Target", getTargetPosition().getFirstPivot());
+        // SmartDashboard.putNumber("[ARM] 1st Target",
+        // getTargetPosition().getFirstPivot());
 
         SmartDashboard.putNumber("[ARM] 2nd PID Setpoint", secondPivotPID.getGoal().position);
         SmartDashboard.putNumber("[ARM] 2nd PID Output",
                 calculateSecondPivotPID(getFirstPivotMotorDeg(), getTargetPosition().getSecondPivot()));
         SmartDashboard.putNumber("[ARM] 2nd PID Error", secondPivotPID.getPositionError());
-        SmartDashboard.putNumber("[ARM] 2nd Target", getTargetPosition().getSecondPivot());
+        // SmartDashboard.putNumber("[ARM] 2nd Target",
+        // getTargetPosition().getSecondPivot());
     }
 }

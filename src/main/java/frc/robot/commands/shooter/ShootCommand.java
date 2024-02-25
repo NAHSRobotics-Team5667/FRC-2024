@@ -11,7 +11,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.States.ArmPosState;
 import frc.robot.util.States.ShooterStates;
 
-public class ShootCommand extends Command {
+public class ShootCommand extends Command { // TODO: make index running manual
 
     public ShooterSubsystem shooter;
     public ShooterStates shooterState;
@@ -59,15 +59,14 @@ public class ShootCommand extends Command {
     public void execute() {
         shooter.setShooterSpeed(left, right);
 
+        boolean armAtTarget = (amp) ? ArmSubsystem.getInstance().armAtTarget(ArmPosState.AMP)
+                : ArmSubsystem.getInstance().armAtTarget(ArmPosState.SPEAKER);
+
         // start indexing checks if the arm is at target
-        if (ArmSubsystem.getInstance().firstPivotAtTarget() && ArmSubsystem.getInstance().secondPivotAtTarget()) {
+        if (armAtTarget) {
             // wait for shooter to rev up
-            if (Timer.getFPGATimestamp() - initialTime >= 1) {
-                if (shooter.getShooterState().equals(ShooterStates.READY)) {
-                    shooter.setIndexSpeed(50);
-                } else {
-                    shooter.setIndexSpeed(0);
-                }
+            if (Timer.getFPGATimestamp() - initialTime >= 1 && shooter.getShooterState().equals(ShooterStates.READY)) {
+                shooter.setIndexSpeed(50);
             } else {
                 shooter.setIndexSpeed(0);
             }

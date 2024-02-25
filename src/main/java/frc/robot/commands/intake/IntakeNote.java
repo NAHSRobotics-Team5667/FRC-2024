@@ -19,7 +19,7 @@ import frc.robot.util.States.ArmPosState;
  * 
  * Use the built in methods created in your subsystem to determine this.
  */
-public class IntakeNote extends Command {
+public class IntakeNote extends Command { // TODO: make outtake functional
 
     public IntakeSubsystem intake;
     public ShooterSubsystem shooter;
