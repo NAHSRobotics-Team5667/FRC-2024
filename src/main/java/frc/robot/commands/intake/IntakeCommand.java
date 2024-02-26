@@ -1,10 +1,11 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.subsystems.IndexSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.util.States.ArmPosState;
+import frc.robot.subsystems.StateManager;
+import frc.robot.util.States.ArmState;
 
 /*
  * This command is going to trigger the intake to drop down and start spinning.
@@ -19,58 +20,59 @@ import frc.robot.util.States.ArmPosState;
  * 
  * Use the built in methods created in your subsystem to determine this.
  */
-public class IntakeNote extends Command { // TODO: make outtake functional
+public class IntakeCommand extends Command { // TODO: make outtake functional
 
-    public IntakeSubsystem intake;
-    public ShooterSubsystem shooter;
+    private IntakeSubsystem intake;
+    private StateManager states;
 
     private boolean goingIn;
 
-    // * Creates a new intake */
-    public IntakeNote(boolean goingIn) {
+    /**
+     * Creates a new IntakeCommand.
+     * 
+     * @param goingIn whether a note is going in.
+     */
+    public IntakeCommand(boolean goingIn) {
         intake = IntakeSubsystem.getInstance();
-        shooter = ShooterSubsystem.getInstance();
+        states = StateManager.getInstance(); // DO NOT add to addRequirements()
 
         this.goingIn = goingIn;
 
         // addRequirement() - prevent two commands from being run at the same time
-        addRequirements(intake, shooter);
+        addRequirements(intake);
     }
 
     // Called when command is initiated/first scheduled
     @Override
     public void initialize() {
-        intake.setIntakeSpeed(0);
-        shooter.setIndexSpeed(0);
-        ArmSubsystem.getInstance().setTargetPosition(ArmPosState.TRANSFER);
+        intake.set(0);
+
+        states.setTargetArmState(ArmState.TRANSFER);
     }
 
     // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
         // intake.setPiston(true);
-        if (ArmSubsystem.getInstance().getPositionState().equals(ArmPosState.TRANSFER)) {
-            if (goingIn) {
-                intake.setIntakeSpeed(70);
-                shooter.setIndexSpeed(30);
-            } else {
-                intake.setIntakeSpeed(-50);
-                shooter.setIndexSpeed(-30);
-            }
+        if (states.getArmState().equals(ArmState.TRANSFER)) {
+            intake.set((goingIn) ? IntakeConstants.INTAKE_SPEED : IntakeConstants.OUTTAKE_SPEED);
+        } else {
+            intake.set(0);
         }
     }
 
     // Called when the command is interruped or ended
     @Override
     public void end(boolean interrupted) {
-        intake.setIntakeSpeed(0);
-        shooter.setIndexSpeed(0);
+        intake.set(0);
         // intake.setPiston(false);
     }
 
     // Called so it should return true when the command will end
     @Override
     public boolean isFinished() {
-        return shooter.hasGamePiece(); // finishes intake command once game piece is collected
+        return (goingIn) ? IndexSubsystem.getInstance().hasGamePiece() : false; // finishes intake command once game
+                                                                                // piece is collected or interrupted
+                                                                                // if going the other way
     }
 }

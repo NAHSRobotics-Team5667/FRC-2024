@@ -1,12 +1,7 @@
 package frc.robot.util;
 
 public class States {
-    // public static enum ArmMotionState {
-    // IDLE,
-    // MOVING
-    // }
-
-    public static enum ArmPosState {
+    public static enum ArmState {
         /** Transfer state between intake and shooter. */
         TRANSFER,
         /** State for scoring in speaker. */
@@ -21,14 +16,14 @@ public class States {
         INTERMEDIATE
     }
 
-    public static enum ShooterStates {
+    public static enum ShooterState {
+        /** Both shooter wheels are stopped. */
         STOPPED,
-        ADJUST_VEL,
+        /**
+         * At least one shooter wheel is moving, but not ramped to the right velocity.
+         */
+        MOVING,
+        /** Shooter is ready to fire. */
         READY
     }
-
-    // public static enum IndexStates {
-    // EMPTY,
-    // FULL
-    // }
 }

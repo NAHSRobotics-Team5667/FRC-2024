@@ -57,24 +57,17 @@ public class IntakeSubsystem extends SubsystemBase {
         return instance;
     }
 
-    // PERIODIC -----------------------------------------------
-
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run - every 20ms.
-    }
-
     // ========================================================
     // ====================== ACTIONS =========================
 
     /**
      * Sets relative velocity of the intake.
      * 
-     * @param percentOutput % output of intake motor. 0-100.
+     * @param speed % output of intake motor. 0-100.
      */
-    public void setIntakeSpeed(double percentOutput) {
+    public void set(double speed) {
 
-        double motorSpeed = percentOutput / 100;
+        double motorSpeed = speed / 100;
 
         m_intake.set(motorSpeed);
     }
@@ -107,5 +100,10 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     // ========================================================
-    // ======================= OTHER ==========================
+    // ===================== PERIODIC =========================
+
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run - every 20ms.
+    }
 }

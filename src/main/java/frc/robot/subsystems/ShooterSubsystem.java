@@ -9,7 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import frc.robot.util.States.ShooterStates;
+import frc.robot.util.States.ShooterState;
 import frc.robot.Constants.ShooterConstants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -33,13 +33,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class ShooterSubsystem extends SubsystemBase {
     private TalonFX m_leftShooter, m_rightShooter; // declaring motors and global scope
-    private CANSparkMax m_index;
-    private DigitalInput beamBreak;
-    private ShooterStates shooterState = null; // Shooter States
-    // private IndexStates indexState = null; // current state of index
 
     private double targetLeftRPM = ShooterConstants.SHOOTER_MAX_RPM;
     private double targetRightRPM = ShooterConstants.SHOOTER_MAX_RPM;
+
+    private StateManager states;
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -59,11 +57,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
         m_rightShooter.setInverted(true);
 
-        // Initialize Motors (NEO 1.1).
-        m_index = new CANSparkMax(ShooterConstants.BELT_INDEX_ID, MotorType.kBrushless);
-
-        // Initialize Beam Break sensor
-        beamBreak = new DigitalInput(ShooterConstants.BEAM_BREAK_CHANNEL_ID);
+        // initialize state subsystem
+        states = StateManager.getInstance();
     }
 
     public static ShooterSubsystem getInstance() {
@@ -76,19 +71,6 @@ public class ShooterSubsystem extends SubsystemBase {
     // ========================================================
     // ================== MOTOR ACTIONS =======================
 
-    // INDEX --------------------------------------------------
-
-    /**
-     * Sets speed of index. Positive -> into shooter. Negative -> away from shooter.
-     * 0-100.
-     * 
-     * @param percentOutput
-     */
-    public void setIndexSpeed(double percentOutput) {
-        double output = percentOutput / 100;
-        m_index.set(output);
-    }
-
     // SHOOTER ------------------------------------------------
 
     /**
@@ -96,7 +78,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * 
      * @param percentOutput % output for both motors.
      */
-    public void setShooterSpeed(double percentOutput) {
+    public void set(double percentOutput) {
         double output = percentOutput / 100;
 
         targetLeftRPM = output * ShooterConstants.SHOOTER_MAX_RPM;
@@ -113,7 +95,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @param left  % output for left motor.
      * @param right % output for right motor.
      */
-    public void setShooterSpeed(double left, double right) {
+    public void set(double left, double right) {
         double leftOutput = left / 100;
         double rightOutput = right / 100;
 
@@ -126,15 +108,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // ========================================================
     // ===================== SENSORS ==========================
-
-    // INDEX --------------------------------------------------
-
-    /**
-     * @return whether game piece is in index by consulting beam-break sensor.
-     */
-    public boolean hasGamePiece() {
-        return !beamBreak.get(); // assuming broken beam = false and unbroken beam = true
-    }
 
     // SHOOTER ------------------------------------------------
 
@@ -168,46 +141,11 @@ public class ShooterSubsystem extends SubsystemBase {
         return rightSpeed;
     }
 
-    /**
-     * @return whether left wheels are at target RPM.
-     */
-    public boolean leftWheelsReady() {
-        return getLeftShooterRPM() >= targetLeftRPM - ShooterConstants.RPM_ERROR_MARGIN
-                && getLeftShooterRPM() <= targetLeftRPM + ShooterConstants.RPM_ERROR_MARGIN;
-    }
-
-    /**
-     * @return whether right wheels are at target RPM.
-     */
-    public boolean rightWheelsReady() {
-        return getRightShooterRPM() >= targetRightRPM - ShooterConstants.RPM_ERROR_MARGIN
-                && getRightShooterRPM() <= targetRightRPM + ShooterConstants.RPM_ERROR_MARGIN;
-    }
-
-    // ========================================================
-    // ======================= STATE ==========================
-
-    /**
-     * @return current shooter state.
-     */
-    public ShooterStates getShooterState() {
-        return shooterState;
-    }
-
     // ========================================================
     // ====================== PERIODIC ========================
 
     @Override
     public void periodic() { // This method will be called once per scheduler run
-
-        // adjust shooter state passively
-        if (leftWheelsReady() && rightWheelsReady()) {
-            shooterState = ShooterStates.READY;
-        } else if (getLeftShooterRPM() == 0 && getRightShooterRPM() == 0) {
-            shooterState = ShooterStates.STOPPED; // shooter stopped
-        } else {
-            shooterState = ShooterStates.ADJUST_VEL; // shooter not at correct speed
-        }
 
         // Telemetry ------------------------------------------
 
@@ -217,7 +155,6 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("[SHOOTER] Target Right RPM", targetRightRPM);
         SmartDashboard.putNumber("[SHOOTER] Target Left RPM", targetLeftRPM);
 
-        SmartDashboard.putString("[SHOOTER] State", shooterState.toString());
-        SmartDashboard.putBoolean("[SHOOTER] Beambreak", this.hasGamePiece());
+        SmartDashboard.putString("[SHOOTER] State", states.getShooterState().toString());
     }
 }

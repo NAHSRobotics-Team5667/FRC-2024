@@ -4,12 +4,14 @@
 
 package frc.robot;
 
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.TestCommand;
-import frc.robot.commands.intake.IntakeNote;
-import frc.robot.commands.shooter.SetArm;
-import frc.robot.commands.shooter.ShootCommand;
+import frc.robot.commands.actions.IntakeNote;
+import frc.robot.commands.actions.RemoveNote;
+import frc.robot.commands.actions.ShootNoteAmp;
+import frc.robot.commands.actions.ShootNoteSpeaker;
+import frc.robot.commands.arm.SetArm;
+import frc.robot.commands.index.IndexCommand;
+import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -17,9 +19,6 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 // import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TestSubsystem;
-import frc.robot.util.ArmAngle;
-import frc.robot.util.States.ArmPosState;
-
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
@@ -138,12 +137,16 @@ public class RobotContainer {
          * - Press B - toggle outtake
          * - Press RB - toggle shooter (speaker)
          * - Press LB - toggle amp
+         * - Right Trigger - run index into shooter
          */
 
-        driverXbox.a().toggleOnTrue(new IntakeNote(true));
-        driverXbox.b().toggleOnTrue(new IntakeNote(false)); // watch for errors bc of overlapping commands
-        driverXbox.rightBumper().toggleOnTrue(new ShootCommand(80, 100, false));
-        driverXbox.leftBumper().toggleOnTrue(new ShootCommand(30, 30, true));
+        driverXbox.a().toggleOnTrue(new IntakeNote());
+        driverXbox.b().toggleOnTrue(new RemoveNote());
+
+        driverXbox.rightBumper().toggleOnTrue(new ShooterCommand(false));
+        driverXbox.leftBumper().toggleOnTrue(new ShooterCommand(true));
+
+        driverXbox.rightTrigger().whileTrue(new IndexCommand(true));
     }
 
     public static CommandXboxController getDriverController() {

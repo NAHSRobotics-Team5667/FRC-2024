@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.path.PathPlannerTrajectory.State;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -20,7 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.util.ArmAngle;
-import frc.robot.util.States.ArmPosState;
+import frc.robot.util.States.ArmState;
 
 //44/60 - Gear for ratio for arm.
 //1 climb rotation is 20.25 motor rotations.
@@ -61,11 +62,9 @@ public class ArmSubsystem extends SubsystemBase {
 
     private ProfiledPIDController firstPivotPID, secondPivotPID;
 
-    private ArmPosState positionState = null;
-    private ArmPosState targetState = ArmPosState.TRANSFER;
-
     private ArmAngle armPos = new ArmAngle();
-    private ArmAngle targetArmPos = ArmConstants.getGoalPosition(targetState);
+
+    private StateManager states;
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -75,6 +74,10 @@ public class ArmSubsystem extends SubsystemBase {
     private static ArmSubsystem instance = null;
 
     private ArmSubsystem() {
+        // ==== STATES ====
+
+        states = StateManager.getInstance();
+
         // ==== PID ====
 
         firstPivotPID = new ProfiledPIDController(
@@ -186,10 +189,10 @@ public class ArmSubsystem extends SubsystemBase {
     /**
      * Set the relative velocity of the first pivot.
      * 
-     * @param percentOutput % output for both motors controlling first pivot.
+     * @param speed % output for both motors controlling first pivot.
      */
-    public void setFirstPivotSpeed(double percentOutput) {
-        double motorSpeed = percentOutput / 100;
+    public void setFirstPivot(double speed) {
+        double motorSpeed = speed / 100;
 
         m_firstStageLead.set(motorSpeed);
         m_firstStageFollower.setControl(new Follower(ArmConstants.FIRST_PIVOT_LEAD_ID, true));
@@ -230,7 +233,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void firstPivotToTargetPID(double currentPos, double targetPos) {
         double output = calculateFirstPivotPID(currentPos, targetPos);
-        setFirstPivotSpeed(output * 100);
+        setFirstPivot(output * 100);
     }
 
     /**
@@ -245,10 +248,10 @@ public class ArmSubsystem extends SubsystemBase {
     /**
      * Set the relative velocity of the second pivot.
      * 
-     * @param percentOutput % output for both motors controlling second pivot.
+     * @param speed % output for both motors controlling second pivot.
      */
-    public void setSecondPivotSpeed(double percentOutput) {
-        double motorSpeed = percentOutput / 100;
+    public void setSecondPivot(double speed) {
+        double motorSpeed = speed / 100;
 
         m_secondStageLead.set(motorSpeed);
         m_secondStageFollower.setControl(new Follower(ArmConstants.SECOND_PIVOT_LEAD_ID, false));
@@ -289,7 +292,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void secondPivotToTargetPID(double currentPos, double targetPos) {
         double output = calculateSecondPivotPID(currentPos, targetPos);
-        setSecondPivotSpeed(output * 100);
+        setSecondPivot(output * 100);
     }
 
     /**
@@ -330,57 +333,30 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     /**
-     * @return target arm position.
-     */
-    public ArmAngle getTargetPosition() {
-        return targetArmPos;
-    }
-
-    /**
-     * @return target position state of arm.
-     */
-    public ArmPosState getTargetState() {
-        return targetState;
-    }
-
-    /**
-     * Sets target arm position for use by the SetArm command.
-     * 
-     * @param targetState target arm state - gets associated arm position.
-     */
-    public void setTargetPosition(ArmPosState targetState) {
-        this.targetState = targetState;
-        targetArmPos = ArmConstants.getGoalPosition(targetState);
-    }
-
-    /**
-     * @param target target arm position state.
      * @return whether first pivot is at target.
      */
-    public boolean firstPivotAtTarget(ArmPosState target) {
-        return getFirstPivotAbsDeg() >= ArmConstants.getGoalPosition(target).getFirstPivot()
+    public boolean firstPivotAtTarget() {
+        return getFirstPivotAbsDeg() >= states.getTargetArmAngle().getFirstPivot()
                 - ArmConstants.FIRST_ERR_MARGIN_DEG
-                && getFirstPivotAbsDeg() <= ArmConstants.getGoalPosition(target).getFirstPivot()
+                && getFirstPivotAbsDeg() <= states.getTargetArmAngle().getFirstPivot()
                         + ArmConstants.FIRST_ERR_MARGIN_DEG;
     }
 
     /**
-     * @param target target arm position state.
      * @return whether second pivot is at target.
      */
-    public boolean secondPivotAtTarget(ArmPosState target) {
-        return getSecondPivotAbsDeg() >= ArmConstants.getGoalPosition(target).getSecondPivot()
+    public boolean secondPivotAtTarget() {
+        return getSecondPivotAbsDeg() >= states.getTargetArmAngle().getSecondPivot()
                 - ArmConstants.SECOND_ERR_MARGIN_DEG
-                && getSecondPivotAbsDeg() <= ArmConstants.getGoalPosition(target).getSecondPivot()
+                && getSecondPivotAbsDeg() <= states.getTargetArmAngle().getSecondPivot()
                         + ArmConstants.SECOND_ERR_MARGIN_DEG;
     }
 
     /**
-     * @param target target arm position state.
      * @return whether both pivots are at targets.
      */
-    public boolean armAtTarget(ArmPosState target) {
-        return firstPivotAtTarget(target) && secondPivotAtTarget(target);
+    public boolean armAtTarget() {
+        return firstPivotAtTarget() && secondPivotAtTarget();
     }
 
     // FIRST PIVOT --------------------------------------------
@@ -475,23 +451,6 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     // ========================================================
-    // ======================= STATE ==========================
-
-    /**
-     * @param newState new positon state of the arm
-     */
-    public void updatePositionState(ArmPosState newState) {
-        positionState = newState;
-    }
-
-    /**
-     * @return current position state of the arm.
-     */
-    public ArmPosState getPositionState() {
-        return positionState;
-    }
-
-    // ========================================================
     // ===================== PERIODIC =========================
 
     @Override
@@ -523,28 +482,6 @@ public class ArmSubsystem extends SubsystemBase {
                     .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));
             m_secondStageFollower.getConfigurator()
                     .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));
-        }
-
-        // ---------------------------------------------------
-        // ------------ UPDATE POSITION STATE ----------------
-
-        if (armAtTarget(ArmPosState.TRANSFER)) {
-            updatePositionState(ArmPosState.TRANSFER); // TRANSFER
-
-        } else if (armAtTarget(ArmPosState.SPEAKER)) {
-            updatePositionState(ArmPosState.SPEAKER); // SPEAKER
-
-        } else if (armAtTarget(ArmPosState.AMP)) {
-            updatePositionState(ArmPosState.AMP); // AMP
-
-        } else if (armAtTarget(ArmPosState.TRAP)) {
-            updatePositionState(ArmPosState.TRAP); // TRAP
-
-        } else if (armAtTarget(ArmPosState.CLIMB)) {
-            updatePositionState(ArmPosState.CLIMB); // HUMAN PLAYER
-
-        } else {
-            updatePositionState(ArmPosState.INTERMEDIATE); // INTERMEDIATE if not at any of the other positions
         }
 
         // ---------------------------------------------------
@@ -589,7 +526,7 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("[ARM] Motor Second Pivot Deg", getSecondPivotMotorDeg());
 
         // States --------------------------------------------
-        SmartDashboard.putString("[ARM] Curr Pos State", positionState.toString());
+        SmartDashboard.putString("[ARM] State", states.getArmState().toString());
 
         // Limit Switch --------------------------------------
         SmartDashboard.putBoolean("[ARM] Limit Switch", getLimitSwitch());
@@ -597,14 +534,14 @@ public class ArmSubsystem extends SubsystemBase {
         // PID -----------------------------------------------
         SmartDashboard.putNumber("[ARM] 1st PID Setpoint", firstPivotPID.getGoal().position);
         SmartDashboard.putNumber("[ARM] 1st PID Output",
-                calculateFirstPivotPID(getFirstPivotMotorDeg(), getTargetPosition().getFirstPivot()));
+                calculateFirstPivotPID(getFirstPivotMotorDeg(), states.getTargetArmAngle().getFirstPivot()));
         SmartDashboard.putNumber("[ARM] 1st PID Error", firstPivotPID.getPositionError());
         // SmartDashboard.putNumber("[ARM] 1st Target",
         // getTargetPosition().getFirstPivot());
 
         SmartDashboard.putNumber("[ARM] 2nd PID Setpoint", secondPivotPID.getGoal().position);
         SmartDashboard.putNumber("[ARM] 2nd PID Output",
-                calculateSecondPivotPID(getFirstPivotMotorDeg(), getTargetPosition().getSecondPivot()));
+                calculateSecondPivotPID(getSecondPivotMotorDeg(), states.getTargetArmAngle().getSecondPivot()));
         SmartDashboard.putNumber("[ARM] 2nd PID Error", secondPivotPID.getPositionError());
         // SmartDashboard.putNumber("[ARM] 2nd Target",
         // getTargetPosition().getSecondPivot());

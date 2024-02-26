@@ -8,7 +8,7 @@ import java.util.Map;
 
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.ArmAngle;
-import frc.robot.util.States.ArmPosState;
+import frc.robot.util.States.ArmState;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -120,22 +120,22 @@ public final class Constants {
         // ================= ARM POSITION ========================
 
         // create a map of goal states and their target arm positions
-        public static Map<ArmPosState, ArmAngle> GOAL_POSITIONS = Map.of(
-                ArmPosState.TRANSFER, new ArmAngle(12.2, -11.25), // arm position when at resting position
-                ArmPosState.SPEAKER, new ArmAngle(50, 0), // default position for speaker
-                ArmPosState.AMP, new ArmAngle(108.1, -122.7), // position for amp
-                ArmPosState.TRAP, new ArmAngle(100, 100), // position for trap
-                ArmPosState.CLIMB, new ArmAngle()); // position for human player intake
+        public static Map<ArmState, ArmAngle> GOAL_POSITIONS = Map.of(
+                ArmState.TRANSFER, new ArmAngle(12.2, -11.25), // arm position when at resting position
+                ArmState.SPEAKER, new ArmAngle(50, 0), // default position for speaker
+                ArmState.AMP, new ArmAngle(108.1, -122.7), // position for amp
+                ArmState.TRAP, new ArmAngle(100, 100), // position for trap
+                ArmState.CLIMB, new ArmAngle()); // position for human player intake
 
         // create a map of arm positions and their target goal states - maps aren't
         // bi-directional :(
-        public static Map<ArmAngle, ArmPosState> ARM_STATES = Map.of(
-                getGoalPosition(ArmPosState.TRANSFER), ArmPosState.TRANSFER, // arm position when at resting position
-                getGoalPosition(ArmPosState.SPEAKER), ArmPosState.SPEAKER, // default position for speaker
-                getGoalPosition(ArmPosState.AMP), ArmPosState.AMP, // position for amp
-                getGoalPosition(ArmPosState.TRAP), ArmPosState.TRAP, // position for trap
-                getGoalPosition(ArmPosState.CLIMB), ArmPosState.CLIMB); // position for human player
-                                                                        // intake
+        public static Map<ArmAngle, ArmState> ARM_STATES = Map.of(
+                getGoalPosition(ArmState.TRANSFER), ArmState.TRANSFER, // arm position when at resting position
+                getGoalPosition(ArmState.SPEAKER), ArmState.SPEAKER, // default position for speaker
+                getGoalPosition(ArmState.AMP), ArmState.AMP, // position for amp
+                getGoalPosition(ArmState.TRAP), ArmState.TRAP, // position for trap
+                getGoalPosition(ArmState.CLIMB), ArmState.CLIMB); // position for human player
+                                                                  // intake
 
         /**
          * Returns the goal position for a given target.
@@ -143,7 +143,7 @@ public final class Constants {
          * @param key target position.
          * @return goal position associated with target.
          */
-        public static ArmAngle getGoalPosition(ArmPosState key) {
+        public static ArmAngle getGoalPosition(ArmState key) {
             return GOAL_POSITIONS.get(key);
         }
 
@@ -154,7 +154,7 @@ public final class Constants {
          * @param key    arm position state to update.
          * @param newPos new position to link to arm position state.
          */
-        public static void setGoalPosition(ArmPosState key, ArmAngle newPos) {
+        public static void setGoalPosition(ArmState key, ArmAngle newPos) {
             GOAL_POSITIONS.put(key, newPos);
         }
 
@@ -164,7 +164,7 @@ public final class Constants {
          * @param key arm angles that you want the linked state of.
          * @return linked state to arm angles.
          */
-        public static ArmPosState getState(ArmAngle key) {
+        public static ArmState getState(ArmAngle key) {
             return ARM_STATES.get(key);
         }
 
@@ -191,17 +191,17 @@ public final class Constants {
 
         // ==== POSITION-MOTION MAPPED PROCEDURES ====
 
-        public static final Map<ArmPosState, Boolean> SECOND_PIVOT_PRIORITY_MAP = Map.of(
-                ArmPosState.TRANSFER, true, // move second pivot first when going to transfer
-                ArmPosState.SPEAKER, true, // move second pivot first when going to speaker
-                ArmPosState.AMP, false, // move first pivot first when going to amp
-                ArmPosState.TRAP, false); // move first pivot first when going to trap
+        public static final Map<ArmState, Boolean> SECOND_PIVOT_PRIORITY_MAP = Map.of(
+                ArmState.TRANSFER, true, // move second pivot first when going to transfer
+                ArmState.SPEAKER, true, // move second pivot first when going to speaker
+                ArmState.AMP, false, // move first pivot first when going to amp
+                ArmState.TRAP, false); // move first pivot first when going to trap
 
         /**
          * @param state state to check second pivot's priority for.
          * @return whether second pivot has priority in the given state.
          */
-        public static boolean getSecondPivotPriority(ArmPosState state) {
+        public static boolean getSecondPivotPriority(ArmState state) {
             return SECOND_PIVOT_PRIORITY_MAP.get(state);
         }
 
@@ -250,20 +250,30 @@ public final class Constants {
     }
 
     public static class ShooterConstants {
-        // ==== MOTORS ====
+        // ==== ELECTRONICS ====
         public static final int SHOOTER_LEFT_ID = 11;
         public static final int SHOOTER_RIGHT_ID = 10;
 
-        public static final int BELT_INDEX_ID = 19;
-
-        // ---- BEAM BREAK ----
-        public static final int BEAM_BREAK_CHANNEL_ID = 5;
-
         // ---- MAXIMUM RPM ----
         public static final double SHOOTER_MAX_RPM = 87;
-        public static final double INDEX_MAX_RPM = 11000;
-
         public static final double RPM_ERROR_MARGIN = 10;
+        public static final double SHOOTER_RAMP_TIME = 0.75;
+
+        // --- SPEEDS ----
+        public static final double AMP_RIGHT_SPEED = 50;
+        public static final double AMP_LEFT_SPEED = 50;
+        public static final double SPEAKER_RIGHT_SPEED = 90;
+        public static final double SPEAKER_LEFT_SPEED = 70;
+        public static final double OUTTAKE_SPEED = 20;
+    }
+
+    public static class IndexConstants {
+        // ==== ELECTRONICS ====
+        public static final int BELT_INDEX_ID = 19;
+        public static final int BEAM_BREAK_CHANNEL_ID = 5;
+
+        // ==== SPEEDS ====
+        public static final double SPEED = 30;
     }
 
     public static class IntakeConstants {
@@ -272,6 +282,10 @@ public final class Constants {
 
         // ==== SOLENOID ====
         public static final int SOLENOID_PORT = 1; // TODO: double check
+
+        // ==== SPEED ====
+        public static final double INTAKE_SPEED = 50;
+        public static final double OUTTAKE_SPEED = -50;
     }
 
     public static class ClimbConstants {
