@@ -17,7 +17,9 @@ import frc.robot.commands.shooter.OuttakeShooter;
  * Removes note out the front of the robot.
  */
 public class RemoveNote extends ParallelRaceGroup {
-    /** Creates a new RemoveNote. */
+    /**
+     * Removes note out the front of the robot.
+     */
     public RemoveNote() {
         // Add your commands in the addCommands() call, e.g.
         // addCommands(new FooCommand(), new BarCommand());

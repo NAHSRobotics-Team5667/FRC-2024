@@ -12,7 +12,7 @@ import frc.robot.commands.shooter.ShooterCommand;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ShootNoteSpeaker extends ParallelRaceGroup {
-    /** Creates a new ShootNoteSpeaker. */
+    /** Shoots note into amp in automated routine. */
     public ShootNoteSpeaker() {
         // Add your commands in the addCommands() call, e.g.
         // addCommands(new FooCommand(), new BarCommand());
