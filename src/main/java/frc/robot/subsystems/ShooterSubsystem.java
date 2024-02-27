@@ -37,8 +37,6 @@ public class ShooterSubsystem extends SubsystemBase {
     private double targetLeftRPM = ShooterConstants.SHOOTER_MAX_RPM;
     private double targetRightRPM = ShooterConstants.SHOOTER_MAX_RPM;
 
-    private StateManager states;
-
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
 
@@ -56,9 +54,6 @@ public class ShooterSubsystem extends SubsystemBase {
         m_rightShooter.setNeutralMode(NeutralModeValue.Coast);
 
         m_rightShooter.setInverted(true);
-
-        // initialize state subsystem
-        states = StateManager.getInstance();
     }
 
     public static ShooterSubsystem getInstance() {
@@ -155,6 +150,6 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("[SHOOTER] Target Right RPM", targetRightRPM);
         SmartDashboard.putNumber("[SHOOTER] Target Left RPM", targetLeftRPM);
 
-        SmartDashboard.putString("[SHOOTER] State", states.getShooterState().toString());
+        SmartDashboard.putString("[SHOOTER] State", StateManager.getInstance().getShooterState().toString());
     }
 }

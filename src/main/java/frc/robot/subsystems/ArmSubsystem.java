@@ -9,19 +9,21 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.pathplanner.lib.path.PathPlannerTrajectory.State;
-
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.util.ArmAngle;
-import frc.robot.util.States.ArmState;
 
 //44/60 - Gear for ratio for arm.
 //1 climb rotation is 20.25 motor rotations.
@@ -60,11 +62,32 @@ public class ArmSubsystem extends SubsystemBase {
             secondEncoderL, secondEncoderR; // declare encoders for arm actuation
     private DigitalInput limitSwitch;
 
-    private ProfiledPIDController firstPivotPID, secondPivotPID;
+    private ProfiledPIDController firstPivotPID;
+    private ProfiledPIDController secondPivotPID;
 
     private ArmAngle armPos = new ArmAngle();
 
     private StateManager states;
+
+    // ========================================================
+    // ==================== PID TUNING ========================
+
+    // ShuffleboardTab tunerTab = Shuffleboard.getTab("Arm Tuning");
+
+    // GenericEntry pEntry = tunerTab.add("Tune P", ArmConstants.FIRST_kP)
+    // .withWidget(BuiltInWidgets.kTextView)
+    // .withPosition(1, 1)
+    // .getEntry();
+
+    // GenericEntry iEntry = tunerTab.add("Tune I", ArmConstants.FIRST_kI)
+    // .withWidget(BuiltInWidgets.kTextView)
+    // .withPosition(1, 1)
+    // .getEntry();
+
+    // GenericEntry dEntry = tunerTab.add("Tune D", ArmConstants.FIRST_kD)
+    // .withWidget(BuiltInWidgets.kTextView)
+    // .withPosition(1, 1)
+    // .getEntry();
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -81,9 +104,9 @@ public class ArmSubsystem extends SubsystemBase {
         // ==== PID ====
 
         firstPivotPID = new ProfiledPIDController(
-                ArmConstants.FIRST_kP,
-                ArmConstants.FIRST_kI,
-                ArmConstants.FIRST_kD,
+                ArmConstants.FIRST_kP /* pEntry.getDouble(ArmConstants.FIRST_kP) */,
+                ArmConstants.FIRST_kI /* iEntry.getDouble(ArmConstants.FIRST_kI) */,
+                ArmConstants.FIRST_kD /* dEntry.getDouble(ArmConstants.FIRST_kD) */,
                 new TrapezoidProfile.Constraints( // sets trapezoid profile for first pivot velocity
                         ArmConstants.FIRST_MAX_VELOCITY,
                         ArmConstants.FIRST_MAX_ACCEL));
@@ -95,6 +118,8 @@ public class ArmSubsystem extends SubsystemBase {
                 new TrapezoidProfile.Constraints( // trapezoid second pivot velocity
                         ArmConstants.SECOND_MAX_VELOCITY,
                         ArmConstants.SECOND_MAX_ACCEL));
+
+        secondPivotPID.setTolerance(3);
 
         // ====== FIRST PIVOT ======
 
@@ -134,7 +159,10 @@ public class ArmSubsystem extends SubsystemBase {
         secondConfig.Feedback.SensorToMechanismRatio = ArmConstants.SECOND_GEAR_RATIO;
 
         m_secondStageLead.getConfigurator().apply(secondConfig);
-        m_secondStageFollower.setControl(new Follower(ArmConstants.SECOND_PIVOT_LEAD_ID, true)); // follow leader
+        // TODO: fix when second stage motor is swapped
+        // m_secondStageFollower.setControl(new
+        // Follower(ArmConstants.SECOND_PIVOT_LEAD_ID, true)); // follow leader
+        m_secondStageFollower.setNeutralMode(NeutralModeValue.Coast);
 
         // ----------------------------------
 
@@ -187,7 +215,8 @@ public class ArmSubsystem extends SubsystemBase {
     // FIRST PIVOT --------------------------------------------
 
     /**
-     * Set the relative velocity of the first pivot.
+     * Set the relative velocity of the first pivot. Positive is away from resting
+     * position.
      * 
      * @param speed % output for both motors controlling first pivot.
      */
@@ -199,30 +228,12 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     /**
-     * Moves the motors toward target position using Motion Magic. Needs to be
-     * called periodically.
-     * 
-     * @param targetPos target position of first pivot in degrees.
-     */
-    public void firstPivotToTargetMotionMagic(double targetPos) {
-        double targetPosRot = Units.degreesToRotations(targetPos);
-        m_firstStageLead.setControl(new MotionMagicVoltage(targetPosRot));
-    }
-
-    /**
-     * @param setpoint goal position of first pivot in rotations.
-     */
-    public void setFirstPivotSetpoint(double setpoint) {
-        firstPivotPID.setGoal(setpoint);
-    }
-
-    /**
      * @param targetPos PID setpoint in degrees.
      * @return PID calculation in response.
      */
     public double calculateFirstPivotPID(double currentPos, double targetPos) {
         return MathUtil.clamp(
-                firstPivotPID.calculate(getFirstPivotMotorDeg(), targetPos),
+                firstPivotPID.calculate(currentPos, targetPos),
                 -0.4, 1);
     }
 
@@ -231,8 +242,8 @@ public class ArmSubsystem extends SubsystemBase {
      * 
      * @param targetPos target for arm in degrees.
      */
-    public void firstPivotToTargetPID(double currentPos, double targetPos) {
-        double output = calculateFirstPivotPID(currentPos, targetPos);
+    public void firstPivotToTargetPID(double targetPos) {
+        double output = calculateFirstPivotPID(getFirstPivotMotorDeg(), targetPos);
         setFirstPivot(output * 100);
     }
 
@@ -254,25 +265,8 @@ public class ArmSubsystem extends SubsystemBase {
         double motorSpeed = speed / 100;
 
         m_secondStageLead.set(motorSpeed);
-        m_secondStageFollower.setControl(new Follower(ArmConstants.SECOND_PIVOT_LEAD_ID, false));
-    }
-
-    /**
-     * Moves the motors toward target position using Motion Magic. Needs to be
-     * called periodically.
-     * 
-     * @param targetPos target position of first pivot in degrees.
-     */
-    public void secondPivotToTargetMotionMagic(double targetPos) {
-        double targetPosRot = Units.degreesToRotations(targetPos);
-        m_secondStageLead.setControl(new MotionMagicVoltage(targetPosRot));
-    }
-
-    /**
-     * @param setpoint goal position of first pivot in rotations.
-     */
-    public void setSecondPivotSetpoint(double setpoint) {
-        secondPivotPID.setGoal(setpoint);
+        // m_secondStageFollower.setControl(new
+        // Follower(ArmConstants.SECOND_PIVOT_LEAD_ID, false));
     }
 
     /**
@@ -281,8 +275,8 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public double calculateSecondPivotPID(double currentPos, double targetPos) {
         return MathUtil.clamp(
-                secondPivotPID.calculate(getSecondPivotMotorDeg(), targetPos),
-                -0.4, 1);
+                secondPivotPID.calculate(currentPos, targetPos),
+                -1, 0.4);
     }
 
     /**
@@ -290,8 +284,8 @@ public class ArmSubsystem extends SubsystemBase {
      * 
      * @param targetPos target for arm in degrees.
      */
-    public void secondPivotToTargetPID(double currentPos, double targetPos) {
-        double output = calculateSecondPivotPID(currentPos, targetPos);
+    public void secondPivotToTargetPID(double targetPos) {
+        double output = calculateSecondPivotPID(getSecondPivotMotorDeg(), targetPos);
         setSecondPivot(output * 100);
     }
 
@@ -455,7 +449,14 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() { // This method will be called once per scheduler run - every 20ms.
-        // update arm position with encoders
+        // PID Tuning ----------------------------------------
+
+        // firstPivotPID.setPID(
+        // pEntry.getDouble(ArmConstants.FIRST_kP),
+        // iEntry.getDouble(ArmConstants.FIRST_kI),
+        // dEntry.getDouble(ArmConstants.FIRST_kD));
+
+        // update arm position with encoders -----------------
         updateArmPosition(
                 Units.rotationsToDegrees(
                         ((getOffsetFirstEncoders()[0] + getOffsetFirstEncoders()[1]) / 2) * (44.0 / 60.0)), // average
@@ -468,7 +469,7 @@ public class ArmSubsystem extends SubsystemBase {
 
         // set motor encoders ---------------------------------
 
-        if (Math.abs(getFirstPivotAbsDeg() - getFirstPivotMotorDeg()) > 1) {
+        if (Math.abs(getFirstPivotAbsDeg() - getFirstPivotMotorDeg()) > ArmConstants.ACC_FIRST_PIVOT_DIFF) {
             // initial motor positions - first stage
             m_firstStageLead.getConfigurator()
                     .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
@@ -476,7 +477,7 @@ public class ArmSubsystem extends SubsystemBase {
                     .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
         }
 
-        if (Math.abs(getSecondPivotAbsDeg() - getSecondPivotMotorDeg()) > 1) {
+        if (Math.abs(getSecondPivotAbsDeg() - getSecondPivotMotorDeg()) > ArmConstants.ACC_SECOND_PIVOT_DIFF) {
             // initial motor positions - second stage
             m_secondStageLead.getConfigurator()
                     .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));

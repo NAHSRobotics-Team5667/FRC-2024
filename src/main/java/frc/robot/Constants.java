@@ -130,11 +130,11 @@ public final class Constants {
         // create a map of arm positions and their target goal states - maps aren't
         // bi-directional :(
         public static Map<ArmAngle, ArmState> ARM_STATES = Map.of(
-                getGoalPosition(ArmState.TRANSFER), ArmState.TRANSFER, // arm position when at resting position
-                getGoalPosition(ArmState.SPEAKER), ArmState.SPEAKER, // default position for speaker
-                getGoalPosition(ArmState.AMP), ArmState.AMP, // position for amp
-                getGoalPosition(ArmState.TRAP), ArmState.TRAP, // position for trap
-                getGoalPosition(ArmState.CLIMB), ArmState.CLIMB); // position for human player
+                getGoalArmAngle(ArmState.TRANSFER), ArmState.TRANSFER, // arm position when at resting position
+                getGoalArmAngle(ArmState.SPEAKER), ArmState.SPEAKER, // default position for speaker
+                getGoalArmAngle(ArmState.AMP), ArmState.AMP, // position for amp
+                getGoalArmAngle(ArmState.TRAP), ArmState.TRAP, // position for trap
+                getGoalArmAngle(ArmState.CLIMB), ArmState.CLIMB); // position for human player
                                                                   // intake
 
         /**
@@ -143,7 +143,7 @@ public final class Constants {
          * @param key target position.
          * @return goal position associated with target.
          */
-        public static ArmAngle getGoalPosition(ArmState key) {
+        public static ArmAngle getGoalArmAngle(ArmState key) {
             return GOAL_POSITIONS.get(key);
         }
 
@@ -174,17 +174,17 @@ public final class Constants {
          * Acceptable difference between motor encoder measurement and absolute encoder
          * for first pivot (deg).
          */
-        public static final double ACC_FIRST_PIVOT_DIFF = 1.0; // TODO: find how many degrees of play exist
+        public static final double ACC_FIRST_PIVOT_DIFF = 1.0;
         /**
          * Acceptable difference between motor encoder measurement and absolute encoder
          * for first pivot (deg).
          */
-        public static final double ACC_SECOND_PIVOT_DIFF = 1.0; // TODO: find how many degrees of play exist
+        public static final double ACC_SECOND_PIVOT_DIFF = 3.0;
 
         /** Acceptable margin of error in PID control for first pivot (deg). */
-        public static final double FIRST_ERR_MARGIN_DEG = 8.0; // TODO: fine tune
+        public static final double FIRST_ERR_MARGIN_DEG = 3.0;
         /** Acceptable margin of error in PID control for first pivot (deg). */
-        public static final double SECOND_ERR_MARGIN_DEG = 8.0; // TODO: fine tune
+        public static final double SECOND_ERR_MARGIN_DEG = 3.5;
 
         // =======================================================
         // ====================== MOTION =========================
@@ -216,13 +216,12 @@ public final class Constants {
         public static final double FIRST_kV = 0;
         public static final double FIRST_kA = 0;
 
-        public static final double FIRST_MAX_VELOCITY = 40; // maximum achievable velocity (deg per sec)
+        public static final double FIRST_MAX_VELOCITY = 400; // maximum achievable velocity (deg per sec)
         public static final double FIRST_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
-        public static final double FIRST_MAX_ACCEL = 30; // target acceleration (deg / sec / sec)
-        public static final double FIRST_TARGET_JERK = 0.1; // target jerk (deg / sec / sec / sec)
+        public static final double FIRST_MAX_ACCEL = 300; // target acceleration (deg / sec / sec)
 
         // ---- SECOND PIVOT ----
-        public static final double SECOND_kP = 0.005;
+        public static final double SECOND_kP = 0.02;
         public static final double SECOND_kI = 0;
         public static final double SECOND_kD = 0;
         public static final double SECOND_kF = 0;
@@ -230,10 +229,9 @@ public final class Constants {
         public static final double SECOND_kV = 0;
         public static final double SECOND_kA = 0;
 
-        public static final double SECOND_MAX_VELOCITY = 60; // maximum achievable velocity (deg per sec)
+        public static final double SECOND_MAX_VELOCITY = 120; // maximum achievable velocity (deg per sec)
         public static final double SECOND_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
-        public static final double SECOND_MAX_ACCEL = 20; // target acceleration (deg / sec / sec)
-        public static final double SECOND_TARGET_JERK = -1; // target jerk (deg / sec / sec / sec)
+        public static final double SECOND_MAX_ACCEL = 80; // target acceleration (deg / sec / sec)
 
         // ==== VELOCITY THRESHOLDS ====
 
@@ -281,7 +279,7 @@ public final class Constants {
         public static final int SPARKMAX_ID = 18;
 
         // ==== SOLENOID ====
-        public static final int SOLENOID_PORT = 1; // TODO: double check
+        public static final int SOLENOID_PORT = 1;
 
         // ==== SPEED ====
         public static final double INTAKE_SPEED = 50;
@@ -290,12 +288,12 @@ public final class Constants {
 
     public static class ClimbConstants {
         // ==== MOTORS - FALCON 500s ====
-        public static final int RIGHT_CLIMB_ID = 16; // TODO: This needs to be double checked.
-        public static final int LEFT_CLIMB_ID = 17; // TODO: This needs to be double checked.
+        public static final int RIGHT_CLIMB_ID = 16;
+        public static final int LEFT_CLIMB_ID = 17;
 
         // ==== ENCODERS - CANCoders ====
-        public static final int RIGHT_CLIMB_ENCODER_ID = 24; // TODO: This needs to be double checked.
-        public static final int LEFT_CLIMB_ENCODER_ID = 25; // TODO: This needs to be double checked.
+        public static final int RIGHT_CLIMB_ENCODER_ID = 24;
+        public static final int LEFT_CLIMB_ENCODER_ID = 25;
 
         // ==== RATIOS ====
         public static final double RATIO_WINCH = 20.25;

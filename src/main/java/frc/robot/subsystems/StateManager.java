@@ -16,11 +16,9 @@ import frc.robot.util.States.*;
  */
 public class StateManager extends SubsystemBase {
     // arm
-    private ArmSubsystem arm;
     private ArmState armState, targetArmState;
 
     // shooter
-    private ShooterSubsystem shooter;
     private ShooterState shooterState;
     private double shooterStartTime;
 
@@ -33,11 +31,12 @@ public class StateManager extends SubsystemBase {
     /** Creates a new StateSubsystem. */
     public StateManager() {
         // Arm ------------------------------------------------
-        arm = ArmSubsystem.getInstance();
+        armState = ArmState.TRANSFER;
         targetArmState = ArmState.TRANSFER;
 
         // Shooter --------------------------------------------
-        shooter = ShooterSubsystem.getInstance();
+        shooterState = ShooterState.STOPPED;
+        shooterStartTime = 0;
     }
 
     // ========================================================
@@ -61,7 +60,7 @@ public class StateManager extends SubsystemBase {
      * Periodically called to passively update the arm state.
      */
     private void updateArmState() {
-        if (arm.armAtTarget()) {
+        if (ArmSubsystem.getInstance().armAtTarget()) {
             armState = targetArmState;
         } else {
             armState = ArmState.INTERMEDIATE;
@@ -88,7 +87,7 @@ public class StateManager extends SubsystemBase {
      * @return target arm angles.
      */
     public ArmAngle getTargetArmAngle() {
-        return ArmConstants.getGoalPosition(targetArmState);
+        return ArmConstants.getGoalArmAngle(targetArmState);
     }
 
     /**
@@ -114,7 +113,8 @@ public class StateManager extends SubsystemBase {
     private void updateShooterState() {
         if (Timer.getFPGATimestamp() - shooterStartTime >= ShooterConstants.SHOOTER_RAMP_TIME) {
             shooterState = ShooterState.READY;
-        } else if (shooter.getLeftShooterRPM() > 0 || shooter.getRightShooterRPM() > 0) {
+        } else if (ShooterSubsystem.getInstance().getLeftShooterRPM() > 0
+                || ShooterSubsystem.getInstance().getRightShooterRPM() > 0) {
             shooterState = ShooterState.MOVING;
         } else {
             shooterState = ShooterState.STOPPED;

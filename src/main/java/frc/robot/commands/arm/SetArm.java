@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.StateManager;
+import frc.robot.util.States.ArmState;
 
 /**
  * SetArm.java
@@ -41,25 +42,19 @@ public class SetArm extends Command {
         // check if second pivot has priority in the maneuver
         if (ArmConstants.getSecondPivotPriority(states.getTargetArmState())) {
             // run second pivot
-            arm.secondPivotToTargetPID(arm.getSecondPivotMotorDeg(),
-                    states.getTargetArmAngle().getSecondPivot());
+            arm.secondPivotToTargetPID(states.getTargetArmAngle().getSecondPivot());
 
             // run first pivot after second pivot at desired location
             if (arm.secondPivotAtTarget()) {
-
-                arm.firstPivotToTargetPID(arm.getFirstPivotMotorDeg(),
-                        states.getTargetArmAngle().getFirstPivot());
+                arm.firstPivotToTargetPID(states.getTargetArmAngle().getFirstPivot());
             }
         } else { // if first pivot has priority
             // run first pivot
-            arm.firstPivotToTargetPID(arm.getFirstPivotMotorDeg(),
-                    states.getTargetArmAngle().getFirstPivot());
+            arm.firstPivotToTargetPID(states.getTargetArmAngle().getFirstPivot());
 
             // run second pivot after first pivot at desired location
             if (arm.firstPivotAtTarget()) {
-
-                arm.secondPivotToTargetPID(arm.getSecondPivotMotorDeg(),
-                        states.getTargetArmAngle().getSecondPivot());
+                arm.secondPivotToTargetPID(states.getTargetArmAngle().getSecondPivot());
             }
         }
     }
