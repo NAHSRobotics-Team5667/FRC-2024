@@ -90,9 +90,9 @@ public class LimelightSubsystem extends SubsystemBase {
 
         double id = getAprilTagID();
 
-        if (id == 1 || id == 2 || id == 5 || id == 6 || id == 9 || id == 10) {
+        if (id == 1.0 || id == 2.0 || id == 5.0 || id == 6.0 || id == 9.0 || id == 10.0) {
             return 53.38; // height of source and amp april tags
-        } else if (id == 3 || id == 4 || id == 7 || id == 8) {
+        } else if (id == 3.0 || id == 4.0 || id == 7.0 || id == 8.0) {
             return 57.13;
         } else {
             return 52.00; // remaining tags are for stage april tags
