@@ -102,8 +102,6 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot
                                                  // via angle.
 
-        // swerveDrive.setMaximumSpeeds(5, 5, 5);
-
         // log PathPlanner path
         PathPlannerLogging.setLogActivePathCallback(
                 (activePath) -> {
@@ -295,40 +293,6 @@ public class SwerveSubsystem extends SubsystemBase {
      * Command to drive the robot using translative values and heading as a
      * setpoint.
      *
-     * @param translationX Translation in the X direction. Cubed for smoother
-     *                     controls.
-     * @param translationY Translation in the Y direction. Cubed for smoother
-     *                     controls.
-     * @param headingX     Heading X to calculate angle of the joystick.
-     * @param headingY     Heading Y to calculate angle of the joystick.
-     * @return Drive command.
-     */
-    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
-            DoubleSupplier headingY) {
-        // swerveDrive.setHeadingCorrection(true); // Normally you would want heading
-        // correction for this kind of control.
-        return run(() -> {
-            double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth controll out
-            double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
-            // Make the robot move
-            drive(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
-                    headingX.getAsDouble(),
-                    headingY.getAsDouble(),
-                    swerveDrive.getOdometryHeading().getRadians(),
-                    swerveDrive.getMaximumVelocity()));
-            // driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput,
-            // yInput,
-            // headingX.getAsDouble(),
-            // headingY.getAsDouble(),
-            // swerveDrive.getOdometryHeading().getRadians(),
-            // swerveDrive.getMaximumVelocity()));
-        });
-    }
-
-    /**
-     * Command to drive the robot using translative values and heading as a
-     * setpoint.
-     *
      * @param translationX Translation in the X direction.
      * @param translationY Translation in the Y direction.
      * @param rotation     Rotation as a value between [-1, 1] converted to radians.
@@ -418,6 +382,24 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public void drive(ChassisSpeeds velocity) {
         swerveDrive.drive(velocity);
+    }
+
+    // ========================================================
+    // ===================== GENERAL ==========================
+    // ========================================================
+
+    /**
+     * @return maximum speed in m/s.
+     */
+    public double getMaximumVelocity() {
+        return swerveDrive.getMaximumVelocity();
+    }
+
+    /**
+     * @return maximum angular velocity of robot in radians. CCW positive.
+     */
+    public double getMaximumAngularVelocity() {
+        return swerveDrive.getMaximumAngularVelocity();
     }
 
     /**

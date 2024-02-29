@@ -45,13 +45,13 @@ public class LimelightSubsystem extends SubsystemBase {
         m_tab.addNumber("Tag ty", this::getTy);
         m_tab.addNumber("Tag ta", this::getTa);
 
-        m_tab.addNumber("CameraPose X", this::getCameraPoseX);
-        m_tab.addNumber("CameraPose Y", this::getCameraPoseY);
-        m_tab.addNumber("CameraPose Z", this::getCameraPoseZ);
+        // m_tab.addNumber("CameraPose X", this::getCameraPoseX);
+        // m_tab.addNumber("CameraPose Y", this::getCameraPoseY);
+        // m_tab.addNumber("CameraPose Z", this::getCameraPoseZ);
 
-        m_tab.addNumber("CameraPose Roll", this::getCameraPoseRoll);
-        m_tab.addNumber("CameraPose Pitch", this::getCameraPosePitch);
-        m_tab.addNumber("CameraPose Yaw", this::getCameraPoseYaw);
+        // m_tab.addNumber("CameraPose Roll", this::getCameraPoseRoll);
+        // m_tab.addNumber("CameraPose Pitch", this::getCameraPosePitch);
+        // m_tab.addNumber("CameraPose Yaw", this::getCameraPoseYaw);
 
         // Gets input from shuffleboard for the height an april tag for testing purposes
         customTagHeight = m_tab.add("Custom April Tag Height", 0).getEntry();
@@ -138,51 +138,58 @@ public class LimelightSubsystem extends SubsystemBase {
     // ========================================================
     // ================== CAMERA POSITION =====================
 
-    public double[] getCameraPose() {
-        double[] camera3DPose = new double[6];
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-                .getDoubleArray(camera3DPose);
-        return camera3DPose;
-        // I beleive Translation (X,Y,Z) Rotation(Roll,Pitch,Yaw)
-    }
+    // public double[] getCameraPose() {
+    // double[] camera3DPose = new double[6];
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
+    // .getDoubleArray(camera3DPose);
+    // return camera3DPose;
+    // // I beleive Translation (X,Y,Z) Rotation(Roll,Pitch,Yaw)
+    // }
 
-    public double getCameraPoseX() {// Axis side to side on limelight
-        double[] camera3DPose = getCameraPose();
-        // return camera3DPose[0];
-        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-                .getDoubleArray(camera3DPose)[0];
+    // public double getCameraPoseX() {// Axis side to side on limelight
+    // double[] camera3DPose = getCameraPose();
+    // // return camera3DPose[0];
+    // return
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
+    // .getDoubleArray(camera3DPose)[0];
 
-    }
+    // }
 
-    public double getCameraPoseY() {// Axis up and down on limelight
-        double[] camera3DPose = getCameraPose();
-        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-                .getDoubleArray(camera3DPose)[1];
-    }
+    // public double getCameraPoseY() {// Axis up and down on limelight
+    // double[] camera3DPose = getCameraPose();
+    // return
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
+    // .getDoubleArray(camera3DPose)[1];
+    // }
 
-    public double getCameraPoseZ() {// Axis comming out perpendicular to front of limelight
-        double[] camera3DPose = getCameraPose();
-        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-                .getDoubleArray(camera3DPose)[2];
-    }
+    // public double getCameraPoseZ() {// Axis comming out perpendicular to front of
+    // limelight
+    // double[] camera3DPose = getCameraPose();
+    // return
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
+    // .getDoubleArray(camera3DPose)[2];
+    // }
 
-    public double getCameraPoseRoll() {
-        double[] camera3DPose = getCameraPose();
-        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-                .getDoubleArray(camera3DPose)[3];
-    }
+    // public double getCameraPoseRoll() {
+    // double[] camera3DPose = getCameraPose();
+    // return
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
+    // .getDoubleArray(camera3DPose)[3];
+    // }
 
-    public double getCameraPosePitch() {
-        double[] camera3DPose = getCameraPose();
-        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-                .getDoubleArray(camera3DPose)[4];
-    }
+    // public double getCameraPosePitch() {
+    // double[] camera3DPose = getCameraPose();
+    // return
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
+    // .getDoubleArray(camera3DPose)[4];
+    // }
 
-    public double getCameraPoseYaw() {
-        double[] camera3DPose = getCameraPose();
-        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-                .getDoubleArray(camera3DPose)[5];
-    }
+    // public double getCameraPoseYaw() {
+    // double[] camera3DPose = getCameraPose();
+    // return
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
+    // .getDoubleArray(camera3DPose)[5];
+    // }
 
     // ========================================================
     // ================ APRIL TAG POSITION ====================
@@ -246,5 +253,6 @@ public class LimelightSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+        SmartDashboard.putNumber("[LL] April Tag", getAprilTagID());
     }
 }

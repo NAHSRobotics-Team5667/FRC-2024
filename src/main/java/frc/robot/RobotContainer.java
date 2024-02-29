@@ -11,6 +11,7 @@ import frc.robot.commands.actions.RemoveNote;
 import frc.robot.commands.actions.ShootNoteAmp;
 import frc.robot.commands.actions.ShootNoteSpeaker;
 import frc.robot.commands.arm.SetArm;
+import frc.robot.commands.drivetrain.SpeakerDrive;
 import frc.robot.commands.index.IndexCommand;
 import frc.robot.commands.shooter.ShooterCommand;
 
@@ -19,6 +20,7 @@ import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TestSubsystem;
 import java.io.File;
@@ -40,10 +42,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private SwerveSubsystem drive;
-    private IntakeSubsystem intake;
-    private ArmSubsystem arm;
-    private ShooterSubsystem shooter;
+    private StateManager states = StateManager.getInstance();
+    private LimelightSubsystem limelight = LimelightSubsystem.getInstance();
+
+    private SwerveSubsystem drive = SwerveSubsystem.getInstance();
+    private IntakeSubsystem intake = IntakeSubsystem.getInstance();
+    private ArmSubsystem arm = ArmSubsystem.getInstance();
+    private ShooterSubsystem shooter = ShooterSubsystem.getInstance();
+
     private ClimbSubsystem climb;
     private TestSubsystem testSubsystem;
 
@@ -64,17 +70,22 @@ public class RobotContainer {
                 "swerve"));
         drive = SwerveSubsystem.getInstance();
 
-        // // ---- DRIVE COMMANDS ----
+        // ---- DRIVE COMMANDS ----
 
         // Real drive command
-        Command driveFieldOrientedAnglularVelocity = drive.driveCommand(
-                () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
-                        OperatorConstants.LEFT_Y_DEADBAND), // X direction
-                // is front
-                () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
-                        OperatorConstants.LEFT_X_DEADBAND), // Y direction
-                // is left
-                () -> driverXbox.getRightX()); // right stick horizontal value
+        // Command driveFieldOrientedAnglularVelocity = drive.driveCommand(
+        // () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
+        // OperatorConstants.LEFT_Y_DEADBAND), // X direction
+        // // is front
+        // () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
+        // OperatorConstants.LEFT_X_DEADBAND), // Y direction
+        // // is left
+        // () -> driverXbox.getRightX()); // right stick horizontal value
+
+        Command driveFieldOrientedAnglularVelocity = new SpeakerDrive(
+                () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+                () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+                () -> MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.RIGHT_X_DEADBAND));
 
         // Simulation drive command
         Command driveFieldOrientedAnglularVelocitySim = drive.simDriveCommand(
@@ -95,18 +106,18 @@ public class RobotContainer {
         // ========================================================
         // ===================== INTAKE ===========================
 
-        intake = IntakeSubsystem.getInstance();
+        // intake = IntakeSubsystem.getInstance();
 
         // ========================================================
         // ====================== ARM =============================
 
-        arm = ArmSubsystem.getInstance();
+        // arm = ArmSubsystem.getInstance();
         arm.setDefaultCommand(new SetArm());
 
         // ========================================================
         // ==================== SHOOTER ===========================
 
-        shooter = ShooterSubsystem.getInstance();
+        // shooter = ShooterSubsystem.getInstance();
 
         // ========================================================
         // ====================== CLIMB ===========================
@@ -162,12 +173,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        //
-        // An example command will be run in autonomous
-        // return Autos.exampleAuto(m_exampleSubsystem);
-        // return null;
-        // drive.postTrajectory("Test1");
-        // return drive.getAutonomousCommand("Test1", true);
-        return new SetArm();
+        drive.postTrajectory("Test1");
+        return drive.getAutonomousCommand("Test1", true);
     }
 }
