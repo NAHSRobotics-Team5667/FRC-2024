@@ -4,10 +4,13 @@
 
 package frc.robot.commands.arm;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.StateManager;
+import frc.robot.util.ArmAngle;
 import frc.robot.util.States.ArmState;
 
 /**
@@ -39,6 +42,17 @@ public class SetArm extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        // TODO: remove once arm data is obtained
+        double setpoint = ArmConstants.getGoalArmAngle(ArmState.SPEAKER).getFirstPivot();
+
+        SmartDashboard.putNumber("[ARM] TARGET ANGLE", setpoint);
+
+        if (RobotContainer.getDriverController().y().getAsBoolean() && setpoint < 80) {
+            ArmConstants.setFirstPivotSpeaker(setpoint + 0.25);
+        } else if (RobotContainer.getDriverController().getLeftTriggerAxis() == 1 && setpoint > 20) {
+            ArmConstants.setFirstPivotSpeaker(setpoint - 0.25);
+        }
+
         // check if second pivot has priority in the maneuver
         if (ArmConstants.getSecondPivotPriority(states.getTargetArmState())) {
             // run second pivot
@@ -57,6 +71,9 @@ public class SetArm extends Command {
                 arm.secondPivotToTargetPID(states.getTargetArmAngle().getSecondPivot());
             }
         }
+
+        // arm.secondPivotToTargetPID(states.getTargetArmAngle().getSecondPivot());
+        // arm.firstPivotToTargetPID(states.getTargetArmAngle().getFirstPivot());
     }
 
     // Called once the command ends or is interrupted.

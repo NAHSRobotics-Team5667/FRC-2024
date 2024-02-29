@@ -17,6 +17,7 @@ import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TestSubsystem;
@@ -134,6 +135,7 @@ public class RobotContainer {
          * Driver Controller:
          * - Joystick 1 Movement - Movement on Field
          * - Joystick 2 Movement - Direction on Field (Where robot front is facing).
+         * - Press X - reset gyro
          * - Press A - toggle intake
          * - Press B - toggle outtake
          * - Press RB - toggle shooter (speaker)

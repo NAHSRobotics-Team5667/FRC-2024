@@ -119,8 +119,6 @@ public class ArmSubsystem extends SubsystemBase {
                         ArmConstants.SECOND_MAX_VELOCITY,
                         ArmConstants.SECOND_MAX_ACCEL));
 
-        secondPivotPID.setTolerance(3);
-
         // ====== FIRST PIVOT ======
 
         // Initialize Falcon Motors by setting IDs.
@@ -276,7 +274,8 @@ public class ArmSubsystem extends SubsystemBase {
     public double calculateSecondPivotPID(double currentPos, double targetPos) {
         return MathUtil.clamp(
                 secondPivotPID.calculate(currentPos, targetPos),
-                -1, 0.4);
+                -0.7, // max going up
+                1); // max going down
     }
 
     /**

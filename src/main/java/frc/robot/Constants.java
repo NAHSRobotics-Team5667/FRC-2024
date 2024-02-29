@@ -121,8 +121,8 @@ public final class Constants {
 
         // create a map of goal states and their target arm positions
         public static Map<ArmState, ArmAngle> GOAL_POSITIONS = Map.of(
-                ArmState.TRANSFER, new ArmAngle(12.2, -11.25), // arm position when at resting position
-                ArmState.SPEAKER, new ArmAngle(50, 0), // default position for speaker
+                ArmState.TRANSFER, new ArmAngle(/* 108.1 */ 12.2, -11.25), // arm position when at resting position
+                ArmState.SPEAKER, new ArmAngle(/* 108.1 */ 55, 0), // default position for speaker
                 ArmState.AMP, new ArmAngle(108.1, -122.7), // position for amp
                 ArmState.TRAP, new ArmAngle(100, 100), // position for trap
                 ArmState.CLIMB, new ArmAngle()); // position for human player intake
@@ -148,14 +148,13 @@ public final class Constants {
         }
 
         /**
-         * Updates ArmAngle linked to a given arm position. Only use when aiming shooter
-         * at speaker.
+         * Updates first pivot value for speaker. Call to adjust the arm angle to auto
+         * aim.
          * 
-         * @param key    arm position state to update.
-         * @param newPos new position to link to arm position state.
+         * @param target new first pivot goal for speaker.
          */
-        public static void setGoalPosition(ArmState key, ArmAngle newPos) {
-            GOAL_POSITIONS.put(key, newPos);
+        public static void setFirstPivotSpeaker(double target) {
+            getGoalArmAngle(ArmState.SPEAKER).setFirstPivot(target);
         }
 
         /**
@@ -260,8 +259,8 @@ public final class Constants {
         // --- SPEEDS ----
         public static final double AMP_RIGHT_SPEED = 50;
         public static final double AMP_LEFT_SPEED = 50;
-        public static final double SPEAKER_RIGHT_SPEED = 90;
-        public static final double SPEAKER_LEFT_SPEED = 70;
+        public static final double SPEAKER_RIGHT_SPEED = 100;
+        public static final double SPEAKER_LEFT_SPEED = 100;
         public static final double OUTTAKE_SPEED = 20;
     }
 

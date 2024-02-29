@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.LimelightConstants;
@@ -26,7 +27,7 @@ public class LimelightSubsystem extends SubsystemBase {
     GenericEntry customCamHeight;
     GenericEntry customCamAngle;
 
-    private LimelightSubsystem instance = null;
+    private static LimelightSubsystem instance = null;
 
     // ========================================================
     // =================== CONSTRUCTOR ========================
@@ -71,7 +72,7 @@ public class LimelightSubsystem extends SubsystemBase {
     /**
      * @return singleton instance of limelight.
      */
-    public LimelightSubsystem getInstance() {
+    public static LimelightSubsystem getInstance() {
         if (instance == null) {
             instance = new LimelightSubsystem();
         }
@@ -214,12 +215,10 @@ public class LimelightSubsystem extends SubsystemBase {
     // ================== AUTO ALIGNMENT ======================
 
     public double getAutoAimShooterAngle() {
-        double posX = getAprilTagPoseX();
-        double posY = getAprilTagPoseY(); // height
+        double posX = getAprilTagPoseX(); // offset from crosshair (horizontal)
+        double posY = getAprilTagPoseY(); // offset from crosshair (vertical)
         double posZ = getAprilTagPoseZ(); // distance from robot
-        // TODO: isn't posZ only the distance on one axis? would the dist not be
-        // sqrt(posX^2 + posZ^2)?
-        double theta = Math.atan((posY / posZ));
+        double theta = Math.atan2(posY, posZ);
         return theta;
     }
 
@@ -247,6 +246,5 @@ public class LimelightSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-
     }
 }
