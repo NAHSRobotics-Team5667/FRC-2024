@@ -188,7 +188,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                 swerveDrive.swerveController.config.headingPIDF.i,
                                 swerveDrive.swerveController.config.headingPIDF.d),
                         // Rotation PID constants
-                        DriveConstants.MAX_VELOCITY_METERS,
+                        /* DriveConstants.MAX_VELOCITY_METERS */ 0.5, // TODO: check back to see if works
                         // Max module speed, in m/s
                         swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
                         // Drive base radius in meters. Distance from robot center to furthest module.
@@ -201,7 +201,7 @@ public class SwerveSubsystem extends SubsystemBase {
                     // This will flip the path being followed to the red side of the field.
                     // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
                     var alliance = DriverStation.getAlliance();
-                    return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+                    return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Blue : false;
                 },
                 this // Reference to this subsystem to set requirements
         );

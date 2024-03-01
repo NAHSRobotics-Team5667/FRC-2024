@@ -61,7 +61,7 @@ public final class Constants {
         // =======================================================
         // ====================== PID ============================
 
-        public static final double AUTO_DRIVE_P = 0.1;
+        public static final double AUTO_DRIVE_P = 6;
         public static final double AUTO_DRIVE_I = 0;
         public static final double AUTO_DRIVE_D = 0;
         public static final double AUTO_DRIVE_F = 0;

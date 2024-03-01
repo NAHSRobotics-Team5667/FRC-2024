@@ -173,7 +173,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        drive.postTrajectory("Test1");
-        return drive.getAutonomousCommand("Test1", true);
+        drive.postTrajectory("weee");
+        return drive.getAutonomousCommand("weee", true);
     }
 }
