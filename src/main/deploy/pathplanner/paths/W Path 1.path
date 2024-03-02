@@ -1,0 +1,68 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7319122330552369,
+        "y": 6.877259139133662
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7319122330552368,
+        "y": 6.877259139133662
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.9322404798655763,
+        "y": 7.015396338484985
+      },
+      "prevControl": {
+        "x": 1.9322404798655763,
+        "y": 7.015396338484985
+      },
+      "nextControl": {
+        "x": 3.932240479865581,
+        "y": 7.015396338484985
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.9322404798655763,
+        "y": 5.539225686154654
+      },
+      "prevControl": {
+        "x": 2.9717082511088115,
+        "y": 4.720269432857532
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.2199219756377164,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Samar",
+  "previewStartingState": {
+    "rotation": 56.30993247402018,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
