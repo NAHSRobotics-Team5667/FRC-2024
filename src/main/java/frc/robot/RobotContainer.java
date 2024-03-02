@@ -73,19 +73,19 @@ public class RobotContainer {
         // ---- DRIVE COMMANDS ----
 
         // Real drive command
-        // Command driveFieldOrientedAnglularVelocity = drive.driveCommand(
-        // () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
-        // OperatorConstants.LEFT_Y_DEADBAND), // X direction
-        // // is front
-        // () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
-        // OperatorConstants.LEFT_X_DEADBAND), // Y direction
-        // // is left
-        // () -> driverXbox.getRightX()); // right stick horizontal value
+        Command driveFieldOrientedAnglularVelocity = drive.driveCommand(
+                () -> MathUtil.applyDeadband(-driverXbox.getLeftY(),
+                        OperatorConstants.LEFT_Y_DEADBAND), // X direction
+                // is front
+                () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
+                        OperatorConstants.LEFT_X_DEADBAND), // Y direction
+                // is left
+                () -> -driverXbox.getRightX()); // right stick horizontal value
 
-        Command driveFieldOrientedAnglularVelocity = new SpeakerDrive(
-                () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-                () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-                () -> MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.RIGHT_X_DEADBAND));
+        Command speakerDrive = new SpeakerDrive(
+                () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+                () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+                () -> MathUtil.applyDeadband(-driverXbox.getRightX(), OperatorConstants.RIGHT_X_DEADBAND));
 
         // Simulation drive command
         Command driveFieldOrientedAnglularVelocitySim = drive.simDriveCommand(
@@ -101,7 +101,7 @@ public class RobotContainer {
         // Sets default DT command to the sim command when robot is simulated
 
         drive.setDefaultCommand(
-                !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedAnglularVelocitySim);
+                !RobotBase.isSimulation() ? speakerDrive : driveFieldOrientedAnglularVelocitySim);
 
         // ========================================================
         // ===================== INTAKE ===========================
@@ -173,7 +173,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        drive.postTrajectory("weee");
-        return drive.getAutonomousCommand("weee", true);
+        drive.postTrajectory("example");
+        return drive.getAutonomousCommand("example", true);
     }
 }

@@ -67,7 +67,7 @@ public class SpeakerDrive extends Command {
                 && (limelight.getAprilTagID() == 4 || limelight.getAprilTagID() == 7)) {
 
             angularRotationVel = MathUtil.clamp(
-                    -alignPID.calculate(limelight.getTx(), 0), -1, 1) *
+                    alignPID.calculate(limelight.getTx(), 0), -1, 1) *
                     swerve.getMaximumAngularVelocity();
 
             xPercent = MathUtil.clamp(xPercent, -0.75, 0.75);

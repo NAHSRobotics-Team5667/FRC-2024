@@ -61,7 +61,7 @@ public final class Constants {
         // =======================================================
         // ====================== PID ============================
 
-        public static final double AUTO_DRIVE_P = 6;
+        public static final double AUTO_DRIVE_P = 0.1;
         public static final double AUTO_DRIVE_I = 0;
         public static final double AUTO_DRIVE_D = 0;
         public static final double AUTO_DRIVE_F = 0;
@@ -264,8 +264,8 @@ public final class Constants {
         public static final double AMP_RIGHT_SPEED = 50;
         public static final double AMP_LEFT_SPEED = 50;
 
-        public static final double SPEAKER_RIGHT_SPEED = 50;
-        public static final double SPEAKER_LEFT_SPEED = 50;
+        public static final double SPEAKER_RIGHT_SPEED = 100;
+        public static final double SPEAKER_LEFT_SPEED = 80;
 
         public static final double OUTTAKE_SPEED = 20;
     }

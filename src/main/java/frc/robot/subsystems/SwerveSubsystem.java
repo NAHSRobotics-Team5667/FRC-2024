@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -22,8 +23,11 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -57,6 +61,8 @@ public class SwerveSubsystem extends SubsystemBase {
     private final SwerveDrive swerveDrive;
 
     private static SwerveSubsystem instance = null; // singleton instance
+
+    private AHRS gyro;
 
     // ========================================================
     // ================= CONSTRUCTORS =========================
@@ -152,21 +158,6 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     // ========================================================
-    // ===================== PERIODIC =========================
-    // ========================================================
-
-    @Override
-    public void periodic() {
-        if (RobotContainer.getDriverController().x().getAsBoolean()) {
-            resetGyro();
-        }
-    }
-
-    @Override
-    public void simulationPeriodic() {
-    }
-
-    // ========================================================
     // ======================== AUTO ==========================
     // ========================================================
 
@@ -175,7 +166,7 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public void setupPathPlanner() {
         AutoBuilder.configureHolonomic(
-                this::getPose, // Robot pose supplier
+                this::getPoseMeters, // Robot pose supplier
                 this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
                 this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
@@ -188,7 +179,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                 swerveDrive.swerveController.config.headingPIDF.i,
                                 swerveDrive.swerveController.config.headingPIDF.d),
                         // Rotation PID constants
-                        /* DriveConstants.MAX_VELOCITY_METERS */ 0.5, // TODO: check back to see if works
+                        /* DriveConstants.MAX_VELOCITY_METERS */ 2, // TODO: check back to see if works
                         // Max module speed, in m/s
                         swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
                         // Drive base radius in meters. Distance from robot center to furthest module.
@@ -263,7 +254,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
     /**
      * Post the trajectory to the field.
-     * TODO: kinda laggy and not a smooth path.
      * 
      * @param pathName Name of the pathpanner JSON file for the path
      */
@@ -426,11 +416,21 @@ public class SwerveSubsystem extends SubsystemBase {
 
     /**
      * Gets the current pose (position and rotation) of the robot, as reported by
-     * odometry.
+     * odometry in meters.
      *
      * @return The robot's pose
      */
-    public Pose2d getPose() {
+    public Pose2d getPoseMeters() {
+        return swerveDrive.getPose();
+    }
+
+    /**
+     * Gets the current pose (position and rotation) of the robot, as reported by
+     * odometry in inches.
+     *
+     * @return The robot's pose
+     */
+    public Pose2d getPoseInches() {
         return swerveDrive.getPose();
     }
 
@@ -469,7 +469,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * @return The yaw angle
      */
     public Rotation2d getHeading() {
-        return getPose().getRotation();
+        return getPoseMeters().getRotation();
     }
 
     /**
@@ -524,7 +524,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Gets the current velocity (x, y and omega) of the robot
+     * Gets the current velocity (x, y and omega) of the robot in in/s
      *
      * @return A {@link ChassisSpeeds} object of the current velocity
      */
@@ -571,5 +571,22 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public void addFakeVisionReading() {
         swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
+    }
+
+    // ========================================================
+    // ===================== PERIODIC =========================
+    // ========================================================
+
+    @Override
+    public void periodic() {
+        if (RobotContainer.getDriverController().x().getAsBoolean()) {
+            resetGyro();
+        }
+
+        SmartDashboard.putNumber("[DRIVE] Max Velocity", getMaximumVelocity());
+    }
+
+    @Override
+    public void simulationPeriodic() {
     }
 }
