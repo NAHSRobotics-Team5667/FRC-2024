@@ -4,14 +4,11 @@
 
 package frc.robot.commands.arm;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.StateManager;
-import frc.robot.util.ArmAngle;
 import frc.robot.util.States.ArmState;
 
 /**
@@ -47,21 +44,23 @@ public class SetArm extends Command {
     @Override
     public void execute() {
         // for getting setpoints ---------------------------------------
-        double setpoint = ArmConstants.getGoalArmAngle(ArmState.SPEAKER).getFirstPivot();
+        // double setpoint =
+        // ArmConstants.getGoalArmAngle(ArmState.SPEAKER).getFirstPivot();
 
-        SmartDashboard.putNumber("[ARM] TARGET ANGLE", setpoint);
+        // SmartDashboard.putNumber("[ARM] TARGET ANGLE", setpoint);
 
-        if (RobotContainer.getDriverController().y().getAsBoolean() && setpoint < 80) {
-            ArmConstants.setFirstPivotSpeaker(setpoint + 0.25);
-        } else if (RobotContainer.getDriverController().getLeftTriggerAxis() == 1 &&
-                setpoint > 20) {
-            ArmConstants.setFirstPivotSpeaker(setpoint - 0.25);
-        }
+        // if (RobotContainer.getDriverController().y().getAsBoolean() && setpoint < 80)
+        // {
+        // ArmConstants.setFirstPivotSpeaker(setpoint + 0.25);
+        // } else if (RobotContainer.getDriverController().getLeftTriggerAxis() == 1 &&
+        // setpoint > 20) {
+        // ArmConstants.setFirstPivotSpeaker(setpoint - 0.25);
+        // }
         // -------------------------------------------------------------
 
-        // if (states.getTargetArmState().equals(ArmState.SPEAKER)) {
-        // ArmConstants.setFirstPivotSpeaker(calculateSpeakerFirstPivot(limelight.getTy()));
-        // }
+        if (states.getTargetArmState().equals(ArmState.SPEAKER)) {
+            ArmConstants.setFirstPivotSpeaker(calculateSpeakerFirstPivot(limelight.getTy()));
+        }
 
         // check if second pivot has priority in the maneuver
         if (ArmConstants.getSecondPivotPriority(states.getTargetArmState())) {
@@ -77,9 +76,10 @@ public class SetArm extends Command {
             arm.firstPivotToTargetPID(states.getTargetArmAngle().getFirstPivot());
 
             // run second pivot after first pivot at desired location
-            if (arm.firstPivotAtTarget()) {
-                arm.secondPivotToTargetPID(states.getTargetArmAngle().getSecondPivot());
-            }
+            arm.secondPivotToTargetPID(states.getTargetArmAngle().getSecondPivot());
+            // if (arm.firstPivotAtTarget()) {
+            // arm.secondPivotToTargetPID(states.getTargetArmAngle().getSecondPivot());
+            // }
         }
 
         // arm.secondPivotToTargetPID(states.getTargetArmAngle().getSecondPivot());

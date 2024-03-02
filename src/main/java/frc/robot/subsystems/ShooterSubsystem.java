@@ -36,7 +36,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * - Beam Break Sensor to detect if ring is in possession.
  */
 public class ShooterSubsystem extends SubsystemBase {
-    private TalonFX m_leftShooter, m_rightShooter; // declaring motors and global scope
+    // TODO: uncomment once electrical fixed
+    // private TalonFX m_leftShooter;
+    // private TalonFX m_rightShooter; // declaring motors and global scope
 
     private double targetLeftRPM = ShooterConstants.SHOOTER_MAX_RPM;
     private double targetRightRPM = ShooterConstants.SHOOTER_MAX_RPM;
@@ -51,13 +53,14 @@ public class ShooterSubsystem extends SubsystemBase {
     private ShooterSubsystem() {
 
         // Initialize Motors (Falcon 500s).
-        m_leftShooter = new TalonFX(ShooterConstants.SHOOTER_LEFT_ID);
-        m_leftShooter.setNeutralMode(NeutralModeValue.Coast);
+        // TODO: uncomment once electrical fixed
+        // m_leftShooter = new TalonFX(ShooterConstants.SHOOTER_LEFT_ID);
+        // m_leftShooter.setNeutralMode(NeutralModeValue.Coast);
 
-        m_rightShooter = new TalonFX(ShooterConstants.SHOOTER_RIGHT_ID);
-        m_rightShooter.setNeutralMode(NeutralModeValue.Coast);
+        // m_rightShooter = new TalonFX(ShooterConstants.SHOOTER_RIGHT_ID);
+        // m_rightShooter.setNeutralMode(NeutralModeValue.Coast);
 
-        m_rightShooter.setInverted(true);
+        // m_rightShooter.setInverted(true);
     }
 
     public static ShooterSubsystem getInstance() {
@@ -83,8 +86,9 @@ public class ShooterSubsystem extends SubsystemBase {
         targetLeftRPM = output * ShooterConstants.SHOOTER_MAX_RPM;
         targetRightRPM = output * ShooterConstants.SHOOTER_MAX_RPM;
 
-        m_leftShooter.set(output);
-        m_rightShooter.set(output);
+        // TODO: uncomment once shooter fixed
+        // m_leftShooter.set(output);
+        // m_rightShooter.set(output);
     }
 
     /**
@@ -101,8 +105,9 @@ public class ShooterSubsystem extends SubsystemBase {
         targetLeftRPM = leftOutput * ShooterConstants.SHOOTER_MAX_RPM;
         targetRightRPM = rightOutput * ShooterConstants.SHOOTER_MAX_RPM;
 
-        m_leftShooter.set(leftOutput);
-        m_rightShooter.set(rightOutput);
+        // TODO: uncomment once shooter fixed
+        // m_leftShooter.set(leftOutput);
+        // m_rightShooter.set(rightOutput);
     }
 
     // ========================================================
@@ -114,7 +119,9 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return RPM of left set of wheels.
      */
     public double getLeftShooterRPM() {
-        double leftSpeed = m_leftShooter.getVelocity().getValueAsDouble();
+        // TODO: uncomment once shooter fixed
+        // double leftSpeed = m_leftShooter.getVelocity().getValueAsDouble();
+        double leftSpeed = 0;
         return leftSpeed;
     }
 
@@ -136,7 +143,9 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return RPM of right set of wheels.
      */
     public double getRightShooterRPM() {
-        double rightSpeed = m_rightShooter.getVelocity().getValueAsDouble();
+        // TODO: uncomment when shooter motors fixed
+        // double rightSpeed = m_rightShooter.getVelocity().getValueAsDouble();
+        double rightSpeed = 0;
         return rightSpeed;
     }
 

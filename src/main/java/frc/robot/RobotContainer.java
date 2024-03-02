@@ -5,7 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-
+import frc.robot.commands.actions.IntakeAndShootAuto;
 import frc.robot.commands.actions.IntakeNote;
 import frc.robot.commands.actions.RemoveNote;
 import frc.robot.commands.actions.ShootNoteAmp;
@@ -24,6 +24,8 @@ import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TestSubsystem;
 import java.io.File;
+
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -131,6 +133,11 @@ public class RobotContainer {
         // testSubsystem.setDefaultCommand(new TestCommand(50));
 
         // ========================================================
+        // ======================== AUTO ==========================
+
+        NamedCommands.registerCommand("IntakeAndShootAuto", new IntakeAndShootAuto());
+
+        // ========================================================
         // ================== CONTROLLER ==========================
 
         // Configure the trigger bindings
@@ -173,7 +180,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        drive.postTrajectory("example");
         return drive.getAutonomousCommand("example", true);
     }
 }

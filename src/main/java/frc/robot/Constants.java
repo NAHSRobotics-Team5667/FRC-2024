@@ -61,12 +61,12 @@ public final class Constants {
         // =======================================================
         // ====================== PID ============================
 
-        public static final double AUTO_DRIVE_P = 0.1;
+        public static final double AUTO_DRIVE_P = 2;
         public static final double AUTO_DRIVE_I = 0;
         public static final double AUTO_DRIVE_D = 0;
         public static final double AUTO_DRIVE_F = 0;
 
-        public static final double ALIGN_P = 0.03;
+        public static final double ALIGN_P = 0.02;
         public static final double ALIGN_I = 0;
         public static final double ALIGN_D = 0;
 
@@ -219,9 +219,9 @@ public final class Constants {
         public static final double FIRST_kV = 0;
         public static final double FIRST_kA = 0;
 
-        public static final double FIRST_MAX_VELOCITY = 400; // maximum achievable velocity (deg per sec)
+        public static final double FIRST_MAX_VELOCITY = 1000; // maximum achievable velocity (deg per sec)
         public static final double FIRST_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
-        public static final double FIRST_MAX_ACCEL = 300; // target acceleration (deg / sec / sec)
+        public static final double FIRST_MAX_ACCEL = 1500; // target acceleration (deg / sec / sec)
 
         // ---- SECOND PIVOT ----
         public static final double SECOND_kP = 0.02;
@@ -232,9 +232,9 @@ public final class Constants {
         public static final double SECOND_kV = 0;
         public static final double SECOND_kA = 0;
 
-        public static final double SECOND_MAX_VELOCITY = 120; // maximum achievable velocity (deg per sec)
+        public static final double SECOND_MAX_VELOCITY = 280; // maximum achievable velocity (deg per sec)
         public static final double SECOND_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
-        public static final double SECOND_MAX_ACCEL = 80; // target acceleration (deg / sec / sec)
+        public static final double SECOND_MAX_ACCEL = 280; // target acceleration (deg / sec / sec)
 
         // ==== VELOCITY THRESHOLDS ====
 
@@ -276,7 +276,8 @@ public final class Constants {
         public static final int BEAM_BREAK_CHANNEL_ID = 5;
 
         // ==== SPEEDS ====
-        public static final double SPEED = 30;
+        public static final double INTAKE_SPEED = 20;
+        public static final double SHOOT_SPEED = 100;
     }
 
     public static class IntakeConstants {

@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPoint;
@@ -206,7 +207,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
      */
     public Command getAutonomousCommand(String pathName, boolean setOdomToStart) {
-        swerveDrive.resetDriveEncoders(); // reset encoders - start from 0
+        // swerveDrive.resetDriveEncoders(); // reset encoders - start from 0
         resetGyro(); // set gyro to 0
 
         // Load the path you want to follow using its name in the GUI
@@ -218,7 +219,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
         // Create a path following command using AutoBuilder. This will also trigger
         // event markers.
-        return AutoBuilder.followPath(path);
+        // return AutoBuilder.followPath(path);
+        return new PathPlannerAuto("max_auto");
     }
 
     /**

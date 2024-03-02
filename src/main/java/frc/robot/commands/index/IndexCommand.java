@@ -44,12 +44,12 @@ public class IndexCommand extends Command {
             if (states.getShooterState().equals(ShooterState.READY) && states.armAtTarget()) { // only run the index if
                                                                                                // shooter is revved up
                                                                                                // and arm is at target
-                index.set(IndexConstants.SPEED);
+                index.set(IndexConstants.SHOOT_SPEED);
             } else {
                 index.set(0);
             }
         } else {
-            index.set(IndexConstants.SPEED); // run index without conditions if not shooting
+            index.set(IndexConstants.INTAKE_SPEED); // run index without conditions if not shooting
         }
     }
 

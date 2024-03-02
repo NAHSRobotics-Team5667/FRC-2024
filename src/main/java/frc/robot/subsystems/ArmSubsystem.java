@@ -274,7 +274,7 @@ public class ArmSubsystem extends SubsystemBase {
     public double calculateSecondPivotPID(double currentPos, double targetPos) {
         return MathUtil.clamp(
                 secondPivotPID.calculate(currentPos, targetPos),
-                -0.7, // max going up
+                -1, // max going up
                 1); // max going down
     }
 
