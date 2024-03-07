@@ -1,0 +1,85 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 2,
+      "y": 2
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "secondPathA"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShooterCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "secondPathB"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShooterCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "secondPathC"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShooterCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "secondPathD"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeCommand"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Samar",
+  "choreoAuto": false
+}
