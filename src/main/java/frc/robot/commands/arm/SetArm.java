@@ -57,29 +57,31 @@ public class SetArm extends Command {
         // ArmConstants.setFirstPivotSpeaker(setpoint - 0.25);
         // }
         // -------------------------------------------------------------
+        boolean aimingAtSpeaker = states.getTargetArmState().equals(ArmState.SPEAKER);
 
-        if (states.getTargetArmState().equals(ArmState.SPEAKER)) {
+        if (aimingAtSpeaker) {
             ArmConstants.setFirstPivotSpeaker(calculateSpeakerFirstPivot(limelight.getTy()));
         }
 
         // check if second pivot has priority in the maneuver
         if (ArmConstants.getSecondPivotPriority(states.getTargetArmState())) {
             // run second pivot
-            arm.secondPivotToTargetPID(states.getTargetArmAngle().getSecondPivot());
+            arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
 
             // run first pivot after second pivot at desired location
             if (arm.secondPivotAtTarget()) {
-                arm.firstPivotToTargetPID(states.getTargetArmAngle().getFirstPivot());
+                arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
             }
         } else { // if first pivot has priority
             // run first pivot
-            arm.firstPivotToTargetPID(states.getTargetArmAngle().getFirstPivot());
+            if (aimingAtSpeaker) {
+                arm.firstPivotToTargetSpeaker(states.getTargetArmAngle().getFirstPivot());
+            } else {
+                arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
+            }
 
             // run second pivot after first pivot at desired location
-            arm.secondPivotToTargetPID(states.getTargetArmAngle().getSecondPivot());
-            // if (arm.firstPivotAtTarget()) {
-            // arm.secondPivotToTargetPID(states.getTargetArmAngle().getSecondPivot());
-            // }
+            arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
         }
 
         // arm.secondPivotToTargetPID(states.getTargetArmAngle().getSecondPivot());
@@ -99,6 +101,10 @@ public class SetArm extends Command {
                       // target using methods inside other commands.
     }
 
+    /**
+     * @param ty limelight crosshair vertical angle from target.
+     * @return ideal first pivot angle to aim into speaker.
+     */
     public double calculateSpeakerFirstPivot(double ty) {
         return 46.3 + (0.693 * ty) - (0.0152 * Math.pow(ty, 2));
     }

@@ -14,7 +14,7 @@ import frc.robot.commands.arm.SetArm;
 import frc.robot.commands.drivetrain.SpeakerDrive;
 import frc.robot.commands.index.IndexCommand;
 import frc.robot.commands.shooter.ShooterCommand;
-
+import frc.robot.commands.shooter.ShooterCommandAuto;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -136,6 +136,8 @@ public class RobotContainer {
         // ======================== AUTO ==========================
 
         NamedCommands.registerCommand("IntakeAndShootAuto", new IntakeAndShootAuto());
+        NamedCommands.registerCommand("ShootNoteSpeaker", new ShootNoteSpeaker());
+        NamedCommands.registerCommand("IntakeNote", new IntakeNote());
 
         // ========================================================
         // ================== CONTROLLER ==========================
@@ -153,12 +155,14 @@ public class RobotContainer {
          * Driver Controller:
          * - Joystick 1 Movement - Movement on Field
          * - Joystick 2 Movement - Direction on Field (Where robot front is facing).
-         * - Press X - reset gyro
+         * - Press X - reset gyro --> found in drivetrain subsystem periodic
          * - Press A - toggle intake
          * - Press B - toggle outtake
          * - Press RB - toggle shooter (speaker)
          * - Press LB - toggle amp
          * - Right Trigger - run index into shooter
+         * - Right Stick Button - reset motor to absolute encoder --> found in arm
+         * subsystem periodic
          */
 
         driverXbox.a().toggleOnTrue(new IntakeNote());
@@ -180,6 +184,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return drive.getAutonomousCommand("example", true);
+        return drive.getAutonomousCommand("4_note", true);
     }
 }

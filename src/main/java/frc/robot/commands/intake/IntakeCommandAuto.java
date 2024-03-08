@@ -52,11 +52,7 @@ public class IntakeCommandAuto extends Command { // TODO: make outtake functiona
     @Override
     public void execute() {
         // intake.setPiston(true);
-        if (states.getArmState().equals(ArmState.TRANSFER)) {
-            intake.set((goingIn) ? IntakeConstants.INTAKE_SPEED : IntakeConstants.OUTTAKE_SPEED);
-        } else {
-            intake.set(0);
-        }
+        intake.set((goingIn) ? IntakeConstants.INTAKE_SPEED : IntakeConstants.OUTTAKE_SPEED);
     }
 
     // Called when the command is interruped or ended

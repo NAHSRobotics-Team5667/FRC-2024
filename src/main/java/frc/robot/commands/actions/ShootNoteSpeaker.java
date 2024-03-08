@@ -6,7 +6,7 @@ package frc.robot.commands.actions;
 
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.commands.index.IndexCommand;
-import frc.robot.commands.shooter.ShooterCommand;
+import frc.robot.commands.shooter.ShooterCommandAuto;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -17,7 +17,7 @@ public class ShootNoteSpeaker extends ParallelRaceGroup {
         // Add your commands in the addCommands() call, e.g.
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
-                new ShooterCommand(false),
+                new ShooterCommandAuto(false),
                 new IndexCommand(true));
     }
 }
