@@ -12,33 +12,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "secondPathA"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeNote"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNoteSpeaker"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "secondPathB"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeNote"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "secondPathA"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeNote"
+                }
+              }
+            ]
           }
         },
         {
@@ -48,15 +37,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "secondPathC"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeNote"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "secondPathB"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeNote"
+                }
+              }
+            ]
           }
         },
         {
@@ -66,15 +62,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "secondPathD"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "secondPathC"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeNote"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "IntakeNote"
+            "name": "ShootNoteSpeaker"
           }
         }
       ]

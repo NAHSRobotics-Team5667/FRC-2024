@@ -12,21 +12,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "uno"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeNote"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNoteSpeaker"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "uno"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeNote"
+                }
+              }
+            ]
           }
         },
         {
@@ -38,7 +39,26 @@
         {
           "type": "named",
           "data": {
-            "name": "IntakeNote"
+            "name": "ShootNoteSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "tres"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeNote"
+                }
+              }
+            ]
           }
         },
         {
@@ -48,21 +68,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "tres"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeNote"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNoteSpeaker"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "cuatro"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeNote"
+                }
+              }
+            ]
           }
         }
       ]
