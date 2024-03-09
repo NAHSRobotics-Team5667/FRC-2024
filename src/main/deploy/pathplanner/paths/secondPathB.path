@@ -45,7 +45,7 @@
   "reversed": false,
   "folder": "Samar",
   "previewStartingState": {
-    "rotation": -88.99491399474574,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

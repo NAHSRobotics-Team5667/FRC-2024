@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteSpeaker"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "secondPathA"
@@ -20,13 +26,13 @@
         {
           "type": "named",
           "data": {
-            "name": "IntakeCommand"
+            "name": "IntakeNote"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShooterCommand"
+            "name": "ShootNoteSpeaker"
           }
         },
         {
@@ -38,13 +44,13 @@
         {
           "type": "named",
           "data": {
-            "name": "IntakeCommand"
+            "name": "IntakeNote"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShooterCommand"
+            "name": "ShootNoteSpeaker"
           }
         },
         {
@@ -56,13 +62,13 @@
         {
           "type": "named",
           "data": {
-            "name": "IntakeCommand"
+            "name": "IntakeNote"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShooterCommand"
+            "name": "ShootNoteSpeaker"
           }
         },
         {
@@ -74,7 +80,7 @@
         {
           "type": "named",
           "data": {
-            "name": "IntakeCommand"
+            "name": "IntakeNote"
           }
         }
       ]
