@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.util.ArmAngle;
 
@@ -64,30 +65,15 @@ public class ArmSubsystem extends SubsystemBase {
 
     private ProfiledPIDController firstPivotPID;
     private ProfiledPIDController secondPivotPID;
+    private ProfiledPIDController speakerPID; // PID controller to use when aiming shooter at target - faster than
+                                              // profiled
 
     private ArmAngle armPos = new ArmAngle();
 
     private StateManager states;
 
-    // ========================================================
-    // ==================== PID TUNING ========================
-
-    // ShuffleboardTab tunerTab = Shuffleboard.getTab("Arm Tuning");
-
-    // GenericEntry pEntry = tunerTab.add("Tune P", ArmConstants.FIRST_kP)
-    // .withWidget(BuiltInWidgets.kTextView)
-    // .withPosition(1, 1)
-    // .getEntry();
-
-    // GenericEntry iEntry = tunerTab.add("Tune I", ArmConstants.FIRST_kI)
-    // .withWidget(BuiltInWidgets.kTextView)
-    // .withPosition(1, 1)
-    // .getEntry();
-
-    // GenericEntry dEntry = tunerTab.add("Tune D", ArmConstants.FIRST_kD)
-    // .withWidget(BuiltInWidgets.kTextView)
-    // .withPosition(1, 1)
-    // .getEntry();
+    private int counter = 0;
+    private boolean resetMotor = false;
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -104,9 +90,9 @@ public class ArmSubsystem extends SubsystemBase {
         // ==== PID ====
 
         firstPivotPID = new ProfiledPIDController(
-                ArmConstants.FIRST_kP /* pEntry.getDouble(ArmConstants.FIRST_kP) */,
-                ArmConstants.FIRST_kI /* iEntry.getDouble(ArmConstants.FIRST_kI) */,
-                ArmConstants.FIRST_kD /* dEntry.getDouble(ArmConstants.FIRST_kD) */,
+                ArmConstants.FIRST_kP,
+                ArmConstants.FIRST_kI,
+                ArmConstants.FIRST_kD,
                 new TrapezoidProfile.Constraints( // sets trapezoid profile for first pivot velocity
                         ArmConstants.FIRST_MAX_VELOCITY,
                         ArmConstants.FIRST_MAX_ACCEL));
@@ -118,6 +104,14 @@ public class ArmSubsystem extends SubsystemBase {
                 new TrapezoidProfile.Constraints( // trapezoid second pivot velocity
                         ArmConstants.SECOND_MAX_VELOCITY,
                         ArmConstants.SECOND_MAX_ACCEL));
+
+        speakerPID = new ProfiledPIDController(
+                ArmConstants.AIM_kP,
+                ArmConstants.AIM_kI,
+                ArmConstants.AIM_kD,
+                new TrapezoidProfile.Constraints( // sets trapezoid profile for first pivot velocity
+                        ArmConstants.FIRST_MAX_VELOCITY,
+                        ArmConstants.FIRST_MAX_ACCEL));
 
         // ====== FIRST PIVOT ======
 
@@ -232,7 +226,7 @@ public class ArmSubsystem extends SubsystemBase {
     public double calculateFirstPivotPID(double currentPos, double targetPos) {
         return MathUtil.clamp(
                 firstPivotPID.calculate(currentPos, targetPos),
-                -0.4, 1);
+                -0.3, 1);
     }
 
     /**
@@ -240,8 +234,21 @@ public class ArmSubsystem extends SubsystemBase {
      * 
      * @param targetPos target for arm in degrees.
      */
-    public void firstPivotToTargetPID(double targetPos) {
+    public void firstPivotToTarget(double targetPos) {
         double output = calculateFirstPivotPID(getFirstPivotMotorDeg(), targetPos);
+        setFirstPivot(output * 100);
+    }
+
+    /**
+     * Moves first pivot to target using regular PID. Use only for auto aiming to
+     * speaker.
+     * 
+     * @param targetPos target for arm in degrees. Should only be speaker.
+     */
+    public void firstPivotToTargetSpeaker(double targetPos) {
+        double output = MathUtil.clamp(
+                speakerPID.calculate(getFirstPivotMotorDeg(), targetPos),
+                -1, 1);
         setFirstPivot(output * 100);
     }
 
@@ -274,7 +281,7 @@ public class ArmSubsystem extends SubsystemBase {
     public double calculateSecondPivotPID(double currentPos, double targetPos) {
         return MathUtil.clamp(
                 secondPivotPID.calculate(currentPos, targetPos),
-                -0.7, // max going up
+                -1, // max going up
                 1); // max going down
     }
 
@@ -283,7 +290,7 @@ public class ArmSubsystem extends SubsystemBase {
      * 
      * @param targetPos target for arm in degrees.
      */
-    public void secondPivotToTargetPID(double targetPos) {
+    public void secondPivotToTargetProfiledPID(double targetPos) {
         double output = calculateSecondPivotPID(getSecondPivotMotorDeg(), targetPos);
         setSecondPivot(output * 100);
     }
@@ -448,6 +455,10 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() { // This method will be called once per scheduler run - every 20ms.
+        if (RobotContainer.getDriverController().rightStick().getAsBoolean()) {
+            resetMotor = true;
+        }
+
         // PID Tuning ----------------------------------------
 
         // firstPivotPID.setPID(
@@ -468,20 +479,37 @@ public class ArmSubsystem extends SubsystemBase {
 
         // set motor encoders ---------------------------------
 
-        if (Math.abs(getFirstPivotAbsDeg() - getFirstPivotMotorDeg()) > ArmConstants.ACC_FIRST_PIVOT_DIFF) {
-            // initial motor positions - first stage
+        if (counter == 50 || resetMotor) {
+            // if (Math.abs(getFirstPivotAbsDeg() - getFirstPivotMotorDeg()) >
+            // ArmConstants.ACC_FIRST_PIVOT_DIFF) {
+            // // initial motor positions - first stage
+            // m_firstStageLead.getConfigurator()
+            // .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
+            // m_firstStageFollower.getConfigurator()
+            // .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
+            // }
             m_firstStageLead.getConfigurator()
                     .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
             m_firstStageFollower.getConfigurator()
                     .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
-        }
 
-        if (Math.abs(getSecondPivotAbsDeg() - getSecondPivotMotorDeg()) > ArmConstants.ACC_SECOND_PIVOT_DIFF) {
-            // initial motor positions - second stage
+            // if (Math.abs(getSecondPivotAbsDeg() - getSecondPivotMotorDeg()) >
+            // ArmConstants.ACC_SECOND_PIVOT_DIFF) {
+            // // initial motor positions - second stage
+            // m_secondStageLead.getConfigurator()
+            // .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));
+            // m_secondStageFollower.getConfigurator()
+            // .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));
+            // }
             m_secondStageLead.getConfigurator()
                     .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));
             m_secondStageFollower.getConfigurator()
                     .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));
+
+            counter++;
+        } else if (counter < 50) {
+            resetMotor = false;
+            counter++;
         }
 
         // ---------------------------------------------------
@@ -491,15 +519,15 @@ public class ArmSubsystem extends SubsystemBase {
 
         /* USE FOR TROUBLESHOOTING */
 
-        // SmartDashboard.putNumber("[ARM] Raw First Abs Encoder 1",
-        // getRawFirstEncoders()[0]);
-        // SmartDashboard.putNumber("[ARM] Raw First Abs Encoder 2",
-        // getRawFirstEncoders()[1]);
+        SmartDashboard.putNumber("[ARM] Raw First Abs Encoder 1",
+                getRawFirstEncoders()[0]);
+        SmartDashboard.putNumber("[ARM] Raw First Abs Encoder 2",
+                getRawFirstEncoders()[1]);
 
-        // SmartDashboard.putNumber("[ARM] Offset First Abs Encoder 1",
-        // getOffsetFirstEncoders()[0]);
-        // SmartDashboard.putNumber("[ARM] Offset First Abs Encoder 2",
-        // getOffsetFirstEncoders()[1]);
+        SmartDashboard.putNumber("[ARM] Offset First Abs Encoder 1",
+                getOffsetFirstEncoders()[0]);
+        SmartDashboard.putNumber("[ARM] Offset First Abs Encoder 2",
+                getOffsetFirstEncoders()[1]);
 
         /*------------------------ */
 
@@ -510,15 +538,15 @@ public class ArmSubsystem extends SubsystemBase {
 
         /* USE FOR TROUBLESHOOTING */
 
-        // SmartDashboard.putNumber("[ARM] Raw Second Abs Encoder 1",
-        // getRawSecondEncoders()[0]);
-        // SmartDashboard.putNumber("[ARM] Raw Second Abs Encoder 2",
-        // getRawSecondEncoders()[1]);
+        SmartDashboard.putNumber("[ARM] Raw Second Abs Encoder 1",
+                getRawSecondEncoders()[0]);
+        SmartDashboard.putNumber("[ARM] Raw Second Abs Encoder 2",
+                getRawSecondEncoders()[1]);
 
-        // SmartDashboard.putNumber("[ARM] Offset Second Abs Encoder 1",
-        // getOffsetSecondEncoders()[0]);
-        // SmartDashboard.putNumber("[ARM] Offset Second Abs Encoder 2",
-        // getOffsetSecondEncoders()[1]);
+        SmartDashboard.putNumber("[ARM] Offset Second Abs Encoder 1",
+                getOffsetSecondEncoders()[0]);
+        SmartDashboard.putNumber("[ARM] Offset Second Abs Encoder 2",
+                getOffsetSecondEncoders()[1]);
 
         /*------------------------ */
 

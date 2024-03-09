@@ -5,7 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-
+import frc.robot.commands.actions.IntakeAndShootAuto;
 import frc.robot.commands.actions.IntakeNote;
 import frc.robot.commands.actions.RemoveNote;
 import frc.robot.commands.actions.ShootNoteAmp;
@@ -14,7 +14,7 @@ import frc.robot.commands.arm.SetArm;
 import frc.robot.commands.drivetrain.SpeakerDrive;
 import frc.robot.commands.index.IndexCommand;
 import frc.robot.commands.shooter.ShooterCommand;
-
+import frc.robot.commands.shooter.ShooterCommandAuto;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -24,6 +24,8 @@ import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TestSubsystem;
 import java.io.File;
+
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -131,6 +133,13 @@ public class RobotContainer {
         // testSubsystem.setDefaultCommand(new TestCommand(50));
 
         // ========================================================
+        // ======================== AUTO ==========================
+
+        NamedCommands.registerCommand("IntakeAndShootAuto", new IntakeAndShootAuto());
+        NamedCommands.registerCommand("ShootNoteSpeaker", new ShootNoteSpeaker());
+        NamedCommands.registerCommand("IntakeNote", new IntakeNote());
+
+        // ========================================================
         // ================== CONTROLLER ==========================
 
         // Configure the trigger bindings
@@ -146,12 +155,14 @@ public class RobotContainer {
          * Driver Controller:
          * - Joystick 1 Movement - Movement on Field
          * - Joystick 2 Movement - Direction on Field (Where robot front is facing).
-         * - Press X - reset gyro
+         * - Press X - reset gyro --> found in drivetrain subsystem periodic
          * - Press A - toggle intake
          * - Press B - toggle outtake
          * - Press RB - toggle shooter (speaker)
          * - Press LB - toggle amp
          * - Right Trigger - run index into shooter
+         * - Right Stick Button - reset motor to absolute encoder --> found in arm
+         * subsystem periodic
          */
 
         driverXbox.a().toggleOnTrue(new IntakeNote());
@@ -173,7 +184,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        drive.postTrajectory("example");
-        return drive.getAutonomousCommand("example", true);
+        return drive.getAutonomousCommand("4_note", true);
     }
 }

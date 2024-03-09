@@ -61,12 +61,12 @@ public final class Constants {
         // =======================================================
         // ====================== PID ============================
 
-        public static final double AUTO_DRIVE_P = 0.1;
+        public static final double AUTO_DRIVE_P = 4;
         public static final double AUTO_DRIVE_I = 0;
         public static final double AUTO_DRIVE_D = 0;
         public static final double AUTO_DRIVE_F = 0;
 
-        public static final double ALIGN_P = 0.03;
+        public static final double ALIGN_P = 0.02;
         public static final double ALIGN_I = 0;
         public static final double ALIGN_D = 0;
 
@@ -115,8 +115,8 @@ public final class Constants {
         // ---- SECOND PIVOT ----
         public static final int SECOND_ENC_PORT_1 = 6; // left side
         public static final int SECOND_ENC_PORT_2 = 9; // right side
-        public static final double SECOND_LEFT_OFFSET = -0.162;
-        public static final double SECOND_RIGHT_OFFSET = 0.936;
+        public static final double SECOND_LEFT_OFFSET = -0.335;
+        public static final double SECOND_RIGHT_OFFSET = 0.772;
         /** Rotations of second pivot for each rotation of encoder. */
         public static final double SECOND_ENC_DIST_PER_ROT = 1.0 * 360.0;
 
@@ -125,10 +125,10 @@ public final class Constants {
 
         // create a map of goal states and their target arm positions
         public static Map<ArmState, ArmAngle> GOAL_POSITIONS = Map.of(
-                ArmState.TRANSFER, new ArmAngle(/* 108.1 */ 12.2, -11.25), // arm position when at resting position
+                ArmState.TRANSFER, new ArmAngle(/* 108.1 */ 12.2, -6.25), // arm position when at resting position
                 ArmState.SPEAKER, new ArmAngle(/* 108.1 */ 55, 0), // default position for speaker
                 ArmState.AMP, new ArmAngle(108.1, -122.7), // position for amp
-                ArmState.TRAP, new ArmAngle(100, 100), // position for trap
+                ArmState.TRAP, new ArmAngle(108.1, -130), // position for trap
                 ArmState.CLIMB, new ArmAngle()); // position for human player intake
 
         // create a map of arm positions and their target goal states - maps aren't
@@ -196,7 +196,7 @@ public final class Constants {
 
         public static final Map<ArmState, Boolean> SECOND_PIVOT_PRIORITY_MAP = Map.of(
                 ArmState.TRANSFER, true, // move second pivot first when going to transfer
-                ArmState.SPEAKER, true, // move second pivot first when going to speaker
+                ArmState.SPEAKER, false, // move second pivot first when going to speaker
                 ArmState.AMP, false, // move first pivot first when going to amp
                 ArmState.TRAP, false); // move first pivot first when going to trap
 
@@ -213,18 +213,22 @@ public final class Constants {
         // ---- FIRST PIVOT ----
         public static final double FIRST_kP = 0.015;
         public static final double FIRST_kI = 0;
-        public static final double FIRST_kD = 0;
+        public static final double FIRST_kD = 0.0;
         public static final double FIRST_kF = 0.5;
         public static final double FIRST_kS = 0;
         public static final double FIRST_kV = 0;
         public static final double FIRST_kA = 0;
 
-        public static final double FIRST_MAX_VELOCITY = 400; // maximum achievable velocity (deg per sec)
+        public static final double AIM_kP = 0.019;
+        public static final double AIM_kI = 0.0;
+        public static final double AIM_kD = 0.0;
+
+        public static final double FIRST_MAX_VELOCITY = 1000; // maximum achievable velocity (deg per sec)
         public static final double FIRST_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
-        public static final double FIRST_MAX_ACCEL = 300; // target acceleration (deg / sec / sec)
+        public static final double FIRST_MAX_ACCEL = 1500; // target acceleration (deg / sec / sec)
 
         // ---- SECOND PIVOT ----
-        public static final double SECOND_kP = 0.02;
+        public static final double SECOND_kP = 0.013;
         public static final double SECOND_kI = 0;
         public static final double SECOND_kD = 0;
         public static final double SECOND_kF = 0;
@@ -232,9 +236,9 @@ public final class Constants {
         public static final double SECOND_kV = 0;
         public static final double SECOND_kA = 0;
 
-        public static final double SECOND_MAX_VELOCITY = 120; // maximum achievable velocity (deg per sec)
+        public static final double SECOND_MAX_VELOCITY = 280; // maximum achievable velocity (deg per sec)
         public static final double SECOND_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
-        public static final double SECOND_MAX_ACCEL = 80; // target acceleration (deg / sec / sec)
+        public static final double SECOND_MAX_ACCEL = 360; // target acceleration (deg / sec / sec)
 
         // ==== VELOCITY THRESHOLDS ====
 
@@ -252,8 +256,8 @@ public final class Constants {
 
     public static class ShooterConstants {
         // ==== ELECTRONICS ====
-        public static final int SHOOTER_LEFT_ID = 11;
-        public static final int SHOOTER_RIGHT_ID = 10;
+        public static final int SHOOTER_TOP_ID = 11;
+        public static final int SHOOTER_BOTTOM_ID = 10;
 
         // ---- MAXIMUM RPM ----
         public static final double SHOOTER_MAX_RPM = 87;
@@ -265,7 +269,7 @@ public final class Constants {
         public static final double AMP_LEFT_SPEED = 50;
 
         public static final double SPEAKER_RIGHT_SPEED = 100;
-        public static final double SPEAKER_LEFT_SPEED = 80;
+        public static final double SPEAKER_LEFT_SPEED = 100;
 
         public static final double OUTTAKE_SPEED = 20;
     }
@@ -276,7 +280,8 @@ public final class Constants {
         public static final int BEAM_BREAK_CHANNEL_ID = 5;
 
         // ==== SPEEDS ====
-        public static final double SPEED = 30;
+        public static final double INTAKE_SPEED = 20;
+        public static final double SHOOT_SPEED = 100;
     }
 
     public static class IntakeConstants {
