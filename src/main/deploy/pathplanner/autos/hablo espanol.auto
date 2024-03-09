@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "secondPathA"
+            "pathName": "uno"
           }
         },
         {
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "secondPathB"
+            "pathName": "dos"
           }
         },
         {
@@ -50,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "secondPathC"
+            "pathName": "tres"
           }
         },
         {
@@ -63,18 +63,6 @@
           "type": "named",
           "data": {
             "name": "ShootNoteSpeaker"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "secondPathD"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeNote"
           }
         }
       ]
