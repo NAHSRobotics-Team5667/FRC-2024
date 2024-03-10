@@ -73,7 +73,6 @@ public class ArmSubsystem extends SubsystemBase {
     private StateManager states;
 
     private int counter = 0;
-    private boolean resetMotor = false;
 
     // ========================================================
     // ============= CLASS & SINGLETON SETUP ==================
@@ -226,7 +225,7 @@ public class ArmSubsystem extends SubsystemBase {
     public double calculateFirstPivotPID(double currentPos, double targetPos) {
         return MathUtil.clamp(
                 firstPivotPID.calculate(currentPos, targetPos),
-                -0.3, 1);
+                -0.5, 1);
     }
 
     /**
@@ -450,15 +449,28 @@ public class ArmSubsystem extends SubsystemBase {
         return Units.rotationsToDegrees(m_secondStageLead.getPosition().getValueAsDouble());
     }
 
+    // RESET --------------------------------------------------
+
+    /**
+     * Resets motor encoders to absolute encoder reading.
+     */
+    public void resetMotorsToEncoders() {
+        m_firstStageLead.getConfigurator()
+                .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
+        m_firstStageFollower.getConfigurator()
+                .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
+
+        m_secondStageLead.getConfigurator()
+                .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));
+        m_secondStageFollower.getConfigurator()
+                .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));
+    }
+
     // ========================================================
     // ===================== PERIODIC =========================
 
     @Override
     public void periodic() { // This method will be called once per scheduler run - every 20ms.
-        if (RobotContainer.getDriverController().rightStick().getAsBoolean()) {
-            resetMotor = true;
-        }
-
         // PID Tuning ----------------------------------------
 
         // firstPivotPID.setPID(
@@ -479,36 +491,9 @@ public class ArmSubsystem extends SubsystemBase {
 
         // set motor encoders ---------------------------------
 
-        if (counter == 50 || resetMotor) {
-            // if (Math.abs(getFirstPivotAbsDeg() - getFirstPivotMotorDeg()) >
-            // ArmConstants.ACC_FIRST_PIVOT_DIFF) {
-            // // initial motor positions - first stage
-            // m_firstStageLead.getConfigurator()
-            // .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
-            // m_firstStageFollower.getConfigurator()
-            // .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
-            // }
-            m_firstStageLead.getConfigurator()
-                    .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
-            m_firstStageFollower.getConfigurator()
-                    .setPosition(Units.degreesToRotations(getFirstPivotAbsDeg()));
-
-            // if (Math.abs(getSecondPivotAbsDeg() - getSecondPivotMotorDeg()) >
-            // ArmConstants.ACC_SECOND_PIVOT_DIFF) {
-            // // initial motor positions - second stage
-            // m_secondStageLead.getConfigurator()
-            // .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));
-            // m_secondStageFollower.getConfigurator()
-            // .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));
-            // }
-            m_secondStageLead.getConfigurator()
-                    .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));
-            m_secondStageFollower.getConfigurator()
-                    .setPosition(Units.degreesToRotations(getSecondPivotAbsDeg()));
-
-            counter++;
+        if (counter == 50) {
+            resetMotorsToEncoders();
         } else if (counter < 50) {
-            resetMotor = false;
             counter++;
         }
 

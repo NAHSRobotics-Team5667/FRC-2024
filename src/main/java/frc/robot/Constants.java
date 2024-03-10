@@ -61,14 +61,14 @@ public final class Constants {
         // =======================================================
         // ====================== PID ============================
 
-        public static final double AUTO_DRIVE_P = 4;
+        public static final double AUTO_DRIVE_P = 6;
         public static final double AUTO_DRIVE_I = 0;
         public static final double AUTO_DRIVE_D = 0;
         public static final double AUTO_DRIVE_F = 0;
 
         public static final double ALIGN_P = 0.02;
         public static final double ALIGN_I = 0;
-        public static final double ALIGN_D = 0;
+        public static final double ALIGN_D = 0.0;
 
         // =======================================================
         // ======================= GENERAL =======================
@@ -219,9 +219,9 @@ public final class Constants {
         public static final double FIRST_kV = 0;
         public static final double FIRST_kA = 0;
 
-        public static final double AIM_kP = 0.019;
+        public static final double AIM_kP = 0.020;
         public static final double AIM_kI = 0.0;
-        public static final double AIM_kD = 0.0;
+        public static final double AIM_kD = 0.00;
 
         public static final double FIRST_MAX_VELOCITY = 1000; // maximum achievable velocity (deg per sec)
         public static final double FIRST_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
@@ -236,9 +236,9 @@ public final class Constants {
         public static final double SECOND_kV = 0;
         public static final double SECOND_kA = 0;
 
-        public static final double SECOND_MAX_VELOCITY = 280; // maximum achievable velocity (deg per sec)
+        public static final double SECOND_MAX_VELOCITY = 300; // maximum achievable velocity (deg per sec)
         public static final double SECOND_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
-        public static final double SECOND_MAX_ACCEL = 360; // target acceleration (deg / sec / sec)
+        public static final double SECOND_MAX_ACCEL = 500; // target acceleration (deg / sec / sec)
 
         // ==== VELOCITY THRESHOLDS ====
 
@@ -265,13 +265,19 @@ public final class Constants {
         public static final double SHOOTER_RAMP_TIME = 0.75;
 
         // --- SPEEDS ----
-        public static final double AMP_RIGHT_SPEED = 50;
-        public static final double AMP_LEFT_SPEED = 50;
+        public static final double AMP_SPEED = 20;
 
-        public static final double SPEAKER_RIGHT_SPEED = 100;
-        public static final double SPEAKER_LEFT_SPEED = 100;
+        public static final double SPEAKER_BOTTOM_SPEED = 100;
+        public static final double SPEAKER_TOP_SPEED = 100;
+
+        public static final double SPEAKER_DEFAULT_SPEED = 80;
 
         public static final double OUTTAKE_SPEED = 20;
+
+        public static double getShooterSpeed(double ty) {
+            return Math.max(SPEAKER_DEFAULT_SPEED, (-4.91 * ty) - 1.81);
+            // return SPEAKER_DEFAULT_SPEED;
+        }
     }
 
     public static class IndexConstants {
@@ -280,7 +286,7 @@ public final class Constants {
         public static final int BEAM_BREAK_CHANNEL_ID = 5;
 
         // ==== SPEEDS ====
-        public static final double INTAKE_SPEED = 20;
+        public static final double INTAKE_SPEED = 35;
         public static final double SHOOT_SPEED = 100;
     }
 
@@ -292,7 +298,7 @@ public final class Constants {
         public static final int SOLENOID_PORT = 1;
 
         // ==== SPEED ====
-        public static final double INTAKE_SPEED = 50;
+        public static final double INTAKE_SPEED = 100;
         public static final double OUTTAKE_SPEED = -50;
     }
 

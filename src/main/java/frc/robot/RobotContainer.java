@@ -31,6 +31,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /**
@@ -138,6 +139,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeAndShootAuto", new IntakeAndShootAuto());
         NamedCommands.registerCommand("ShootNoteSpeaker", new ShootNoteSpeaker());
         NamedCommands.registerCommand("IntakeNote", new IntakeNote());
+        NamedCommands.registerCommand("ResetMotorsToEncoders", new InstantCommand(() -> arm.resetMotorsToEncoders()));
 
         // ========================================================
         // ================== CONTROLLER ==========================
@@ -165,6 +167,8 @@ public class RobotContainer {
          * subsystem periodic
          */
 
+        driverXbox.x().onTrue(new InstantCommand(() -> drive.resetGyro()));
+
         driverXbox.a().toggleOnTrue(new IntakeNote());
         driverXbox.b().toggleOnTrue(new RemoveNote());
 
@@ -172,6 +176,8 @@ public class RobotContainer {
         driverXbox.leftBumper().toggleOnTrue(new ShooterCommand(true));
 
         driverXbox.rightTrigger().whileTrue(new IndexCommand(true));
+
+        driverXbox.rightStick().onTrue(new InstantCommand(() -> arm.resetMotorsToEncoders()));
     }
 
     public static CommandXboxController getDriverController() {
@@ -184,6 +190,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return drive.getAutonomousCommand("4_note", true);
+        return drive.getAutonomousCommand("6_note", true);
     }
 }

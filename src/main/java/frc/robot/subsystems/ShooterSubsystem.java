@@ -92,18 +92,18 @@ public class ShooterSubsystem extends SubsystemBase {
      * Sets speed of shooter wheels with separate speeds for each. Use for spin and
      * lateral adjustments. 0-100;
      * 
-     * @param left  % output for left motor.
-     * @param right % output for right motor.
+     * @param top    % output for left motor.
+     * @param bottom % output for right motor.
      */
-    public void set(double left, double right) {
-        double leftOutput = left / 100;
-        double rightOutput = right / 100;
+    public void set(double top, double bottom) {
+        double topOutput = top / 100;
+        double bottomOutput = bottom / 100;
 
-        targetLeftRPM = leftOutput * ShooterConstants.SHOOTER_MAX_RPM;
-        targetRightRPM = rightOutput * ShooterConstants.SHOOTER_MAX_RPM;
+        targetLeftRPM = topOutput * ShooterConstants.SHOOTER_MAX_RPM;
+        targetRightRPM = bottomOutput * ShooterConstants.SHOOTER_MAX_RPM;
 
-        m_topShooter.set(leftOutput);
-        m_bottomShooter.set(rightOutput);
+        m_topShooter.set(topOutput);
+        m_bottomShooter.set(bottomOutput);
     }
 
     // ========================================================

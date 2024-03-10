@@ -180,7 +180,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                 swerveDrive.swerveController.config.headingPIDF.i,
                                 swerveDrive.swerveController.config.headingPIDF.d),
                         // Rotation PID constants
-                        /* DriveConstants.MAX_VELOCITY_METERS */ 2, // TODO: check back to see if works
+                        /* DriveConstants.MAX_VELOCITY_METERS */ 4, // TODO: check back to see if works
                         // Max module speed, in m/s
                         swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
                         // Drive base radius in meters. Distance from robot center to furthest module.
@@ -581,10 +581,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (RobotContainer.getDriverController().x().getAsBoolean()) {
-            resetGyro();
-        }
-
         SmartDashboard.putNumber("[DRIVE] Max Velocity", getMaximumVelocity());
     }
 

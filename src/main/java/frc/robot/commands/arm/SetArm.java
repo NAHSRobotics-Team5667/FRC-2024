@@ -4,7 +4,10 @@
 
 package frc.robot.commands.arm;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -44,6 +47,7 @@ public class SetArm extends Command {
     @Override
     public void execute() {
         // for getting setpoints ---------------------------------------
+
         // double setpoint =
         // ArmConstants.getGoalArmAngle(ArmState.SPEAKER).getFirstPivot();
 
@@ -56,6 +60,7 @@ public class SetArm extends Command {
         // setpoint > 20) {
         // ArmConstants.setFirstPivotSpeaker(setpoint - 0.25);
         // }
+
         // -------------------------------------------------------------
         boolean aimingAtSpeaker = states.getTargetArmState().equals(ArmState.SPEAKER);
 
@@ -74,7 +79,7 @@ public class SetArm extends Command {
             }
         } else { // if first pivot has priority
             // run first pivot
-            if (aimingAtSpeaker) {
+            if (aimingAtSpeaker && !DriverStation.isAutonomousEnabled()) {
                 arm.firstPivotToTargetSpeaker(states.getTargetArmAngle().getFirstPivot());
             } else {
                 arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
@@ -106,6 +111,6 @@ public class SetArm extends Command {
      * @return ideal first pivot angle to aim into speaker.
      */
     public double calculateSpeakerFirstPivot(double ty) {
-        return 46.3 + (0.693 * ty) - (0.0152 * Math.pow(ty, 2));
+        return 39.2 + (0.682 * ty) - (0.00609 * Math.pow(ty, 2));
     }
 }

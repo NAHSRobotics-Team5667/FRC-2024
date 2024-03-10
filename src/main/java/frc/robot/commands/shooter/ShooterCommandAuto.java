@@ -30,11 +30,11 @@ public class ShooterCommandAuto extends Command { // TODO: make index running ma
         this.amp = amp;
 
         if (amp) {
-            left = ShooterConstants.AMP_LEFT_SPEED;
-            right = ShooterConstants.AMP_RIGHT_SPEED;
+            left = ShooterConstants.AMP_SPEED;
+            right = ShooterConstants.AMP_SPEED;
         } else {
-            left = ShooterConstants.SPEAKER_LEFT_SPEED;
-            right = ShooterConstants.SPEAKER_RIGHT_SPEED;
+            left = ShooterConstants.SPEAKER_DEFAULT_SPEED;
+            right = ShooterConstants.SPEAKER_DEFAULT_SPEED;
         }
 
         shooter = ShooterSubsystem.getInstance();

@@ -69,18 +69,10 @@ public class SpeakerDrive extends Command {
             angularRotationVel = MathUtil.clamp(
                     alignPID.calculate(limelight.getTx(), 0), -1, 1) *
                     swerve.getMaximumAngularVelocity();
-
-            xPercent = MathUtil.clamp(xPercent, -0.6, 0.6);
-            yPercent = MathUtil.clamp(yPercent, -0.6, 0.6);
+        } else if (states.getArmState().equals(ArmState.AMP) && states.getTargetArmState().equals(ArmState.AMP)) {
+            xPercent = MathUtil.clamp(xPercent, -0.7, 0.7);
+            yPercent = MathUtil.clamp(yPercent, -0.7, 0.7);
         }
-        // else if (states.getTargetArmState().equals(ArmState.TRANSFER)
-        // && !states.getArmState().equals(ArmState.TRANSFER)) {
-        // xPercent = MathUtil.clamp(xPercent, -0.4, 0.4);
-        // yPercent = MathUtil.clamp(yPercent, -0.4, 0.4);
-        // angularRotationVel = Math.pow(MathUtil.clamp(vRot.getAsDouble(), -0.6, 0.6),
-        // 3)
-        // * swerve.getMaximumAngularVelocity();
-        // }
 
         // putting it all together
         swerve.drive(
