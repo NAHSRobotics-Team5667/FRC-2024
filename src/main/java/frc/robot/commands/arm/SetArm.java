@@ -65,7 +65,7 @@ public class SetArm extends Command {
         boolean aimingAtSpeaker = states.getTargetArmState().equals(ArmState.SPEAKER);
 
         if (aimingAtSpeaker) {
-            ArmConstants.setFirstPivotSpeaker(calculateSpeakerFirstPivot(limelight.getTy()));
+            ArmConstants.setFirstPivotSpeaker(calculateSpeakerFirstPivot(limelight.getTagTy()));
         }
 
         // check if second pivot has priority in the maneuver
