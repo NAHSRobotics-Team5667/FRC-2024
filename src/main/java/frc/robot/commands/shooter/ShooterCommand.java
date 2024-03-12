@@ -50,7 +50,7 @@ public class ShooterCommand extends Command { // TODO: make index running manual
     @Override
     public void execute() {
         if (!amp) {
-            shooter.set(ShooterConstants.getShooterSpeed(limelight.getTy()));
+            shooter.set(ShooterConstants.getShooterSpeed(limelight.getTagTy()));
         } else {
             shooter.set(ShooterConstants.AMP_SPEED);
         }
