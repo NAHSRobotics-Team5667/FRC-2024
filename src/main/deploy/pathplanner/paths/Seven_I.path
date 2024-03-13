@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.64,
-        "y": 5.56
+        "x": 1.54,
+        "y": 4.74
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.309440738710292,
-        "y": 6.640044321458116
+        "x": 2.54,
+        "y": 4.74
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.317099886696207,
-        "y": 5.7500207439787205
+        "x": 2.9066934025451485,
+        "y": 5.527514849608872
       },
       "prevControl": {
-        "x": 7.4973413284915,
-        "y": 6.534646792546081
+        "x": 0.8338753339418218,
+        "y": 5.632912378520905
       },
       "nextControl": null,
       "isLocked": false,
@@ -40,12 +40,12 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": 0.0,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "Samar",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 131.78019327433213,
     "velocity": 0
   },
   "useDefaultConstraints": true
