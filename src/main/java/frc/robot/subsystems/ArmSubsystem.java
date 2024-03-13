@@ -150,10 +150,7 @@ public class ArmSubsystem extends SubsystemBase {
         secondConfig.Feedback.SensorToMechanismRatio = ArmConstants.SECOND_GEAR_RATIO;
 
         m_secondStageLead.getConfigurator().apply(secondConfig);
-        // TODO: fix when second stage motor is swapped
-        // m_secondStageFollower.setControl(new
-        // Follower(ArmConstants.SECOND_PIVOT_LEAD_ID, true)); // follow leader
-        m_secondStageFollower.setNeutralMode(NeutralModeValue.Coast);
+        m_secondStageFollower.setControl(new Follower(ArmConstants.SECOND_PIVOT_LEAD_ID, false)); // follow leader
 
         // ----------------------------------
 
@@ -269,8 +266,7 @@ public class ArmSubsystem extends SubsystemBase {
         double motorSpeed = speed / 100;
 
         m_secondStageLead.set(motorSpeed);
-        // m_secondStageFollower.setControl(new
-        // Follower(ArmConstants.SECOND_PIVOT_LEAD_ID, false));
+        m_secondStageFollower.setControl(new Follower(ArmConstants.SECOND_PIVOT_LEAD_ID, false));
     }
 
     /**
@@ -493,6 +489,7 @@ public class ArmSubsystem extends SubsystemBase {
 
         if (counter == 50) {
             resetMotorsToEncoders();
+            counter++;
         } else if (counter < 50) {
             counter++;
         }

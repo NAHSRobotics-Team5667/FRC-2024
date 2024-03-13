@@ -4,6 +4,7 @@
 
 package frc.robot.commands.drivetrain;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
@@ -19,13 +20,14 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.States.ArmState;
+import frc.robot.util.States.RobotState;
 
 public class SpeakerDrive extends Command {
     private LimelightSubsystem limelight;
     private SwerveSubsystem swerve;
     private StateManager states;
 
-    private PIDController alignPID;
+    private PIDController alignPID, intakePID;
 
     private DoubleSupplier vX, vY, vRot;
 
@@ -40,9 +42,14 @@ public class SpeakerDrive extends Command {
         limelight = LimelightSubsystem.getInstance(); // DO NOT add to addReqs()
 
         alignPID = new PIDController(
-                DriveConstants.ALIGN_P,
-                DriveConstants.ALIGN_I,
-                DriveConstants.ALIGN_D);
+                DriveConstants.SPEAKER_P,
+                DriveConstants.SPEAKER_I,
+                DriveConstants.SPEAKER_D);
+
+        intakePID = new PIDController(
+                DriveConstants.INTAKE_P,
+                DriveConstants.INTAKE_I,
+                DriveConstants.INTAKE_D);
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(swerve);
@@ -62,16 +69,29 @@ public class SpeakerDrive extends Command {
         double xPercent = vX.getAsDouble();
         double yPercent = vY.getAsDouble();
 
+        double newAngularRotationVel = 0;
+
         // adjust rotational and translational velocity based on april tag
         if (states.getTargetArmState().equals(ArmState.SPEAKER)
                 && (limelight.getAprilTagID() == 4 || limelight.getAprilTagID() == 7)) {
-
-            angularRotationVel = MathUtil.clamp(
-                    alignPID.calculate(limelight.getTagTx(), 0), -1, 1) *
+            // align to april tag - setpoint is 8.8 <units> away from center
+            newAngularRotationVel = MathUtil.clamp(
+                    alignPID.calculate(limelight.getTagTx(), 8.8), -1, 1) *
                     swerve.getMaximumAngularVelocity();
-        } else if (states.getArmState().equals(ArmState.AMP) && states.getTargetArmState().equals(ArmState.AMP)) {
+        } else if (states.getRobotState().equals(RobotState.AMP) && states.getTargetArmState().equals(ArmState.AMP)) {
+            // make drivetrain slower to avoid jiggling arm
             xPercent = MathUtil.clamp(xPercent, -0.7, 0.7);
             yPercent = MathUtil.clamp(yPercent, -0.7, 0.7);
+        } else if (states.getRobotState().equals(RobotState.INTAKE)) {
+            // align to note
+            newAngularRotationVel = MathUtil.clamp(
+                    intakePID.calculate(limelight.getNoteTx(), 0), -1, 1) *
+                    swerve.getMaximumAngularVelocity();
+        }
+
+        // if PID does not give a heading output, give heading control back to driver
+        if (newAngularRotationVel != 0) {
+            angularRotationVel = newAngularRotationVel;
         }
 
         // putting it all together
@@ -79,10 +99,9 @@ public class SpeakerDrive extends Command {
                 new Translation2d(
                         Math.pow(xPercent, 3) * swerve.getMaximumVelocity(),
                         Math.pow(yPercent, 3) * swerve.getMaximumVelocity()),
-                angularRotationVel,
-                true);
+                angularRotationVel);
 
-        SmartDashboard.putNumber("[ALIGN] Error", alignPID.getPositionError());
+        SmartDashboard.putNumber("[DRIVE_CMD] Error", alignPID.getPositionError());
     }
 
     // Called once the command ends or is interrupted.

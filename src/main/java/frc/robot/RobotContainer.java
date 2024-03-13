@@ -23,6 +23,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TestSubsystem;
+import frc.robot.util.States.RobotState;
+
 import java.io.File;
 
 import com.pathplanner.lib.auto.NamedCommands;
@@ -178,6 +180,10 @@ public class RobotContainer {
         driverXbox.rightTrigger().whileTrue(new IndexCommand(true));
 
         driverXbox.rightStick().onTrue(new InstantCommand(() -> arm.resetMotorsToEncoders()));
+        driverXbox.leftStick().onTrue(new InstantCommand(() -> drive.toggleFieldCentric()));
+
+        driverXbox.povUp().onTrue(new InstantCommand(() -> states.setRobotState(RobotState.CLIMB)));
+        driverXbox.povDown().onTrue(new InstantCommand(() -> states.setRobotState(RobotState.HANGING)));
     }
 
     public static CommandXboxController getDriverController() {

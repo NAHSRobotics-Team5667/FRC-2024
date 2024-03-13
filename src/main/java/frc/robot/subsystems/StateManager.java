@@ -4,8 +4,11 @@
 
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.ArmAngle;
@@ -22,14 +25,29 @@ public class StateManager extends SubsystemBase {
     private ShooterState shooterState;
     private double shooterStartTime;
 
+    // robot state
+    private RobotState robotState;
+
+    // maps of robot state to other states --------------------
+    private Map<RobotState, ArmState> robotArmMap = Map.of(
+            RobotState.IDLE, ArmState.TRANSFER,
+            RobotState.INTAKE, ArmState.TRANSFER,
+            RobotState.AMP, ArmState.AMP,
+            RobotState.SPEAKER, ArmState.SPEAKER,
+            RobotState.CLIMB, ArmState.CLIMB,
+            RobotState.HANGING, ArmState.HANGING);
+
     // singleton
     private static StateManager instance = null;
 
     // ========================================================
-    // ===================== POSITION =========================
+    // =================== CONSTRUCTOR ========================
 
     /** Creates a new StateSubsystem. */
     public StateManager() {
+        // Robot ----------------------------------------------
+        robotState = RobotState.IDLE;
+
         // Arm ------------------------------------------------
         armState = ArmState.TRANSFER;
         targetArmState = ArmState.TRANSFER;
@@ -54,6 +72,25 @@ public class StateManager extends SubsystemBase {
     }
 
     // ========================================================
+    // ======================= ROBOT ==========================
+
+    /**
+     * Sets the robot state.
+     * 
+     * @param newState state to replace old state with.
+     */
+    public void setRobotState(RobotState newState) {
+        robotState = newState;
+    }
+
+    /**
+     * @return current robot state.
+     */
+    public RobotState getRobotState() {
+        return robotState;
+    }
+
+    // ========================================================
     // ======================== ARM ===========================
 
     /**
@@ -68,13 +105,20 @@ public class StateManager extends SubsystemBase {
     }
 
     /**
-     * Sets the target arm state.
-     * 
-     * @param target target arm state.
+     * Updates the target arm state passively on a periodic loop.
      */
-    public void setTargetArmState(ArmState target) {
-        targetArmState = target;
+    private void updateTargetArmState() {
+        targetArmState = robotArmMap.get(robotState);
     }
+
+    // /**
+    // * Sets the target arm state.
+    // *
+    // * @param target target arm state.
+    // */
+    // public void setTargetArmState(ArmState target) {
+    // targetArmState = target;
+    // }
 
     /**
      * @return target arm state.
@@ -149,6 +193,7 @@ public class StateManager extends SubsystemBase {
 
     @Override
     public void periodic() {
+        updateTargetArmState();
         updateArmState(); // update arm state periodically
         updateShooterState(); // update shooter state periodically
     }

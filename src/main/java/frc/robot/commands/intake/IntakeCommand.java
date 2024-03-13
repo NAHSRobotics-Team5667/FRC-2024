@@ -5,7 +5,9 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IndexSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.StateManager;
+import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.States.ArmState;
+import frc.robot.util.States.RobotState;
 
 /*
  * This command is going to trigger the intake to drop down and start spinning.
@@ -47,7 +49,7 @@ public class IntakeCommand extends Command { // TODO: make outtake functional
     public void initialize() {
         intake.set(0);
 
-        states.setTargetArmState(ArmState.TRANSFER);
+        states.setRobotState(RobotState.INTAKE);
     }
 
     // Called when scheduler runs while the command is scheduled
@@ -64,8 +66,11 @@ public class IntakeCommand extends Command { // TODO: make outtake functional
     // Called when the command is interruped or ended
     @Override
     public void end(boolean interrupted) {
+        states.setRobotState(RobotState.IDLE);
         intake.set(0);
-        // intake.setPiston(false);
+
+        // reset field centric to true
+        SwerveSubsystem.getInstance().setFieldCentric(true);
     }
 
     // Called so it should return true when the command will end

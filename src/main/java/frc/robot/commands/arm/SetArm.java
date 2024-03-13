@@ -61,7 +61,27 @@ public class SetArm extends Command {
         // ArmConstants.setFirstPivotSpeaker(setpoint - 0.25);
         // }
 
+        // double firstSetpoint =
+        // ArmConstants.getGoalArmAngle(ArmState.CLIMB).getFirstPivot();
+        // double secondSetpoint =
+        // ArmConstants.getGoalArmAngle(ArmState.CLIMB).getSecondPivot();
+
+        // if (RobotContainer.getDriverController().povUp().getAsBoolean() &&
+        // firstSetpoint < 108) {
+        // ArmConstants.setFirstPivotClimb(firstSetpoint + 1);
+        // } else if (RobotContainer.getDriverController().povDown().getAsBoolean() &&
+        // firstSetpoint > 45) {
+        // ArmConstants.setFirstPivotClimb(firstSetpoint - 1);
+        // } else if (RobotContainer.getDriverController().povLeft().getAsBoolean() &&
+        // secondSetpoint > -180) {
+        // ArmConstants.setSecondPivotClimb(secondSetpoint - 1);
+        // } else if (RobotContainer.getDriverController().povRight().getAsBoolean() &&
+        // secondSetpoint < 10) {
+        // ArmConstants.setSecondPivotClimb(secondSetpoint + 1);
+        // }
+
         // -------------------------------------------------------------
+
         boolean aimingAtSpeaker = states.getTargetArmState().equals(ArmState.SPEAKER);
 
         if (aimingAtSpeaker) {
@@ -89,8 +109,8 @@ public class SetArm extends Command {
             arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
         }
 
-        // arm.secondPivotToTargetPID(states.getTargetArmAngle().getSecondPivot());
-        // arm.firstPivotToTargetPID(states.getTargetArmAngle().getFirstPivot());
+        // arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
+        // arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
     }
 
     // Called once the command ends or is interrupted.

@@ -65,6 +65,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private AHRS gyro;
 
+    private boolean fieldCentric = true;
+
     // ========================================================
     // ================= CONSTRUCTORS =========================
     // ========================================================
@@ -323,7 +325,7 @@ public class SwerveSubsystem extends SubsystemBase {
                     new Translation2d(Math.pow(translationX.getAsDouble(), 3) * swerveDrive.getMaximumVelocity(),
                             Math.pow(translationY.getAsDouble(), 3) * swerveDrive.getMaximumVelocity()),
                     Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumAngularVelocity(),
-                    true,
+                    fieldCentric,
                     false);
         });
     }
@@ -351,10 +353,10 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param fieldRelative Drive mode. True for field-relative, false for
      *                      robot-relative.
      */
-    public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
+    public void drive(Translation2d translation, double rotation) {
         swerveDrive.drive(translation,
                 rotation,
-                fieldRelative,
+                fieldCentric,
                 false); // Open loop is disabled since it shouldn't be used most of the time.
     }
 
@@ -374,6 +376,22 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public void drive(ChassisSpeeds velocity) {
         swerveDrive.drive(velocity);
+    }
+
+    /**
+     * Toggles field centric driving.
+     */
+    public void toggleFieldCentric() {
+        fieldCentric = !fieldCentric;
+    }
+
+    /**
+     * Sets field centric.
+     * 
+     * @param fieldCentric new value of field centric.
+     */
+    public void setFieldCentric(boolean fieldCentric) {
+        this.fieldCentric = fieldCentric;
     }
 
     // ========================================================

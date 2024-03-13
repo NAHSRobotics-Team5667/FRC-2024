@@ -10,8 +10,10 @@ public class States {
         AMP,
         /** State for scoring in trap. */
         TRAP,
-        /** State for intaking from human player elevated station. */
+        /** State for climb. */
         CLIMB,
+        /** State for hanging. */
+        HANGING,
         /** State that represents an undefined position. */
         INTERMEDIATE
     }
@@ -25,5 +27,15 @@ public class States {
         MOVING,
         /** Shooter is ready to fire. */
         READY
+    }
+
+    public static enum RobotState {
+        IDLE,
+        INTAKE,
+        AMP,
+        SPEAKER,
+        TRAP,
+        CLIMB,
+        HANGING
     }
 }

@@ -11,6 +11,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StateManager;
 import frc.robot.util.States.ArmState;
+import frc.robot.util.States.RobotState;
 
 public class ShooterCommand extends Command { // TODO: make index running manual
 
@@ -41,7 +42,7 @@ public class ShooterCommand extends Command { // TODO: make index running manual
     @Override
     public void initialize() {
         states.setShooterStartTime(Timer.getFPGATimestamp());
-        states.setTargetArmState((amp) ? ArmState.AMP : ArmState.SPEAKER);
+        states.setRobotState((amp) ? RobotState.AMP : RobotState.SPEAKER);
 
         shooter.set(0.00);
     }
@@ -59,7 +60,7 @@ public class ShooterCommand extends Command { // TODO: make index running manual
     // Called when the command is interruped or ended
     @Override
     public void end(boolean interrupted) {
-        states.setTargetArmState(ArmState.TRANSFER);
+        states.setRobotState(RobotState.IDLE);
 
         shooter.set(0.00);
     }

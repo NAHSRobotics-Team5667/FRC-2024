@@ -6,6 +6,7 @@ import frc.robot.subsystems.IndexSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.StateManager;
 import frc.robot.util.States.ArmState;
+import frc.robot.util.States.RobotState;
 
 /*
  * This command is going to trigger the intake to drop down and start spinning.
@@ -45,6 +46,7 @@ public class IntakeCommandAuto extends Command { // TODO: make outtake functiona
     // Called when command is initiated/first scheduled
     @Override
     public void initialize() {
+        states.setRobotState(RobotState.INTAKE);
         intake.set(0);
     }
 
@@ -58,6 +60,7 @@ public class IntakeCommandAuto extends Command { // TODO: make outtake functiona
     // Called when the command is interruped or ended
     @Override
     public void end(boolean interrupted) {
+        states.setRobotState(RobotState.IDLE);
         intake.set(0);
         // intake.setPiston(false);
     }

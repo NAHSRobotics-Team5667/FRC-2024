@@ -66,9 +66,13 @@ public final class Constants {
         public static final double AUTO_DRIVE_D = 0;
         public static final double AUTO_DRIVE_F = 0;
 
-        public static final double ALIGN_P = 0.02;
-        public static final double ALIGN_I = 0;
-        public static final double ALIGN_D = 0.0;
+        public static final double SPEAKER_P = 0.02;
+        public static final double SPEAKER_I = 0;
+        public static final double SPEAKER_D = 0.0;
+
+        public static final double INTAKE_P = 0.01;
+        public static final double INTAKE_I = 0;
+        public static final double INTAKE_D = 0.0;
 
         // =======================================================
         // ======================= GENERAL =======================
@@ -97,7 +101,7 @@ public final class Constants {
 
         // ---- SECOND PIVOT ----
         public static final int SECOND_PIVOT_LEAD_ID = 15;
-        public static final int SECOND_PIVOT_FOLLOWER_ID = 14;
+        public static final int SECOND_PIVOT_FOLLOWER_ID = 34;
 
         // =======================================================
         // ===================== ENCODERS ========================
@@ -125,11 +129,12 @@ public final class Constants {
 
         // create a map of goal states and their target arm positions
         public static Map<ArmState, ArmAngle> GOAL_POSITIONS = Map.of(
-                ArmState.TRANSFER, new ArmAngle(/* 108.1 */ 12.2, -6.25), // arm position when at resting position
+                ArmState.TRANSFER, new ArmAngle(/* 108.1 */ 15.2, -6.25), // arm position when at resting position
                 ArmState.SPEAKER, new ArmAngle(/* 108.1 */ 55, 0), // default position for speaker
                 ArmState.AMP, new ArmAngle(108.1, -122.7), // position for amp
                 ArmState.TRAP, new ArmAngle(108.1, -130), // position for trap
-                ArmState.CLIMB, new ArmAngle()); // position for human player intake
+                ArmState.CLIMB, new ArmAngle(65.303, -99.58),
+                ArmState.HANGING, new ArmAngle(30.051, 17)); // position for human player intake
 
         // create a map of arm positions and their target goal states - maps aren't
         // bi-directional :(
@@ -138,8 +143,9 @@ public final class Constants {
                 getGoalArmAngle(ArmState.SPEAKER), ArmState.SPEAKER, // default position for speaker
                 getGoalArmAngle(ArmState.AMP), ArmState.AMP, // position for amp
                 getGoalArmAngle(ArmState.TRAP), ArmState.TRAP, // position for trap
-                getGoalArmAngle(ArmState.CLIMB), ArmState.CLIMB); // position for human player
-                                                                  // intake
+                getGoalArmAngle(ArmState.CLIMB), ArmState.CLIMB,
+                getGoalArmAngle(ArmState.HANGING), ArmState.HANGING); // position for human player
+        // intake
 
         /**
          * Returns the goal position for a given target.
@@ -159,6 +165,24 @@ public final class Constants {
          */
         public static void setFirstPivotSpeaker(double target) {
             getGoalArmAngle(ArmState.SPEAKER).setFirstPivot(target);
+        }
+
+        /**
+         * Updates first pivot goal for climb.
+         * 
+         * @param target new first pivot goal for climb.
+         */
+        public static void setFirstPivotClimb(double target) {
+            getGoalArmAngle(ArmState.CLIMB).setFirstPivot(target);
+        }
+
+        /**
+         * Updates second pivot goal for climb.
+         * 
+         * @param target new second pivot goal for climb.
+         */
+        public static void setSecondPivotClimb(double target) {
+            getGoalArmAngle(ArmState.CLIMB).setSecondPivot(target);
         }
 
         /**
@@ -195,10 +219,12 @@ public final class Constants {
         // ==== POSITION-MOTION MAPPED PROCEDURES ====
 
         public static final Map<ArmState, Boolean> SECOND_PIVOT_PRIORITY_MAP = Map.of(
-                ArmState.TRANSFER, true, // move second pivot first when going to transfer
+                ArmState.TRANSFER, false, // move second pivot first when going to transfer
                 ArmState.SPEAKER, false, // move second pivot first when going to speaker
                 ArmState.AMP, false, // move first pivot first when going to amp
-                ArmState.TRAP, false); // move first pivot first when going to trap
+                ArmState.TRAP, false,
+                ArmState.CLIMB, false,
+                ArmState.HANGING, false); // move first pivot first when going to trap
 
         /**
          * @param state state to check second pivot's priority for.
