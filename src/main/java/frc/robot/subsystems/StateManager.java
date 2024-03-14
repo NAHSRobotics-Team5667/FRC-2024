@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.Map;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.ArmConstants;
@@ -26,7 +27,7 @@ public class StateManager extends SubsystemBase {
     private double shooterStartTime;
 
     // robot state
-    private RobotState robotState;
+    private RobotState desiredRobotState;
 
     // maps of robot state to other states --------------------
     private Map<RobotState, ArmState> robotArmMap = Map.of(
@@ -46,7 +47,7 @@ public class StateManager extends SubsystemBase {
     /** Creates a new StateSubsystem. */
     public StateManager() {
         // Robot ----------------------------------------------
-        robotState = RobotState.IDLE;
+        desiredRobotState = RobotState.IDLE;
 
         // Arm ------------------------------------------------
         armState = ArmState.TRANSFER;
@@ -79,15 +80,15 @@ public class StateManager extends SubsystemBase {
      * 
      * @param newState state to replace old state with.
      */
-    public void setRobotState(RobotState newState) {
-        robotState = newState;
+    public void setDesiredRobotState(RobotState newState) {
+        desiredRobotState = newState;
     }
 
     /**
      * @return current robot state.
      */
-    public RobotState getRobotState() {
-        return robotState;
+    public RobotState getDesiredRobotState() {
+        return desiredRobotState;
     }
 
     // ========================================================
@@ -108,7 +109,7 @@ public class StateManager extends SubsystemBase {
      * Updates the target arm state passively on a periodic loop.
      */
     private void updateTargetArmState() {
-        targetArmState = robotArmMap.get(robotState);
+        targetArmState = robotArmMap.get(desiredRobotState);
     }
 
     // /**
@@ -196,5 +197,7 @@ public class StateManager extends SubsystemBase {
         updateTargetArmState();
         updateArmState(); // update arm state periodically
         updateShooterState(); // update shooter state periodically
+
+        SmartDashboard.putBoolean("[STATES] Arm At Target", armAtTarget());
     }
 }

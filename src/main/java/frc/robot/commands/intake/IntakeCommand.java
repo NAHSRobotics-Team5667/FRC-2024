@@ -49,7 +49,7 @@ public class IntakeCommand extends Command { // TODO: make outtake functional
     public void initialize() {
         intake.set(0);
 
-        states.setRobotState(RobotState.INTAKE);
+        states.setDesiredRobotState(RobotState.INTAKE);
     }
 
     // Called when scheduler runs while the command is scheduled
@@ -66,7 +66,7 @@ public class IntakeCommand extends Command { // TODO: make outtake functional
     // Called when the command is interruped or ended
     @Override
     public void end(boolean interrupted) {
-        states.setRobotState(RobotState.IDLE);
+        states.setDesiredRobotState(RobotState.IDLE);
         intake.set(0);
 
         // reset field centric to true

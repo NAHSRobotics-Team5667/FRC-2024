@@ -66,7 +66,7 @@ public final class Constants {
         public static final double AUTO_DRIVE_D = 0;
         public static final double AUTO_DRIVE_F = 0;
 
-        public static final double SPEAKER_P = 0.02;
+        public static final double SPEAKER_P = 0.01;
         public static final double SPEAKER_I = 0;
         public static final double SPEAKER_D = 0.0;
 
@@ -119,8 +119,8 @@ public final class Constants {
         // ---- SECOND PIVOT ----
         public static final int SECOND_ENC_PORT_1 = 6; // left side
         public static final int SECOND_ENC_PORT_2 = 9; // right side
-        public static final double SECOND_LEFT_OFFSET = -0.335;
-        public static final double SECOND_RIGHT_OFFSET = 0.772;
+        public static final double SECOND_LEFT_OFFSET = -0.331;
+        public static final double SECOND_RIGHT_OFFSET = 0.775;
         /** Rotations of second pivot for each rotation of encoder. */
         public static final double SECOND_ENC_DIST_PER_ROT = 1.0 * 360.0;
 
@@ -133,7 +133,7 @@ public final class Constants {
                 ArmState.SPEAKER, new ArmAngle(/* 108.1 */ 55, 0), // default position for speaker
                 ArmState.AMP, new ArmAngle(108.1, -122.7), // position for amp
                 ArmState.TRAP, new ArmAngle(108.1, -130), // position for trap
-                ArmState.CLIMB, new ArmAngle(65.303, -99.58),
+                ArmState.CLIMB, new ArmAngle(65.303, -101.58),
                 ArmState.HANGING, new ArmAngle(30.051, 17)); // position for human player intake
 
         // create a map of arm positions and their target goal states - maps aren't
@@ -254,7 +254,7 @@ public final class Constants {
         public static final double FIRST_MAX_ACCEL = 1500; // target acceleration (deg / sec / sec)
 
         // ---- SECOND PIVOT ----
-        public static final double SECOND_kP = 0.013;
+        public static final double SECOND_kP = 0.015;
         public static final double SECOND_kI = 0;
         public static final double SECOND_kD = 0;
         public static final double SECOND_kF = 0;
@@ -288,7 +288,7 @@ public final class Constants {
         // ---- MAXIMUM RPM ----
         public static final double SHOOTER_MAX_RPM = 87;
         public static final double RPM_ERROR_MARGIN = 10;
-        public static final double SHOOTER_RAMP_TIME = 0.75;
+        public static final double SHOOTER_RAMP_TIME = 0.25;
 
         // --- SPEEDS ----
         public static final double AMP_SPEED = 20;
@@ -296,7 +296,7 @@ public final class Constants {
         public static final double SPEAKER_BOTTOM_SPEED = 100;
         public static final double SPEAKER_TOP_SPEED = 100;
 
-        public static final double SPEAKER_DEFAULT_SPEED = 80;
+        public static final double SPEAKER_DEFAULT_SPEED = 60;
 
         public static final double OUTTAKE_SPEED = 20;
 

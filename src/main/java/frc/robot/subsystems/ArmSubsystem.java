@@ -331,9 +331,9 @@ public class ArmSubsystem extends SubsystemBase {
      * @return whether first pivot is at target.
      */
     public boolean firstPivotAtTarget() {
-        return getFirstPivotAbsDeg() >= states.getTargetArmAngle().getFirstPivot()
+        return getFirstPivotMotorDeg() >= states.getTargetArmAngle().getFirstPivot()
                 - ArmConstants.FIRST_ERR_MARGIN_DEG
-                && getFirstPivotAbsDeg() <= states.getTargetArmAngle().getFirstPivot()
+                && getFirstPivotMotorDeg() <= states.getTargetArmAngle().getFirstPivot()
                         + ArmConstants.FIRST_ERR_MARGIN_DEG;
     }
 
@@ -341,9 +341,9 @@ public class ArmSubsystem extends SubsystemBase {
      * @return whether second pivot is at target.
      */
     public boolean secondPivotAtTarget() {
-        return getSecondPivotAbsDeg() >= states.getTargetArmAngle().getSecondPivot()
+        return getSecondPivotMotorDeg() >= states.getTargetArmAngle().getSecondPivot()
                 - ArmConstants.SECOND_ERR_MARGIN_DEG
-                && getSecondPivotAbsDeg() <= states.getTargetArmAngle().getSecondPivot()
+                && getSecondPivotMotorDeg() <= states.getTargetArmAngle().getSecondPivot()
                         + ArmConstants.SECOND_ERR_MARGIN_DEG;
     }
 
@@ -555,5 +555,7 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("[ARM] 2nd PID Error", secondPivotPID.getPositionError());
         // SmartDashboard.putNumber("[ARM] 2nd Target",
         // getTargetPosition().getSecondPivot());
+
+        SmartDashboard.putBoolean("[ARM] At Target", armAtTarget());
     }
 }

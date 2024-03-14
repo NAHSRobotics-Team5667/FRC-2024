@@ -46,7 +46,7 @@ public class IntakeCommandAuto extends Command { // TODO: make outtake functiona
     // Called when command is initiated/first scheduled
     @Override
     public void initialize() {
-        states.setRobotState(RobotState.INTAKE);
+        states.setDesiredRobotState(RobotState.INTAKE);
         intake.set(0);
     }
 
@@ -60,7 +60,7 @@ public class IntakeCommandAuto extends Command { // TODO: make outtake functiona
     // Called when the command is interruped or ended
     @Override
     public void end(boolean interrupted) {
-        states.setRobotState(RobotState.IDLE);
+        states.setDesiredRobotState(RobotState.IDLE);
         intake.set(0);
         // intake.setPiston(false);
     }

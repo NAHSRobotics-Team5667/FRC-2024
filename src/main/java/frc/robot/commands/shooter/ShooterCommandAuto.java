@@ -49,7 +49,7 @@ public class ShooterCommandAuto extends Command { // TODO: make index running ma
     @Override
     public void initialize() {
         states.setShooterStartTime(Timer.getFPGATimestamp());
-        states.setRobotState((amp) ? RobotState.AMP : RobotState.SPEAKER);
+        states.setDesiredRobotState((amp) ? RobotState.AMP : RobotState.SPEAKER);
 
         shooter.set(0.00);
     }
@@ -63,7 +63,7 @@ public class ShooterCommandAuto extends Command { // TODO: make index running ma
     // Called when the command is interruped or ended
     @Override
     public void end(boolean interrupted) {
-        states.setRobotState(RobotState.IDLE);
+        states.setDesiredRobotState(RobotState.IDLE);
 
         shooter.set(0.00);
     }

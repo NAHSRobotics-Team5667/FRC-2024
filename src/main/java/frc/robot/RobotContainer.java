@@ -182,8 +182,8 @@ public class RobotContainer {
         driverXbox.rightStick().onTrue(new InstantCommand(() -> arm.resetMotorsToEncoders()));
         driverXbox.leftStick().onTrue(new InstantCommand(() -> drive.toggleFieldCentric()));
 
-        driverXbox.povUp().onTrue(new InstantCommand(() -> states.setRobotState(RobotState.CLIMB)));
-        driverXbox.povDown().onTrue(new InstantCommand(() -> states.setRobotState(RobotState.HANGING)));
+        driverXbox.povUp().onTrue(new InstantCommand(() -> states.setDesiredRobotState(RobotState.CLIMB)));
+        driverXbox.povDown().onTrue(new InstantCommand(() -> states.setDesiredRobotState(RobotState.HANGING)));
     }
 
     public static CommandXboxController getDriverController() {

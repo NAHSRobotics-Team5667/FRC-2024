@@ -13,6 +13,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.StateManager;
 import frc.robot.util.States.ArmState;
+import frc.robot.util.States.RobotState;
 
 /**
  * SetArm.java
@@ -83,34 +84,35 @@ public class SetArm extends Command {
         // -------------------------------------------------------------
 
         boolean aimingAtSpeaker = states.getTargetArmState().equals(ArmState.SPEAKER);
+        boolean amp = states.getDesiredRobotState().equals(RobotState.AMP);
 
         if (aimingAtSpeaker) {
             ArmConstants.setFirstPivotSpeaker(calculateSpeakerFirstPivot(limelight.getTagTy()));
         }
 
-        // check if second pivot has priority in the maneuver
-        if (ArmConstants.getSecondPivotPriority(states.getTargetArmState())) {
-            // run second pivot
-            arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
-
-            // run first pivot after second pivot at desired location
-            if (arm.secondPivotAtTarget()) {
-                arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
-            }
-        } else { // if first pivot has priority
-            // run first pivot
-            if (aimingAtSpeaker && !DriverStation.isAutonomousEnabled()) {
-                arm.firstPivotToTargetSpeaker(states.getTargetArmAngle().getFirstPivot());
-            } else {
-                arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
-            }
-
-            // run second pivot after first pivot at desired location
-            arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
-        }
-
+        // // check if second pivot has priority in the maneuver
+        // if (ArmConstants.getSecondPivotPriority(states.getTargetArmState())) {
+        // // run second pivot
         // arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
+
+        // // run first pivot after second pivot at desired location
+        // if (arm.secondPivotAtTarget()) {
         // arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
+        // }
+        // } else { // if first pivot has priority
+        // // run first pivot
+        // if (aimingAtSpeaker && !DriverStation.isAutonomousEnabled()) {
+        // arm.firstPivotToTargetSpeaker(states.getTargetArmAngle().getFirstPivot());
+        // } else {
+        // arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
+        // }
+
+        // // run second pivot after first pivot at desired location
+        // arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
+        // }
+
+        arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
+        arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
     }
 
     // Called once the command ends or is interrupted.
@@ -131,6 +133,6 @@ public class SetArm extends Command {
      * @return ideal first pivot angle to aim into speaker.
      */
     public double calculateSpeakerFirstPivot(double ty) {
-        return 39.2 + (0.682 * ty) - (0.00609 * Math.pow(ty, 2));
+        return 37.0 + (0.682 * ty) - (0.00609 * Math.pow(ty, 2));
     }
 }

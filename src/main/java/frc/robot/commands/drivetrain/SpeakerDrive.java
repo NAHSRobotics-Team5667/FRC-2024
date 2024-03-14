@@ -78,11 +78,12 @@ public class SpeakerDrive extends Command {
             newAngularRotationVel = MathUtil.clamp(
                     alignPID.calculate(limelight.getTagTx(), 8.8), -1, 1) *
                     swerve.getMaximumAngularVelocity();
-        } else if (states.getRobotState().equals(RobotState.AMP) && states.getTargetArmState().equals(ArmState.AMP)) {
+        } else if (states.getDesiredRobotState().equals(RobotState.AMP)
+                && states.getTargetArmState().equals(ArmState.AMP)) {
             // make drivetrain slower to avoid jiggling arm
             xPercent = MathUtil.clamp(xPercent, -0.7, 0.7);
             yPercent = MathUtil.clamp(yPercent, -0.7, 0.7);
-        } else if (states.getRobotState().equals(RobotState.INTAKE)) {
+        } else if (states.getDesiredRobotState().equals(RobotState.INTAKE)) {
             // align to note
             newAngularRotationVel = MathUtil.clamp(
                     intakePID.calculate(limelight.getNoteTx(), 0), -1, 1) *
