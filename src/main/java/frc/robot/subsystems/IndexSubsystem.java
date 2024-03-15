@@ -29,7 +29,7 @@ public class IndexSubsystem extends SubsystemBase {
     }
 
     // ========================================================
-    // ===================== SINGLeTON ========================
+    // ===================== SINGLEeTON ========================
 
     public static IndexSubsystem getInstance() {
         if (instance == null) {
