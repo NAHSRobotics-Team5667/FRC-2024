@@ -34,8 +34,8 @@ public class ShooterCommandAuto extends Command { // TODO: make index running ma
             left = ShooterConstants.AMP_SPEED;
             right = ShooterConstants.AMP_SPEED;
         } else {
-            left = ShooterConstants.SPEAKER_DEFAULT_SPEED;
-            right = ShooterConstants.SPEAKER_DEFAULT_SPEED;
+            left = 80; // shoot faster
+            right = 80; // shoot faster
         }
 
         shooter = ShooterSubsystem.getInstance();

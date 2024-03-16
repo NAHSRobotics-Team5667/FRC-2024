@@ -46,7 +46,7 @@ public class IntakeCommandAuto extends Command { // TODO: make outtake functiona
     // Called when command is initiated/first scheduled
     @Override
     public void initialize() {
-        states.setDesiredRobotState(RobotState.INTAKE);
+        // states.setDesiredRobotState(RobotState.INTAKE);
         intake.set(0);
     }
 

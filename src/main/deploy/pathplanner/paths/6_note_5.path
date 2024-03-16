@@ -39,8 +39,8 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 10.007979801441289,
-    "rotateFast": false
+    "rotation": 12.339087278326245,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "6 note",

@@ -196,6 +196,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return drive.getAutonomousCommand("6_note", true);
+        return drive.getAutonomousCommand("6_note_fast", true);
     }
 }

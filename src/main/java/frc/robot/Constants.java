@@ -119,8 +119,8 @@ public final class Constants {
         // ---- SECOND PIVOT ----
         public static final int SECOND_ENC_PORT_1 = 6; // left side
         public static final int SECOND_ENC_PORT_2 = 9; // right side
-        public static final double SECOND_LEFT_OFFSET = -0.331;
-        public static final double SECOND_RIGHT_OFFSET = 0.775;
+        public static final double SECOND_LEFT_OFFSET = -0.325;
+        public static final double SECOND_RIGHT_OFFSET = 0.780;
         /** Rotations of second pivot for each rotation of encoder. */
         public static final double SECOND_ENC_DIST_PER_ROT = 1.0 * 360.0;
 
@@ -133,7 +133,7 @@ public final class Constants {
                 ArmState.SPEAKER, new ArmAngle(/* 108.1 */ 55, 0), // default position for speaker
                 ArmState.AMP, new ArmAngle(108.1, -122.7), // position for amp
                 ArmState.TRAP, new ArmAngle(108.1, -130), // position for trap
-                ArmState.CLIMB, new ArmAngle(65.303, -101.58),
+                ArmState.CLIMB, new ArmAngle(69.303, -101.58),
                 ArmState.HANGING, new ArmAngle(30.051, 17)); // position for human player intake
 
         // create a map of arm positions and their target goal states - maps aren't
@@ -165,6 +165,16 @@ public final class Constants {
          */
         public static void setFirstPivotSpeaker(double target) {
             getGoalArmAngle(ArmState.SPEAKER).setFirstPivot(target);
+        }
+
+        /**
+         * Updates second pivot value for speaker. Call to adjust the arm angle to auto
+         * aim.
+         * 
+         * @param target new second pivot goal for speaker.
+         */
+        public static void setSecondPivotSpeaker(double target) {
+            getGoalArmAngle(ArmState.SPEAKER).setSecondPivot(target);
         }
 
         /**
@@ -291,17 +301,21 @@ public final class Constants {
         public static final double SHOOTER_RAMP_TIME = 0.25;
 
         // --- SPEEDS ----
-        public static final double AMP_SPEED = 20;
+        public static final double AMP_SPEED = 30;
 
         public static final double SPEAKER_BOTTOM_SPEED = 100;
         public static final double SPEAKER_TOP_SPEED = 100;
 
-        public static final double SPEAKER_DEFAULT_SPEED = 60;
+        public static final double SPEAKER_DEFAULT_SPEED = 80;
 
-        public static final double OUTTAKE_SPEED = 20;
+        public static final double OUTTAKE_SPEED = 30;
 
         public static double getShooterSpeed(double ty) {
-            return Math.max(SPEAKER_DEFAULT_SPEED, (-4.91 * ty) - 1.81);
+            double output = Math.max(SPEAKER_DEFAULT_SPEED, (-4.91 * ty) - 1.81);
+            if (ty < -12) {
+                output = 100;
+            }
+            return output;
             // return SPEAKER_DEFAULT_SPEED;
         }
     }

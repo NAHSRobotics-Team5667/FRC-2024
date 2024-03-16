@@ -4,6 +4,7 @@
 
 package frc.robot.commands.arm;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,6 +13,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.StateManager;
+import frc.robot.util.ArmAngle;
 import frc.robot.util.States.ArmState;
 import frc.robot.util.States.RobotState;
 
@@ -84,10 +86,14 @@ public class SetArm extends Command {
         // -------------------------------------------------------------
 
         boolean aimingAtSpeaker = states.getTargetArmState().equals(ArmState.SPEAKER);
-        boolean amp = states.getDesiredRobotState().equals(RobotState.AMP);
 
         if (aimingAtSpeaker) {
-            ArmConstants.setFirstPivotSpeaker(calculateSpeakerFirstPivot(limelight.getTagTy()));
+            // double firstSpeakerSetpoint =
+            // ArmConstants.getGoalArmAngle(ArmState.SPEAKER).getFirstPivot();
+            double firstSpeakerSetpoint = calculateSpeakerFirstPivot(limelight.getTagTy());
+
+            ArmConstants.setFirstPivotSpeaker(firstSpeakerSetpoint);
+            ArmConstants.setSecondPivotSpeaker(calculateSpeakerSecondPivot(firstSpeakerSetpoint, limelight.getTagTy()));
         }
 
         // // check if second pivot has priority in the maneuver
@@ -133,6 +139,33 @@ public class SetArm extends Command {
      * @return ideal first pivot angle to aim into speaker.
      */
     public double calculateSpeakerFirstPivot(double ty) {
-        return 37.0 + (0.682 * ty) - (0.00609 * Math.pow(ty, 2));
+        // double output = 37.0 + (0.682 * ty) - (0.00609 * Math.pow(ty, 2));
+        double output = -31.4 - (12.2 * ty) - (0.548 * Math.pow(ty, 2)); // equation for farther shots
+        if (ty > -7.8) {
+            output = 28.4 + (0.546 * ty) + (0.0121 * Math.pow(ty, 2)); // equation for normal shots with transfer
+        }
+        return output;
+    }
+
+    public double calculateSpeakerSecondPivot(double firstPivotDegrees, double ty) {
+        double transferX = 4.67;
+        double transferY = -2.51;
+
+        double c = Math.sqrt(Math.pow(transferX, 2) + Math.pow(transferY, 2));
+
+        double a = 20.6; // first pivot is 20.6in
+        double b = Math.sqrt(
+                Math.pow((a * Math.cos(Units.degreesToRadians(firstPivotDegrees))) - transferX, 2)
+                        + Math.pow((a * Math.sin(Units.degreesToRadians(firstPivotDegrees))) - transferY,
+                                2));
+
+        double output = 0; // second pivot goes up when making farther shots
+        if (ty > -7.5) {
+            // second pivot meets intake to shoot
+            output = -Units
+                    .radiansToDegrees(Math.acos((Math.pow(c, 2) - Math.pow(a, 2) - Math.pow(b, 2)) / (-2 * a * b)));
+        }
+
+        return output;
     }
 }
