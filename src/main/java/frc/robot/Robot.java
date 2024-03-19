@@ -8,7 +8,7 @@ import org.littletonrobotics.junction.LoggedRobot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.LightsSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.TestSubsystem;
 
 /**
@@ -36,7 +36,6 @@ public class Robot extends LoggedRobot {
         // and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
-
         // CameraServer.startAutomaticCapture(); //Starting Camera.
         // DriverStation.startDataLog(DataLogManager.getLog()); //Start taking
         // DriverStation and Joystick Logging (AdvantageKit).

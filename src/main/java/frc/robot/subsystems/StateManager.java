@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.Map;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,7 +32,10 @@ public class StateManager extends SubsystemBase {
     private RobotState desiredRobotState;
 
     // rumble
-    private double rumbleTime = 0;
+    private double rumbleTimer;
+
+    // leds
+    private LEDSubsystem led;
 
     // maps of robot state to other states --------------------
     private Map<RobotState, ArmState> robotArmMap = Map.of(
@@ -49,7 +53,7 @@ public class StateManager extends SubsystemBase {
     // =================== CONSTRUCTOR ========================
 
     /** Creates a new StateSubsystem. */
-    public StateManager() {
+    private StateManager() {
         // Robot ----------------------------------------------
         desiredRobotState = RobotState.IDLE;
 
@@ -60,6 +64,12 @@ public class StateManager extends SubsystemBase {
         // Shooter --------------------------------------------
         shooterState = ShooterState.STOPPED;
         shooterStartTime = 0;
+
+        // Rumble ---------------------------------------------
+        rumbleTimer = 0;
+
+        // LED ------------------------------------------------
+        led = LEDSubsystem.getInstance();
     }
 
     // ========================================================
@@ -115,15 +125,6 @@ public class StateManager extends SubsystemBase {
     private void updateTargetArmState() {
         targetArmState = robotArmMap.get(desiredRobotState);
     }
-
-    // /**
-    // * Sets the target arm state.
-    // *
-    // * @param target target arm state.
-    // */
-    // public void setTargetArmState(ArmState target) {
-    // targetArmState = target;
-    // }
 
     /**
      * @return target arm state.
@@ -201,18 +202,49 @@ public class StateManager extends SubsystemBase {
     }
 
     // ========================================================
+    // ======================= LEDS ===========================
+
+    private void updateLights() {
+        if (DriverStation.isEnabled()) {
+            if (desiredRobotState.equals(RobotState.INTAKE)) {
+                // robot is picking up a game piece
+                led.flashingRGB(255, 168, 0, 5); // flash orange while intaking
+            } else if (desiredRobotState.equals(RobotState.SPEAKER)) {
+                if (armAtTarget() && isShooterReady()) {
+                    // signify to human player to press button - shooter is ready to fire
+                    led.setSolidRGB(0, 255, 0); // solid green LED when ready to shoot
+                } else {
+                    // ramping up to speed or arm moving to target
+                    led.flashingRGB(255, 255, 255, 5); // white flashing when ramping up
+                }
+            } else {
+                if (IndexSubsystem.getInstance().hasGamePiece()) {
+                    // robot is in transit with game piece
+                    led.setSolidRGB(0, 255, 0); // bright green when robot has game piece
+                } else {
+                    // default behavior
+                    led.setSolidRGB(255, 168, 0); // solid orange
+                }
+            }
+        } else {
+            // run cyclon if robot is disabled - seafoam green
+            led.cylon(80, 255, 1);
+        }
+    }
+
+    // ========================================================
     // ====================== RUMBLE ==========================
 
-    public void updateRumble() {
-        if (IndexSubsystem.getInstance().hasGamePiece() && rumbleTime == 0) {
-            rumbleTime = Timer.getFPGATimestamp();
+    private void updateRumble() {
+        if (IndexSubsystem.getInstance().hasGamePiece() && rumbleTimer == 0) {
+            rumbleTimer = Timer.getFPGATimestamp();
             // start rumbling
             RobotContainer.getRumbleController().setRumble(RumbleType.kBothRumble, 0.5);
-        } else if (Timer.getFPGATimestamp() - rumbleTime >= 2 || !IndexSubsystem.getInstance().hasGamePiece()) {
+        } else if (Timer.getFPGATimestamp() - rumbleTimer >= 2 || !IndexSubsystem.getInstance().hasGamePiece()) {
             // stop rumbling
             RobotContainer.getRumbleController().setRumble(RumbleType.kBothRumble, 0);
             if (!IndexSubsystem.getInstance().hasGamePiece()) { // reset rumble timer
-                rumbleTime = 0;
+                rumbleTimer = 0;
             }
         }
     }
@@ -222,10 +254,11 @@ public class StateManager extends SubsystemBase {
 
     @Override
     public void periodic() {
-        updateTargetArmState();
+        updateTargetArmState(); // update target arm state in accordance with robot state
         updateArmState(); // update arm state periodically
         updateShooterState(); // update shooter state periodically
-        updateRumble();
+        updateRumble(); // update rumble state of controller
+        updateLights(); // update LEDs
 
         SmartDashboard.putBoolean("[STATES] Arm At Target", armAtTarget());
     }

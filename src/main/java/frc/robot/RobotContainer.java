@@ -22,7 +22,7 @@ import frc.robot.commands.shooter.ShooterCommandAuto;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LightsSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StateManager;
@@ -63,6 +63,7 @@ public class RobotContainer {
     private IntakeSubsystem intake = IntakeSubsystem.getInstance();
     private ArmSubsystem arm = ArmSubsystem.getInstance();
     private ShooterSubsystem shooter = ShooterSubsystem.getInstance();
+    private LEDSubsystem led = LEDSubsystem.getInstance();
 
     private ClimbSubsystem climb;
     private TestSubsystem testSubsystem;
@@ -124,6 +125,11 @@ public class RobotContainer {
         // ====================== ARM =============================
 
         arm.setDefaultCommand(new SetArm());
+
+        // ========================================================
+        // ======================= LED ============================
+
+        led.setSolidRGB(0, 255, 0);
 
         // ========================================================
         // ======================== AUTO ==========================
