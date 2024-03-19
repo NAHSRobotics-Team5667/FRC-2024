@@ -18,45 +18,13 @@
           }
         },
         {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "4_note_1"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "4_note_2"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeAndShootAuto"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4_note_3"
+                  "pathName": "5_note_steal_1"
                 }
               },
               {
@@ -96,7 +64,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "6_note_5_vanilla"
+            "pathName": "5_note_steal_3"
           }
         },
         {
@@ -112,7 +80,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "6_note_6_vanilla"
+                  "pathName": "5_note_steal_4"
                 }
               },
               {
@@ -127,7 +95,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "6_note_7_vanilla"
+            "pathName": "5_note_steal_5"
           }
         },
         {

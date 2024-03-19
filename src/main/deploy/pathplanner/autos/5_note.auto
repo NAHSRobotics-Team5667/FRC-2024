@@ -18,35 +18,53 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "4_note_1"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "4_note_2"
-                      }
-                    }
-                  ]
+                  "pathName": "4_note_1"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeAndShootAuto"
+                  "name": "IntakeNote"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4_note_2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteSpeaker"
           }
         },
         {
@@ -81,7 +99,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "6_note_4_vanilla"
+                  "pathName": "6_note_4_steal"
                 }
               },
               {
@@ -96,38 +114,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "6_note_5_vanilla"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNoteSpeaker"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "6_note_6_vanilla"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeNote"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "6_note_7_vanilla"
+            "pathName": "6_note_5_steal"
           }
         },
         {

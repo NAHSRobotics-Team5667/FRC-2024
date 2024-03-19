@@ -4,20 +4,25 @@
 
 package frc.robot;
 
+import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.actions.IntakeAndShootAuto;
 import frc.robot.commands.actions.IntakeNote;
+import frc.robot.commands.actions.IntakeNoteAuto;
 import frc.robot.commands.actions.RemoveNote;
 import frc.robot.commands.actions.ShootNoteAmp;
 import frc.robot.commands.actions.ShootNoteSpeaker;
 import frc.robot.commands.arm.SetArm;
 import frc.robot.commands.drivetrain.SpeakerDrive;
 import frc.robot.commands.index.IndexCommand;
+import frc.robot.commands.index.IndexCommandAuto;
+import frc.robot.commands.intake.IntakeCommandAuto;
 import frc.robot.commands.shooter.ShooterCommand;
 import frc.robot.commands.shooter.ShooterCommandAuto;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StateManager;
@@ -27,11 +32,15 @@ import frc.robot.util.States.RobotState;
 
 import java.io.File;
 
+import java.util.Map;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -58,8 +67,11 @@ public class RobotContainer {
     private ClimbSubsystem climb;
     private TestSubsystem testSubsystem;
 
+    private SendableChooser<String> autoChooser = new SendableChooser<>();
+
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private static final CommandXboxController driverXbox = new CommandXboxController(0);
+    private static final XboxController driverRumble = new XboxController(0);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -109,39 +121,35 @@ public class RobotContainer {
                 !RobotBase.isSimulation() ? speakerDrive : driveFieldOrientedAnglularVelocitySim);
 
         // ========================================================
-        // ===================== INTAKE ===========================
-
-        // intake = IntakeSubsystem.getInstance();
-
-        // ========================================================
         // ====================== ARM =============================
 
-        // arm = ArmSubsystem.getInstance();
         arm.setDefaultCommand(new SetArm());
 
         // ========================================================
-        // ==================== SHOOTER ===========================
-
-        // shooter = ShooterSubsystem.getInstance();
-
-        // ========================================================
-        // ====================== CLIMB ===========================
-
-        // climb = ClimbSubsystem.getInstance();
-
-        // ========================================================
-        // ======================= TEST ===========================
-
-        // testSubsystem = TestSubsystem.getInstance();
-        // testSubsystem.setDefaultCommand(new TestCommand(50));
-
-        // ========================================================
         // ======================== AUTO ==========================
+
+        // ---- Named Commands ----
 
         NamedCommands.registerCommand("IntakeAndShootAuto", new IntakeAndShootAuto());
         NamedCommands.registerCommand("ShootNoteSpeaker", new ShootNoteSpeaker());
         NamedCommands.registerCommand("IntakeNote", new IntakeNote());
         NamedCommands.registerCommand("ResetMotorsToEncoders", new InstantCommand(() -> arm.resetMotorsToEncoders()));
+        NamedCommands.registerCommand("IntakeCommandAuto", new IntakeCommandAuto(true));
+        NamedCommands.registerCommand("IndexCommandAuto", new IndexCommandAuto(true));
+        NamedCommands.registerCommand("ShooterCommand", new ShooterCommand(false));
+        NamedCommands.registerCommand("IntakeNoteAuto", new IntakeNoteAuto());
+
+        // ---- Auto Chooser ----
+
+        autoChooser.addOption("4_note", "4_note");
+        autoChooser.addOption("4_note_fast", "4_note_fast");
+        autoChooser.addOption("5_note", "5_note");
+        autoChooser.addOption("6_note", "6_note");
+        autoChooser.addOption("6_note_fast", "6_note_fast");
+        autoChooser.addOption("6_note_steal", "6_note_steal");
+        autoChooser.setDefaultOption("5_note", "5_note");
+
+        SmartDashboard.putData(autoChooser);
 
         // ========================================================
         // ================== CONTROLLER ==========================
@@ -190,12 +198,16 @@ public class RobotContainer {
         return driverXbox;
     }
 
+    public static XboxController getRumbleController() {
+        return driverRumble;
+    }
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return drive.getAutonomousCommand("6_note_fast", true);
+        return drive.getAutonomousCommand(autoChooser.getSelected(), true);
     }
 }

@@ -139,11 +139,17 @@ public class SetArm extends Command {
      * @return ideal first pivot angle to aim into speaker.
      */
     public double calculateSpeakerFirstPivot(double ty) {
-        // double output = 37.0 + (0.682 * ty) - (0.00609 * Math.pow(ty, 2));
-        double output = -31.4 - (12.2 * ty) - (0.548 * Math.pow(ty, 2)); // equation for farther shots
-        if (ty > -7.8) {
-            output = 28.4 + (0.546 * ty) + (0.0121 * Math.pow(ty, 2)); // equation for normal shots with transfer
-        }
+        // 0.00609
+        double output = 38.9 + (0.781 * ty) - (0.00895 * Math.pow(ty, 2));
+        // double output = -31.4 - (12.2 * ty) - (0.548 * Math.pow(ty, 2)); 4.12//
+        // equation
+        // for farther shots
+
+        // TODO: uncomment below for continuous passthrough (not working 3/16)
+        // if (ty > -7.8 /* && DriverStation.isAutonomousEnabled() */) {
+        // output = 28.4 + (0.546 * ty) + (0.0121 * Math.pow(ty, 2)); // equation for
+        // normal shots with transfer
+        // }
         return output;
     }
 
@@ -160,11 +166,14 @@ public class SetArm extends Command {
                                 2));
 
         double output = 0; // second pivot goes up when making farther shots
-        if (ty > -7.5) {
-            // second pivot meets intake to shoot
-            output = -Units
-                    .radiansToDegrees(Math.acos((Math.pow(c, 2) - Math.pow(a, 2) - Math.pow(b, 2)) / (-2 * a * b)));
-        }
+
+        // TODO: uncomment below for passthrough shots (not working 3/16)
+        // if (ty > -7.5 /* && DriverStation.isAutonomousEnabled() */) {
+        // // second pivot meets intake to shoot
+        // output = -Units
+        // .radiansToDegrees(Math.acos((Math.pow(c, 2) - Math.pow(a, 2) - Math.pow(b,
+        // 2)) / (-2 * a * b)));
+        // }
 
         return output;
     }

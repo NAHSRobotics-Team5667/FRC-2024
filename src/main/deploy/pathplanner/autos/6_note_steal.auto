@@ -81,7 +81,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "6_note_4_vanilla"
+                  "pathName": "6_note_4_steal"
                 }
               },
               {
@@ -96,7 +96,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "6_note_5_vanilla"
+            "pathName": "6_note_5_steal"
           }
         },
         {
@@ -112,7 +112,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "6_note_6_vanilla"
+                  "pathName": "6_note_6_steal"
                 }
               },
               {
@@ -127,7 +127,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "6_note_7_vanilla"
+            "pathName": "6_note_7_steal"
           }
         },
         {

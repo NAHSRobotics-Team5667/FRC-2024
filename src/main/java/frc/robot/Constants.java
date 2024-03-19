@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.Map;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.ArmAngle;
 import frc.robot.util.States.ArmState;
@@ -66,9 +67,9 @@ public final class Constants {
         public static final double AUTO_DRIVE_D = 0;
         public static final double AUTO_DRIVE_F = 0;
 
-        public static final double SPEAKER_P = 0.01;
-        public static final double SPEAKER_I = 0;
-        public static final double SPEAKER_D = 0.0;
+        public static final double ALIGN_P = 0.015;
+        public static final double ALIGN_I = 0;
+        public static final double ALIGN_D = 0.0;
 
         public static final double INTAKE_P = 0.01;
         public static final double INTAKE_I = 0;
@@ -78,7 +79,7 @@ public final class Constants {
         // ======================= GENERAL =======================
 
         public static final double MAX_VELOCITY_FEET = 16.5;
-        public static final double MAX_VELOCITY_METERS = Units.feetToMeters(MAX_VELOCITY_FEET);
+        public static final double MAX_VELOCITY_METERS = 6;
 
         public static final double MAX_ACCELERATION_METERS = 5.0;
     }
@@ -131,10 +132,10 @@ public final class Constants {
         public static Map<ArmState, ArmAngle> GOAL_POSITIONS = Map.of(
                 ArmState.TRANSFER, new ArmAngle(/* 108.1 */ 15.2, -6.25), // arm position when at resting position
                 ArmState.SPEAKER, new ArmAngle(/* 108.1 */ 55, 0), // default position for speaker
-                ArmState.AMP, new ArmAngle(108.1, -122.7), // position for amp
+                ArmState.AMP, new ArmAngle(108.1, -125.7), // position for amp
                 ArmState.TRAP, new ArmAngle(108.1, -130), // position for trap
                 ArmState.CLIMB, new ArmAngle(69.303, -101.58),
-                ArmState.HANGING, new ArmAngle(30.051, 17)); // position for human player intake
+                ArmState.HANGING, new ArmAngle(50.051, 17)); // position for human player intake
 
         // create a map of arm positions and their target goal states - maps aren't
         // bi-directional :(
@@ -219,9 +220,9 @@ public final class Constants {
         public static final double ACC_SECOND_PIVOT_DIFF = 3.0;
 
         /** Acceptable margin of error in PID control for first pivot (deg). */
-        public static final double FIRST_ERR_MARGIN_DEG = 3.0;
+        public static final double FIRST_ERR_MARGIN_DEG = 2.0;
         /** Acceptable margin of error in PID control for first pivot (deg). */
-        public static final double SECOND_ERR_MARGIN_DEG = 3.5;
+        public static final double SECOND_ERR_MARGIN_DEG = 1.5;
 
         // =======================================================
         // ====================== MOTION =========================
@@ -247,7 +248,7 @@ public final class Constants {
         // ==== MOTION MAGIC ====
 
         // ---- FIRST PIVOT ----
-        public static final double FIRST_kP = 0.015;
+        public static final double FIRST_kP = 0.02;
         public static final double FIRST_kI = 0;
         public static final double FIRST_kD = 0.0;
         public static final double FIRST_kF = 0.5;
@@ -306,15 +307,12 @@ public final class Constants {
         public static final double SPEAKER_BOTTOM_SPEED = 100;
         public static final double SPEAKER_TOP_SPEED = 100;
 
-        public static final double SPEAKER_DEFAULT_SPEED = 80;
+        public static final double SPEAKER_DEFAULT_SPEED = 69;
 
-        public static final double OUTTAKE_SPEED = 30;
+        public static final double OUTTAKE_SPEED = 20;
 
         public static double getShooterSpeed(double ty) {
-            double output = Math.max(SPEAKER_DEFAULT_SPEED, (-4.91 * ty) - 1.81);
-            if (ty < -12) {
-                output = 100;
-            }
+            double output = Math.max(SPEAKER_DEFAULT_SPEED, 68.9 + (-0.87 * ty) + (0.0388 * Math.pow(ty, 2)));
             return output;
             // return SPEAKER_DEFAULT_SPEED;
         }
@@ -358,5 +356,10 @@ public final class Constants {
     public static class LimelightConstants {
         public static final double kCamHeight = 0; // Height of the limelight from the ground
         public static final double kCamAngle = 0; // Pitch angle of direction the limelight is pointed in
+    }
+
+    public static class LEDConstants {
+        public static final int LED_PORT = 0;
+        public static final int LED_LENGTH = 27; // number of LEDs in the sequence
     }
 }

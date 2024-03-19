@@ -9,11 +9,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IndexConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.IndexSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.StateManager;
 import frc.robot.util.States.ShooterState;
 
-public class IndexCommand extends Command {
+public class IndexCommandAuto extends Command {
     private IndexSubsystem index;
     private StateManager states;
 
@@ -24,7 +23,7 @@ public class IndexCommand extends Command {
      * 
      * @param shooting whether a note is being shot.
      */
-    public IndexCommand(boolean shooting) {
+    public IndexCommandAuto(boolean shooting) {
         index = IndexSubsystem.getInstance();
         states = StateManager.getInstance(); // DO NOT add to addRequirements()
 
@@ -44,9 +43,13 @@ public class IndexCommand extends Command {
     @Override
     public void execute() {
         if (shooting) {
-            if (states.getShooterState().equals(ShooterState.READY) && states.armAtTarget()
-                    && LimelightSubsystem.getInstance().getAprilTagID() != -1) { // only run the index if shooter is
-                                                                                 // revved up and arm is at target
+            if (states.getShooterState().equals(ShooterState.READY) && states.armAtTarget()) { // only
+                                                                                               // run
+                                                                                               // the
+                                                                                               // index
+                                                                                               // if
+                // shooter is revved up
+                // and arm is at target
                 index.set(IndexConstants.SHOOT_SPEED);
             } else {
                 index.set(0);
@@ -65,6 +68,8 @@ public class IndexCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false; // run until interrupted
+        return (shooting) ? !IndexSubsystem.getInstance().hasGamePiece() : IndexSubsystem.getInstance().hasGamePiece(); // run
+        // until
+        // interrupted
     }
 }

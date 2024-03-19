@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LEDConstants;
 import edu.wpi.first.wpilibj.Timer;
- 
 
 public class LightsSubsystem extends SubsystemBase {
 
@@ -17,7 +17,9 @@ public class LightsSubsystem extends SubsystemBase {
     public Light_Scheduler scheduler;
     private Color teamColor;
 
-    public LightsSubsystem(int ledPort, int ledLength) {
+    private static LightsSubsystem instance = null;
+
+    private LightsSubsystem(int ledPort, int ledLength) {
         // PWM port 9
         // Must be a PWM header, not MXP or DIO
         this.led = new AddressableLED(ledPort);
@@ -33,20 +35,28 @@ public class LightsSubsystem extends SubsystemBase {
         this.led.setData(ledBuffer);
 
         this.led.start();
-        scheduler = new Light_Scheduler();
+        // scheduler = new Light_Scheduler();
     }
 
-    public Command setLights (){
-            return runOnce(
-            () -> {
-                System.out.println("[LIGHTS] LIGHTS ARE STARTING UP.");
+    public static LightsSubsystem getInstance() {
+        if (instance == null) {
+            instance = new LightsSubsystem(LEDConstants.LED_PORT, LEDConstants.LED_LENGTH);
+        }
 
-                for (var i = 0; i < this.ledBuffer.getLength(); i++) {
-                    this.ledBuffer.setRGB(i, 237, 70, 24);
-                }
+        return instance;
+    }
 
-                Timer.delay(5);
-            });
+    public Command setLights() {
+        return runOnce(
+                () -> {
+                    System.out.println("[LIGHTS] LIGHTS ARE STARTING UP.");
+
+                    for (var i = 0; i < this.ledBuffer.getLength(); i++) {
+                        this.ledBuffer.setRGB(i, 237, 70, 24);
+                    }
+
+                    Timer.delay(5);
+                });
     }
 
     /**
@@ -240,7 +250,8 @@ public class LightsSubsystem extends SubsystemBase {
                     LightsSubsystem.this.flashingRGB(255, 0, 0);
                 },
                 () -> {
-                    LightsSubsystem.this.carnival(new Color[] { teamColor, Color.kBlack, Color.kWhite, Color.kBlack }, 3);
+                    LightsSubsystem.this.carnival(new Color[] { teamColor, Color.kBlack, Color.kWhite, Color.kBlack },
+                            3);
                 },
                 () -> {
                     LightsSubsystem.this.rainbow(1);
@@ -427,16 +438,6 @@ public class LightsSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        this.scheduler.periodic();
         this.led.setData(ledBuffer);
-
-        // // After 1:45 (105000ms) of teleop, set the period to endgame
-        // if (this.currentPeriod == period.TELEOP && System.currentTimeMillis() - teleop_start_time >= 105000) {
-        //     setPeriod(period.ENDGAME);
-        //     // After 15 seconds of auto, set the period to endgame (the transition for 3
-        //     // seconds)
-        // } else if (this.currentPeriod == period.AUTO && System.currentTimeMillis() - auto_start_time >= 15000) {
-        //     setPeriod(period.ENDGAME);
-        // }
     }
 }

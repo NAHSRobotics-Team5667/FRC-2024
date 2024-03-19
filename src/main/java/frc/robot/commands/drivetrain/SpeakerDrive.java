@@ -42,9 +42,9 @@ public class SpeakerDrive extends Command {
         limelight = LimelightSubsystem.getInstance(); // DO NOT add to addReqs()
 
         alignPID = new PIDController(
-                DriveConstants.SPEAKER_P,
-                DriveConstants.SPEAKER_I,
-                DriveConstants.SPEAKER_D);
+                DriveConstants.ALIGN_P,
+                DriveConstants.ALIGN_I,
+                DriveConstants.ALIGN_D);
 
         intakePID = new PIDController(
                 DriveConstants.INTAKE_P,
@@ -76,7 +76,7 @@ public class SpeakerDrive extends Command {
                 && (limelight.getAprilTagID() == 4 || limelight.getAprilTagID() == 7)) {
             // align to april tag - setpoint is 8.8 <units> away from center
             newAngularRotationVel = MathUtil.clamp(
-                    alignPID.calculate(limelight.getTagTx(), 8.8), -1, 1) *
+                    alignPID.calculate(limelight.getTagTx(), 7.8), -1, 1) *
                     swerve.getMaximumAngularVelocity();
         } else if (states.getDesiredRobotState().equals(RobotState.AMP)
                 && states.getTargetArmState().equals(ArmState.AMP)) {
@@ -98,8 +98,8 @@ public class SpeakerDrive extends Command {
         // putting it all together
         swerve.drive(
                 new Translation2d(
-                        Math.pow(xPercent, 3) * swerve.getMaximumVelocity(),
-                        Math.pow(yPercent, 3) * swerve.getMaximumVelocity()),
+                        /* Math.pow(xPercent, 3) */ xPercent * swerve.getMaximumVelocity(),
+                        /* Math.pow(yPercent, 3) */ yPercent * swerve.getMaximumVelocity()),
                 angularRotationVel);
 
         SmartDashboard.putNumber("[DRIVE_CMD] Error", alignPID.getPositionError());

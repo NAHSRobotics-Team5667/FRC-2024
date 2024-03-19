@@ -7,9 +7,10 @@ package frc.robot.subsystems;
 import java.util.Map;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.ArmAngle;
@@ -28,6 +29,9 @@ public class StateManager extends SubsystemBase {
 
     // robot state
     private RobotState desiredRobotState;
+
+    // rumble
+    private double rumbleTime = 0;
 
     // maps of robot state to other states --------------------
     private Map<RobotState, ArmState> robotArmMap = Map.of(
@@ -189,6 +193,30 @@ public class StateManager extends SubsystemBase {
         return shooterStartTime;
     }
 
+    /**
+     * @return whether shooter is ready to shoot.
+     */
+    public boolean isShooterReady() {
+        return shooterState.equals(ShooterState.READY);
+    }
+
+    // ========================================================
+    // ====================== RUMBLE ==========================
+
+    public void updateRumble() {
+        if (IndexSubsystem.getInstance().hasGamePiece() && rumbleTime == 0) {
+            rumbleTime = Timer.getFPGATimestamp();
+            // start rumbling
+            RobotContainer.getRumbleController().setRumble(RumbleType.kBothRumble, 0.5);
+        } else if (Timer.getFPGATimestamp() - rumbleTime >= 2 || !IndexSubsystem.getInstance().hasGamePiece()) {
+            // stop rumbling
+            RobotContainer.getRumbleController().setRumble(RumbleType.kBothRumble, 0);
+            if (!IndexSubsystem.getInstance().hasGamePiece()) { // reset rumble timer
+                rumbleTime = 0;
+            }
+        }
+    }
+
     // ========================================================
     // ===================== PERIODIC =========================
 
@@ -197,6 +225,7 @@ public class StateManager extends SubsystemBase {
         updateTargetArmState();
         updateArmState(); // update arm state periodically
         updateShooterState(); // update shooter state periodically
+        updateRumble();
 
         SmartDashboard.putBoolean("[STATES] Arm At Target", armAtTarget());
     }

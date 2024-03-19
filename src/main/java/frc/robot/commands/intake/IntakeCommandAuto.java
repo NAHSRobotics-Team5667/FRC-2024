@@ -60,7 +60,7 @@ public class IntakeCommandAuto extends Command { // TODO: make outtake functiona
     // Called when the command is interruped or ended
     @Override
     public void end(boolean interrupted) {
-        states.setDesiredRobotState(RobotState.IDLE);
+        // states.setDesiredRobotState(RobotState.IDLE);
         intake.set(0);
         // intake.setPiston(false);
     }
@@ -68,8 +68,8 @@ public class IntakeCommandAuto extends Command { // TODO: make outtake functiona
     // Called so it should return true when the command will end
     @Override
     public boolean isFinished() {
-        return false; // finishes intake command once game
-                      // piece is collected or interrupted
-                      // if going the other way
+        return IndexSubsystem.getInstance().hasGamePiece(); // finishes intake command once game
+        // piece is collected or interrupted
+        // if going the other way
     }
 }

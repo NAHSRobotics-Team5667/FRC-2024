@@ -126,7 +126,7 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     public double getTagTy() {
-        double ty = NetworkTableInstance.getDefault().getTable("limelight-tag").getEntry("ty").getDouble(0.0);
+        double ty = NetworkTableInstance.getDefault().getTable("limelight-tag").getEntry("ty").getDouble(-7.4);
         return ty;
     }
 
