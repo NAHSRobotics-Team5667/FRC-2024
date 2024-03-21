@@ -144,15 +144,15 @@ public class RobotContainer {
         NamedCommands.registerCommand("IndexCommandAuto", new IndexCommandAuto(true));
         NamedCommands.registerCommand("ShooterCommand", new ShooterCommand(false));
         NamedCommands.registerCommand("IntakeNoteAuto", new IntakeNoteAuto());
+        NamedCommands.registerCommand("ResetGyro", new InstantCommand(() -> drive.resetGyro()));
 
         // ---- Auto Chooser ----
 
         autoChooser.addOption("4_note", "4_note");
-        autoChooser.addOption("4_note_fast", "4_note_fast");
+        autoChooser.addOption("5_note_steal", "5_note_steal");
         autoChooser.addOption("5_note", "5_note");
         autoChooser.addOption("6_note", "6_note");
-        autoChooser.addOption("6_note_fast", "6_note_fast");
-        autoChooser.addOption("6_note_steal", "6_note_steal");
+        autoChooser.addOption("5_adj_steal", "5_adj_steal");
         autoChooser.setDefaultOption("5_note", "5_note");
 
         SmartDashboard.putData(autoChooser);

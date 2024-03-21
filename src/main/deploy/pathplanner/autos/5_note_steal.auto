@@ -8,6 +8,12 @@
         {
           "type": "named",
           "data": {
+            "name": "ResetGyro"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "ResetMotorsToEncoders"
           }
         },
@@ -96,6 +102,31 @@
           "type": "path",
           "data": {
             "pathName": "5_note_steal_5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5_note_steal_6"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeNote"
+                }
+              }
+            ]
           }
         },
         {

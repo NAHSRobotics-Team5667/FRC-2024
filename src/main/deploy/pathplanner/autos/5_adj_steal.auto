@@ -1,16 +1,16 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.68,
+      "y": 6.68
+    },
+    "rotation": 60.0
+  },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "ResetGyro"
-          }
-        },
         {
           "type": "named",
           "data": {
@@ -30,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4_note_1"
+                  "pathName": "5_note_adj_steal_1"
                 }
               },
               {
@@ -55,57 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4_note_2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeNote"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNoteSpeaker"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "4_note_3"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeNote"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootNoteSpeaker"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "6_note_4_steal"
+                  "pathName": "6_note_4_vanilla"
                 }
               },
               {
@@ -120,7 +70,63 @@
         {
           "type": "path",
           "data": {
-            "pathName": "6_note_5_steal"
+            "pathName": "5_note_steal_3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5_note_steal_4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5_note_steal_5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5_note_steal_6"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeNote"
+                }
+              }
+            ]
           }
         },
         {

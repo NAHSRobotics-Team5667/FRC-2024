@@ -8,6 +8,8 @@ import java.util.Map;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.ADXL345_I2C.AllAxes;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -161,7 +163,8 @@ public class StateManager extends SubsystemBase {
      * Periodically called to passively update the shooter state.
      */
     private void updateShooterState() {
-        if (Timer.getFPGATimestamp() - shooterStartTime >= ShooterConstants.SHOOTER_RAMP_TIME) {
+        if (Timer.getFPGATimestamp() - shooterStartTime >= ShooterConstants.SHOOTER_RAMP_TIME && armAtTarget()
+                && LimelightSubsystem.getInstance().getAprilTagID() != 1) {
             shooterState = ShooterState.READY;
         } else if (ShooterSubsystem.getInstance().getLeftShooterRPM() > 0
                 || ShooterSubsystem.getInstance().getRightShooterRPM() > 0) {
@@ -208,7 +211,7 @@ public class StateManager extends SubsystemBase {
         if (DriverStation.isEnabled()) {
             if (desiredRobotState.equals(RobotState.INTAKE)) {
                 // robot is picking up a game piece
-                led.flashingRGB(255, 168, 0, 5); // flash orange while intaking
+                led.flashingRGB(255, 100, 0, 5); // flash orange while intaking
             } else if (desiredRobotState.equals(RobotState.SPEAKER)) {
                 if (armAtTarget() && isShooterReady()) {
                     // signify to human player to press button - shooter is ready to fire
@@ -223,12 +226,17 @@ public class StateManager extends SubsystemBase {
                     led.setSolidRGB(0, 255, 0); // bright green when robot has game piece
                 } else {
                     // default behavior
-                    led.setSolidRGB(255, 168, 0); // solid orange
+                    led.setSolidRGB(255, 100, 0); // solid orange
                 }
             }
         } else {
-            // run cyclon if robot is disabled - seafoam green
-            led.cylon(80, 255, 1);
+            if (DriverStation.getAlliance().equals(Alliance.Blue)) {
+                // run cyclon if robot is disabled
+                led.cylon(80, 255, 1);
+            } else {
+                // run cyclon if robot is disabled
+                led.cylon(160, 255, 1);
+            }
         }
     }
 
@@ -239,7 +247,7 @@ public class StateManager extends SubsystemBase {
         if (IndexSubsystem.getInstance().hasGamePiece() && rumbleTimer == 0) {
             rumbleTimer = Timer.getFPGATimestamp();
             // start rumbling
-            RobotContainer.getRumbleController().setRumble(RumbleType.kBothRumble, 0.5);
+            RobotContainer.getRumbleController().setRumble(RumbleType.kLeftRumble, 0.25);
         } else if (Timer.getFPGATimestamp() - rumbleTimer >= 2 || !IndexSubsystem.getInstance().hasGamePiece()) {
             // stop rumbling
             RobotContainer.getRumbleController().setRumble(RumbleType.kBothRumble, 0);

@@ -67,7 +67,7 @@ public final class Constants {
         public static final double AUTO_DRIVE_D = 0;
         public static final double AUTO_DRIVE_F = 0;
 
-        public static final double ALIGN_P = 0.015;
+        public static final double ALIGN_P = 0.013;
         public static final double ALIGN_I = 0;
         public static final double ALIGN_D = 0.0;
 
@@ -360,6 +360,6 @@ public final class Constants {
 
     public static class LEDConstants {
         public static final int LED_PORT = 0;
-        public static final int LED_LENGTH = 27; // number of LEDs in the sequence
+        public static final int LED_LENGTH = 38; // number of LEDs in the sequence
     }
 }

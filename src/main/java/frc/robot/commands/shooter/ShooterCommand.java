@@ -13,7 +13,7 @@ import frc.robot.subsystems.StateManager;
 import frc.robot.util.States.ArmState;
 import frc.robot.util.States.RobotState;
 
-public class ShooterCommand extends Command { // TODO: make index running manual
+public class ShooterCommand extends Command {
 
     private ShooterSubsystem shooter;
 

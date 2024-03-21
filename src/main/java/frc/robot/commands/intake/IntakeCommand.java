@@ -22,7 +22,7 @@ import frc.robot.util.States.RobotState;
  * 
  * Use the built in methods created in your subsystem to determine this.
  */
-public class IntakeCommand extends Command { // TODO: make outtake functional
+public class IntakeCommand extends Command {
 
     private IntakeSubsystem intake;
     private StateManager states;
