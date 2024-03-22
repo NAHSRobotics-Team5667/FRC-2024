@@ -11,24 +11,25 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.IndexSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.StateManager;
+import frc.robot.util.States.RobotState;
 import frc.robot.util.States.ShooterState;
 
 public class IndexCommand extends Command {
     private IndexSubsystem index;
     private StateManager states;
 
-    private boolean shooting;
+    private int mode; // 1- intake, 2- shoot, 3- outtake
 
     /**
      * Creates a new IndexCommand.
      * 
-     * @param shooting whether a note is being shot.
+     * @param mode whether a note is being shot. 1: intake. 2: shoot. 3: outtake.
      */
-    public IndexCommand(boolean shooting) {
+    public IndexCommand(int mode) {
         index = IndexSubsystem.getInstance();
         states = StateManager.getInstance(); // DO NOT add to addRequirements()
 
-        this.shooting = shooting;
+        this.mode = mode;
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(index);
@@ -43,16 +44,18 @@ public class IndexCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (shooting) {
-            if (states.getShooterState().equals(ShooterState.READY) && states.armAtTarget()
-                    && LimelightSubsystem.getInstance().getAprilTagID() != -1) { // only run the index if shooter is
-                                                                                 // revved up and arm is at target
+        if (mode == 2) { // shoot
+            if (states.getShooterState().equals(ShooterState.READY) && states.armAtTarget()) { // only run the index if
+                                                                                               // shooter is
+                // revved up and arm is at target
                 index.set(IndexConstants.SHOOT_SPEED);
             } else {
                 index.set(0);
             }
-        } else {
+        } else if (mode == 1) { // intake
             index.set(IndexConstants.INTAKE_SPEED); // run index without conditions if not shooting
+        } else if (mode == 3) { // outtake
+            index.set(-IndexConstants.SHOOT_SPEED);
         }
     }
 

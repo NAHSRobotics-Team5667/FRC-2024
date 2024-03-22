@@ -21,6 +21,6 @@ public class IntakeNote extends ParallelRaceGroup {
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
                 new IntakeCommand(true),
-                new IndexCommand(false));
+                new IndexCommand(1));
     }
 }

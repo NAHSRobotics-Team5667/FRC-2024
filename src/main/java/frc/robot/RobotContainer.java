@@ -153,7 +153,7 @@ public class RobotContainer {
         autoChooser.addOption("5_note", "5_note");
         autoChooser.addOption("6_note", "6_note");
         autoChooser.addOption("5_adj_steal", "5_adj_steal");
-        autoChooser.setDefaultOption("5_note", "5_note");
+        autoChooser.setDefaultOption("5_adj_steal", "5_adj_steal");
 
         SmartDashboard.putData(autoChooser);
 
@@ -191,7 +191,7 @@ public class RobotContainer {
         driverXbox.rightBumper().toggleOnTrue(new ShooterCommand(false));
         driverXbox.leftBumper().toggleOnTrue(new ShooterCommand(true));
 
-        driverXbox.rightTrigger().whileTrue(new IndexCommand(true));
+        driverXbox.rightTrigger().whileTrue(new IndexCommand(2));
 
         driverXbox.rightStick().onTrue(new InstantCommand(() -> arm.resetMotorsToEncoders()));
         driverXbox.leftStick().onTrue(new InstantCommand(() -> drive.toggleFieldCentric()));

@@ -25,7 +25,7 @@ public class RemoveNote extends ParallelRaceGroup {
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
                 new IntakeCommand(false), // run intake backwards
-                new IndexCommand(false), // run index into shooter
+                new IndexCommand(3), // run index into shooter
                 new OuttakeShooter()); // shoot note with very little speed
     }
 }

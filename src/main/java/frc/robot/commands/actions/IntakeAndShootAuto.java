@@ -20,6 +20,6 @@ public class IntakeAndShootAuto extends ParallelRaceGroup {
         addCommands(
                 new IntakeCommandAuto(true),
                 new ShooterCommand(false),
-                new IndexCommand(true));
+                new IndexCommand(2));
     }
 }

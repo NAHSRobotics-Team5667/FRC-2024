@@ -244,16 +244,19 @@ public class StateManager extends SubsystemBase {
     // ====================== RUMBLE ==========================
 
     private void updateRumble() {
-        if (IndexSubsystem.getInstance().hasGamePiece() && rumbleTimer == 0) {
-            rumbleTimer = Timer.getFPGATimestamp();
+        if (IndexSubsystem.getInstance().hasGamePiece() /* && rumbleTimer == 0 */) {
+            // rumbleTimer = Timer.getFPGATimestamp();
             // start rumbling
             RobotContainer.getRumbleController().setRumble(RumbleType.kLeftRumble, 0.25);
-        } else if (Timer.getFPGATimestamp() - rumbleTimer >= 2 || !IndexSubsystem.getInstance().hasGamePiece()) {
+        } else /*
+                * if ( Timer.getFPGATimestamp() - rumbleTimer >= 2 ||
+                * !IndexSubsystem.getInstance().hasGamePiece())
+                */ {
             // stop rumbling
             RobotContainer.getRumbleController().setRumble(RumbleType.kBothRumble, 0);
-            if (!IndexSubsystem.getInstance().hasGamePiece()) { // reset rumble timer
-                rumbleTimer = 0;
-            }
+            // if (!IndexSubsystem.getInstance().hasGamePiece()) { // reset rumble timer
+            // rumbleTimer = 0;
+            // }
         }
     }
 

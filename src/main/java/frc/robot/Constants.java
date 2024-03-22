@@ -132,10 +132,10 @@ public final class Constants {
         public static Map<ArmState, ArmAngle> GOAL_POSITIONS = Map.of(
                 ArmState.TRANSFER, new ArmAngle(/* 108.1 */ 15.2, -6.25), // arm position when at resting position
                 ArmState.SPEAKER, new ArmAngle(/* 108.1 */ 55, 0), // default position for speaker
-                ArmState.AMP, new ArmAngle(108.1, -125.7), // position for amp
+                ArmState.AMP, new ArmAngle(108.1, -126.7), // position for amp
                 ArmState.TRAP, new ArmAngle(108.1, -130), // position for trap
                 ArmState.CLIMB, new ArmAngle(69.303, -101.58),
-                ArmState.HANGING, new ArmAngle(50.051, 17)); // position for human player intake
+                ArmState.HANGING, new ArmAngle(50.051, 17.8)); // position for human player intake
 
         // create a map of arm positions and their target goal states - maps aren't
         // bi-directional :(
@@ -302,7 +302,7 @@ public final class Constants {
         public static final double SHOOTER_RAMP_TIME = 0.25;
 
         // --- SPEEDS ----
-        public static final double AMP_SPEED = 30;
+        public static final double AMP_SPEED = 70;
 
         public static final double SPEAKER_BOTTOM_SPEED = 100;
         public static final double SPEAKER_TOP_SPEED = 100;
@@ -324,7 +324,7 @@ public final class Constants {
         public static final int BEAM_BREAK_CHANNEL_ID = 5;
 
         // ==== SPEEDS ====
-        public static final double INTAKE_SPEED = 35;
+        public static final double INTAKE_SPEED = 27;
         public static final double SHOOT_SPEED = 100;
     }
 

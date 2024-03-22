@@ -18,6 +18,6 @@ public class ShootNoteSpeaker extends ParallelRaceGroup {
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
                 new ShooterCommandAuto(false),
-                new IndexCommand(true));
+                new IndexCommand(2));
     }
 }

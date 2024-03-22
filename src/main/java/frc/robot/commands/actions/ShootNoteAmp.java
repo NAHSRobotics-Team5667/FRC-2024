@@ -19,6 +19,6 @@ public class ShootNoteAmp extends ParallelRaceGroup {
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
                 new ShooterCommand(true),
-                new IndexCommand(true));
+                new IndexCommand(2));
     }
 }

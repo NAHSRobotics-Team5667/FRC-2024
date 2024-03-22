@@ -8,6 +8,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
@@ -26,6 +27,8 @@ public class SetArm extends Command {
     private ArmSubsystem arm;
     private StateManager states;
     private LimelightSubsystem limelight;
+
+    double setpoint_offset = 0;
 
     /**
      * Creates a new SetArm.
@@ -117,6 +120,12 @@ public class SetArm extends Command {
         // arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
         // }
 
+        if (RobotContainer.getDriverController().povLeft().getAsBoolean()) {
+            setpoint_offset += 0.5;
+        } else if (RobotContainer.getDriverController().povRight().getAsBoolean()) {
+            setpoint_offset -= 0.5;
+        }
+
         arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
         arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
     }
@@ -139,8 +148,8 @@ public class SetArm extends Command {
      * @return ideal first pivot angle to aim into speaker.
      */
     public double calculateSpeakerFirstPivot(double ty) {
-        // 0.00609
-        double output = 38.9 + (0.781 * ty) - (0.00895 * Math.pow(ty, 2));
+        // 38.9
+        double output = setpoint_offset + 39.3 + (0.781 * ty) - (0.00895 * Math.pow(ty, 2));
         // double output = -31.4 - (12.2 * ty) - (0.548 * Math.pow(ty, 2)); 4.12//
         // equation
         // for farther shots

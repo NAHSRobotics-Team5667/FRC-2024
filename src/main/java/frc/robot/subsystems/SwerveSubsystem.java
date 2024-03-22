@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathPoint;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -217,6 +218,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
         if (setOdomToStart) {
             resetOdometry(PathPlannerAuto.getPathGroupFromAutoFile(auto).get(0).getPreviewStartingHolonomicPose());
+            // resetOdometry(PathPlannerAuto.getStaringPoseFromAutoFile(auto));
         }
 
         // Create a path following command using AutoBuilder. This will also trigger
