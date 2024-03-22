@@ -138,12 +138,8 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("IntakeAndShootAuto", new IntakeAndShootAuto());
         NamedCommands.registerCommand("ShootNoteSpeaker", new ShootNoteSpeaker());
-        NamedCommands.registerCommand("IntakeNote", new IntakeNote());
+        NamedCommands.registerCommand("IntakeNote", new IntakeNoteAuto());
         NamedCommands.registerCommand("ResetMotorsToEncoders", new InstantCommand(() -> arm.resetMotorsToEncoders()));
-        NamedCommands.registerCommand("IntakeCommandAuto", new IntakeCommandAuto(true));
-        NamedCommands.registerCommand("IndexCommandAuto", new IndexCommandAuto(true));
-        NamedCommands.registerCommand("ShooterCommand", new ShooterCommand(false));
-        NamedCommands.registerCommand("IntakeNoteAuto", new IntakeNoteAuto());
         NamedCommands.registerCommand("ResetGyro", new InstantCommand(() -> drive.resetGyro()));
 
         // ---- Auto Chooser ----

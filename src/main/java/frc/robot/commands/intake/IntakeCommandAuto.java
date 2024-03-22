@@ -1,10 +1,12 @@
 package frc.robot.commands.intake;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IndexSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.StateManager;
+import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.States.ArmState;
 import frc.robot.util.States.RobotState;
 
@@ -28,6 +30,8 @@ public class IntakeCommandAuto extends Command {
 
     private boolean goingIn;
 
+    private double startTime;
+
     /**
      * Creates a new IntakeCommand.
      * 
@@ -46,30 +50,38 @@ public class IntakeCommandAuto extends Command {
     // Called when command is initiated/first scheduled
     @Override
     public void initialize() {
-        // states.setDesiredRobotState(RobotState.INTAKE);
         intake.set(0);
+        states.setDesiredRobotState(RobotState.INTAKE);
+
+        startTime = Timer.getFPGATimestamp();
     }
 
     // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
         // intake.setPiston(true);
-        intake.set((goingIn) ? IntakeConstants.INTAKE_SPEED : IntakeConstants.OUTTAKE_SPEED);
+        if (states.getArmState().equals(ArmState.TRANSFER)) {
+            intake.set((goingIn) ? IntakeConstants.INTAKE_SPEED : IntakeConstants.OUTTAKE_SPEED);
+        } else {
+            intake.set(0);
+        }
     }
 
     // Called when the command is interruped or ended
     @Override
     public void end(boolean interrupted) {
-        // states.setDesiredRobotState(RobotState.IDLE);
+        states.setDesiredRobotState(RobotState.IDLE);
         intake.set(0);
-        // intake.setPiston(false);
+
+        // reset field centric to true
+        SwerveSubsystem.getInstance().setFieldCentric(true);
     }
 
     // Called so it should return true when the command will end
     @Override
     public boolean isFinished() {
-        return IndexSubsystem.getInstance().hasGamePiece(); // finishes intake command once game
-        // piece is collected or interrupted
-        // if going the other way
+        return ((goingIn) ? IndexSubsystem.getInstance().hasGamePiece() : false)
+                || Timer.getFPGATimestamp() - startTime >= 2.25; // finishes intake command once game
+        // piece is collected or intake timer is complete
     }
 }

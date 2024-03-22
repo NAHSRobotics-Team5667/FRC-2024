@@ -14,12 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "ResetGyro"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "ResetMotorsToEncoders"
           }
         },

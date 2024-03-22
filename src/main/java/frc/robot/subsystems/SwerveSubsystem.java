@@ -29,6 +29,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,6 +38,7 @@ import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 
 import java.io.File;
+import java.sql.Driver;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
@@ -217,7 +219,14 @@ public class SwerveSubsystem extends SubsystemBase {
         // PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
         if (setOdomToStart) {
-            resetOdometry(PathPlannerAuto.getPathGroupFromAutoFile(auto).get(0).getPreviewStartingHolonomicPose());
+            resetOdometry(new Pose2d(
+                    PathPlannerAuto.getPathGroupFromAutoFile(auto).get(0).getPreviewStartingHolonomicPose()
+                            .getTranslation(),
+                    (DriverStation.getAlliance().get() == Alliance.Red)
+                            ? Rotation2d.fromDegrees(PathPlannerAuto.getPathGroupFromAutoFile(auto).get(0)
+                                    .getPreviewStartingHolonomicPose().getRotation().getDegrees() + 180)
+                            : PathPlannerAuto.getPathGroupFromAutoFile(auto).get(0).getPreviewStartingHolonomicPose()
+                                    .getRotation()));
             // resetOdometry(PathPlannerAuto.getStaringPoseFromAutoFile(auto));
         }
 
