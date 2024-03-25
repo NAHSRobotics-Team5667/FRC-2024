@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -135,6 +138,19 @@ public class LimelightSubsystem extends SubsystemBase {
         return ta;
     }
 
+    /**
+     * Sets April Tag to read tx, ty data from. Does not affect localization.
+     * 
+     * @param priorityID april tag ID to focus on. {RED} speaker: 4 {BLUE} speaker:
+     *                   7
+     */
+    public void setPriorityTag(int priorityID) {
+        NetworkTableInstance.getDefault().getTable("limelight-tag").getEntry("priorityid").setValue(priorityID);
+    }
+
+    // ========================================================
+    // =================== NOTE DETECTION =====================
+
     public double getNoteTx() {
         double tx = NetworkTableInstance.getDefault().getTable("limelight-note").getEntry("tx").getDouble(0.0);
         return tx;
@@ -151,60 +167,17 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     // ========================================================
-    // ================== CAMERA POSITION =====================
+    // ================ ROBOT LOCALIZATION ====================
 
-    // public double[] getCameraPose() {
-    // double[] camera3DPose = new double[6];
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-    // .getDoubleArray(camera3DPose);
-    // return camera3DPose;
-    // // I beleive Translation (X,Y,Z) Rotation(Roll,Pitch,Yaw)
-    // }
-
-    // public double getCameraPoseX() {// Axis side to side on limelight
-    // double[] camera3DPose = getCameraPose();
-    // // return camera3DPose[0];
-    // return
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-    // .getDoubleArray(camera3DPose)[0];
-
-    // }
-
-    // public double getCameraPoseY() {// Axis up and down on limelight
-    // double[] camera3DPose = getCameraPose();
-    // return
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-    // .getDoubleArray(camera3DPose)[1];
-    // }
-
-    // public double getCameraPoseZ() {// Axis comming out perpendicular to front of
-    // limelight
-    // double[] camera3DPose = getCameraPose();
-    // return
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-    // .getDoubleArray(camera3DPose)[2];
-    // }
-
-    // public double getCameraPoseRoll() {
-    // double[] camera3DPose = getCameraPose();
-    // return
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-    // .getDoubleArray(camera3DPose)[3];
-    // }
-
-    // public double getCameraPosePitch() {
-    // double[] camera3DPose = getCameraPose();
-    // return
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-    // .getDoubleArray(camera3DPose)[4];
-    // }
-
-    // public double getCameraPoseYaw() {
-    // double[] camera3DPose = getCameraPose();
-    // return
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camerapose_targetspace")
-    // .getDoubleArray(camera3DPose)[5];
-    // }
+    public Pose2d getBotPose() {
+        double[] botpose = NetworkTableInstance.getDefault().getTable("limelight-note").getEntry("botpose")
+                .getDoubleArray(new double[11]);
+        return new Pose2d(
+                new Translation2d(
+                        botpose[0], // botpose translation X
+                        botpose[1]), // botpose translation Y
+                Rotation2d.fromDegrees(botpose[5])); // botpose yaw
+    }
 
     // ========================================================
     // ================ APRIL TAG POSITION ====================
@@ -231,35 +204,6 @@ public class LimelightSubsystem extends SubsystemBase {
         double[] tag3DPose = new double[6];
         return NetworkTableInstance.getDefault().getTable("limelight-tag").getEntry("targetpose_cameraspace")
                 .getDoubleArray(tag3DPose)[5];
-    }
-
-    // ========================================================
-    // ================== AUTO ALIGNMENT ======================
-
-    public double getAutoAimShooterAngle() {
-        double posX = getAprilTagPoseX(); // offset from crosshair (horizontal)
-        double posY = getAprilTagPoseY(); // offset from crosshair (vertical)
-        double posZ = getAprilTagPoseZ(); // distance from robot
-        double theta = Math.atan2(posY, posZ);
-        return theta;
-    }
-
-    public double getAutoAimDriveDistanceX() {
-        double distance = 0; // distance to the left in X to offset position
-        double delta = (distance - getAprilTagPoseX());// - getCameraPoseX();
-        return delta;
-    }
-
-    public double getAutoAimDriveDistanceZ() {
-        double distance = 5; // distance Z from the april tag robot targets
-        double delta = (distance - getAprilTagPoseZ());// - getCameraPoseZ();
-        return delta;
-    }
-
-    public double getAutoAimYawTurnDistance() {
-        double targetYaw = 0;
-        double delta = targetYaw - getAprilTagPoseYaw();
-        return delta;
     }
 
     // ========================================================

@@ -40,6 +40,7 @@ import frc.robot.Constants.DriveConstants;
 import java.io.File;
 import java.sql.Driver;
 import java.util.List;
+import java.util.Map;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 
@@ -69,6 +70,8 @@ public class SwerveSubsystem extends SubsystemBase {
     private AHRS gyro;
 
     private boolean fieldCentric = true;
+
+    private Map<String, Command> loadedAutos;
 
     // ========================================================
     // ================= CONSTRUCTORS =========================
@@ -125,6 +128,14 @@ public class SwerveSubsystem extends SubsystemBase {
                 (targetPose) -> {
                     Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
                 });
+
+        // load autos on bootup to make auto start quicker
+        loadedAutos = Map.of(
+                "4_note", new PathPlannerAuto("4_note"),
+                "5_note_steal", new PathPlannerAuto("5_note_steal"),
+                "5_note", new PathPlannerAuto("5_note"),
+                "6_note", new PathPlannerAuto("6_note"),
+                "5_adj_steal", new PathPlannerAuto("5_adj_steal"));
 
         setupPathPlanner(); // configure AutoBuilder - path generator
     }
@@ -233,7 +244,7 @@ public class SwerveSubsystem extends SubsystemBase {
         // Create a path following command using AutoBuilder. This will also trigger
         // event markers.
         // return AutoBuilder.followPath(path);
-        return new PathPlannerAuto(auto);
+        return loadedAutos.get(auto);
     }
 
     /**
@@ -610,6 +621,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        resetOdometry(LimelightSubsystem.getInstance().getBotPose()); // TODO: check back to see if this works with auto
+
         SmartDashboard.putNumber("[DRIVE] Max Velocity", getMaximumVelocity());
     }
 

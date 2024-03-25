@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.util.ArmAngle;
+import frc.robot.util.States.RobotState;
 
 //44/60 - Gear for ratio for arm.
 //1 climb rotation is 20.25 motor rotations.
@@ -331,20 +332,28 @@ public class ArmSubsystem extends SubsystemBase {
      * @return whether first pivot is at target.
      */
     public boolean firstPivotAtTarget() {
-        return getFirstPivotMotorDeg() >= states.getTargetArmAngle().getFirstPivot()
+        boolean output = getFirstPivotMotorDeg() >= states.getTargetArmAngle().getFirstPivot()
                 - ArmConstants.FIRST_ERR_MARGIN_DEG
                 && getFirstPivotMotorDeg() <= states.getTargetArmAngle().getFirstPivot()
                         + ArmConstants.FIRST_ERR_MARGIN_DEG;
+        return output;
     }
 
     /**
      * @return whether second pivot is at target.
      */
     public boolean secondPivotAtTarget() {
-        return getSecondPivotMotorDeg() >= states.getTargetArmAngle().getSecondPivot()
+        boolean output = getSecondPivotMotorDeg() >= states.getTargetArmAngle().getSecondPivot()
                 - ArmConstants.SECOND_ERR_MARGIN_DEG
                 && getSecondPivotMotorDeg() <= states.getTargetArmAngle().getSecondPivot()
                         + ArmConstants.SECOND_ERR_MARGIN_DEG;
+        if (states.getDesiredRobotState().equals(RobotState.FEED)) {
+            output = getSecondPivotMotorDeg() >= states.getTargetArmAngle().getSecondPivot()
+                    - 3
+                    && getSecondPivotMotorDeg() <= states.getTargetArmAngle().getSecondPivot()
+                            + 3;
+        }
+        return output;
     }
 
     /**

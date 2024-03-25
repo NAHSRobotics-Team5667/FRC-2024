@@ -18,17 +18,17 @@ public class ShooterCommand extends Command {
     private ShooterSubsystem shooter;
 
     private StateManager states;
-    private boolean amp;
+    private RobotState mode; // 1: shoot, 2: amp, 3: feed
 
     private LimelightSubsystem limelight;
 
     /**
      * Creates a new ShootCommand.
      * 
-     * @param amp whether shooting into amp or not.
+     * @param mode shooting mode. 1: speaker, 2: amp, 3: feed
      */
-    public ShooterCommand(boolean amp) {
-        this.amp = amp;
+    public ShooterCommand(RobotState mode) {
+        this.mode = mode;
 
         shooter = ShooterSubsystem.getInstance();
         states = StateManager.getInstance(); // DO NOT add to addRequirements()
@@ -42,7 +42,8 @@ public class ShooterCommand extends Command {
     @Override
     public void initialize() {
         states.setShooterStartTime(Timer.getFPGATimestamp());
-        states.setDesiredRobotState((amp) ? RobotState.AMP : RobotState.SPEAKER);
+
+        states.setDesiredRobotState(mode);
 
         shooter.set(0.00);
     }
@@ -50,10 +51,12 @@ public class ShooterCommand extends Command {
     // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
-        if (!amp) {
+        if (mode == RobotState.SPEAKER) {
             shooter.set(ShooterConstants.getShooterSpeed(limelight.getTagTy()));
-        } else {
+        } else if (mode == RobotState.AMP) {
             shooter.set(ShooterConstants.AMP_SPEED);
+        } else if (mode == RobotState.FEED) {
+            shooter.set(100);
         }
     }
 

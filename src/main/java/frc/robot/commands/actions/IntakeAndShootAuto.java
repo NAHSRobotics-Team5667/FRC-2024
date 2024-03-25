@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.commands.index.IndexCommand;
 import frc.robot.commands.intake.IntakeCommandAuto;
 import frc.robot.commands.shooter.ShooterCommand;
+import frc.robot.util.States.RobotState;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -19,7 +20,7 @@ public class IntakeAndShootAuto extends ParallelRaceGroup {
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
                 new IntakeCommandAuto(true),
-                new ShooterCommand(false),
-                new IndexCommand(2));
+                new ShooterCommand(RobotState.SPEAKER),
+                new IndexCommand(RobotState.SPEAKER));
     }
 }

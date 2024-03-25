@@ -132,9 +132,10 @@ public final class Constants {
         public static Map<ArmState, ArmAngle> GOAL_POSITIONS = Map.of(
                 ArmState.TRANSFER, new ArmAngle(/* 108.1 */ 15.2, -6.25), // arm position when at resting position
                 ArmState.SPEAKER, new ArmAngle(/* 108.1 */ 55, 0), // default position for speaker
-                ArmState.AMP, new ArmAngle(108.1, -126.7), // position for amp
+                ArmState.AMP, new ArmAngle(108.1, -130.7), // position for amp
+                ArmState.FEED, new ArmAngle(15.2, 10), // position for feed
                 ArmState.TRAP, new ArmAngle(108.1, -130), // position for trap
-                ArmState.CLIMB, new ArmAngle(69.303, -101.58),
+                ArmState.CLIMB, new ArmAngle(69.303, -107.58),
                 ArmState.HANGING, new ArmAngle(50.051, 17.8)); // position for human player intake
 
         // create a map of arm positions and their target goal states - maps aren't
@@ -143,6 +144,7 @@ public final class Constants {
                 getGoalArmAngle(ArmState.TRANSFER), ArmState.TRANSFER, // arm position when at resting position
                 getGoalArmAngle(ArmState.SPEAKER), ArmState.SPEAKER, // default position for speaker
                 getGoalArmAngle(ArmState.AMP), ArmState.AMP, // position for amp
+                getGoalArmAngle(ArmState.FEED), ArmState.FEED, // position for feed
                 getGoalArmAngle(ArmState.TRAP), ArmState.TRAP, // position for trap
                 getGoalArmAngle(ArmState.CLIMB), ArmState.CLIMB,
                 getGoalArmAngle(ArmState.HANGING), ArmState.HANGING); // position for human player
@@ -324,7 +326,7 @@ public final class Constants {
         public static final int BEAM_BREAK_CHANNEL_ID = 5;
 
         // ==== SPEEDS ====
-        public static final double INTAKE_SPEED = 27;
+        public static final double INTAKE_SPEED = 20;
         public static final double SHOOT_SPEED = 100;
     }
 

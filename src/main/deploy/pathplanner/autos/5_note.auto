@@ -118,9 +118,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "6_note_5_steal"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "6_note_5_steal"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShooterCommand"
+                }
+              }
+            ]
           }
         },
         {

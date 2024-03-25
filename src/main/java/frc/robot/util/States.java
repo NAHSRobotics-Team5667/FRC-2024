@@ -8,6 +8,7 @@ public class States {
         SPEAKER,
         /** State for scoring in amp. */
         AMP,
+        FEED,
         /** State for scoring in trap. */
         TRAP,
         /** State for climb. */
@@ -32,8 +33,10 @@ public class States {
     public static enum RobotState {
         IDLE,
         INTAKE,
+        OUTTAKE,
         AMP,
         SPEAKER,
+        FEED,
         TRAP,
         CLIMB,
         HANGING

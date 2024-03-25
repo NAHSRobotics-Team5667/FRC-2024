@@ -10,6 +10,8 @@ import frc.robot.commands.index.IndexCommand;
 import frc.robot.commands.index.IndexCommandAuto;
 import frc.robot.commands.intake.IntakeCommand;
 import frc.robot.commands.intake.IntakeCommandAuto;
+import frc.robot.commands.shooter.OuttakeShooter;
+import frc.robot.util.States.RobotState;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -23,6 +25,7 @@ public class IntakeNoteAuto extends ParallelRaceGroup {
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
                 new IntakeCommandAuto(true),
-                new IndexCommand(1));
+                new IndexCommand(RobotState.INTAKE),
+                new OuttakeShooter());
     }
 }

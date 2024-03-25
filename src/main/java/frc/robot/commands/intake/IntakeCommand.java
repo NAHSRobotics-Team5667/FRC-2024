@@ -49,14 +49,14 @@ public class IntakeCommand extends Command {
     public void initialize() {
         intake.set(0);
 
-        states.setDesiredRobotState(RobotState.INTAKE);
+        states.setDesiredRobotState((goingIn) ? RobotState.INTAKE : RobotState.OUTTAKE);
     }
 
     // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
         // intake.setPiston(true);
-        if (states.getArmState().equals(ArmState.TRANSFER)) {
+        if (states.armAtTarget()) {
             intake.set((goingIn) ? IntakeConstants.INTAKE_SPEED : IntakeConstants.OUTTAKE_SPEED);
         } else {
             intake.set(0);

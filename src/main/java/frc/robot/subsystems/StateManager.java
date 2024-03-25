@@ -43,8 +43,10 @@ public class StateManager extends SubsystemBase {
     private Map<RobotState, ArmState> robotArmMap = Map.of(
             RobotState.IDLE, ArmState.TRANSFER,
             RobotState.INTAKE, ArmState.TRANSFER,
+            RobotState.OUTTAKE, ArmState.TRANSFER,
             RobotState.AMP, ArmState.AMP,
             RobotState.SPEAKER, ArmState.SPEAKER,
+            RobotState.FEED, ArmState.FEED,
             RobotState.CLIMB, ArmState.CLIMB,
             RobotState.HANGING, ArmState.HANGING);
 
@@ -220,6 +222,8 @@ public class StateManager extends SubsystemBase {
                     // ramping up to speed or arm moving to target
                     led.flashingRGB(255, 255, 255, 5); // white flashing when ramping up
                 }
+            } else if (desiredRobotState.equals(RobotState.OUTTAKE)) {
+                led.flashingRGB(255, 0, 0, 10); // flash red when outtaking
             } else {
                 if (IndexSubsystem.getInstance().hasGamePiece()) {
                     // robot is in transit with game piece
@@ -230,13 +234,8 @@ public class StateManager extends SubsystemBase {
                 }
             }
         } else {
-            if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-                // run cyclon if robot is disabled
-                led.cylon(80, 255, 1);
-            } else {
-                // run cyclon if robot is disabled
-                led.cylon(160, 255, 1);
-            }
+            // run cyclon if robot is disabled
+            led.cylon(160, 255, 1);
         }
     }
 

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.commands.intake.IntakeCommand;
 import frc.robot.commands.index.IndexCommand;
 import frc.robot.commands.shooter.OuttakeShooter;
+import frc.robot.util.States.RobotState;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -25,7 +26,7 @@ public class RemoveNote extends ParallelRaceGroup {
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
                 new IntakeCommand(false), // run intake backwards
-                new IndexCommand(3), // run index into shooter
+                new IndexCommand(RobotState.OUTTAKE), // run index into intake
                 new OuttakeShooter()); // shoot note with very little speed
     }
 }

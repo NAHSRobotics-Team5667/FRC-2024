@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.index.IndexCommand;
 import frc.robot.commands.intake.IntakeCommand;
+import frc.robot.util.States.RobotState;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -21,6 +22,6 @@ public class IntakeNote extends ParallelRaceGroup {
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
                 new IntakeCommand(true),
-                new IndexCommand(1));
+                new IndexCommand(RobotState.INTAKE));
     }
 }

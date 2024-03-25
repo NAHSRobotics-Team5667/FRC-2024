@@ -6,9 +6,13 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.TestSubsystem;
 
 /**
@@ -77,6 +81,9 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void autonomousInit() {
+        LimelightSubsystem.getInstance().setPriorityTag((DriverStation.getAlliance().get() == Alliance.Red) ? 4 : 7);
+        ArmSubsystem.getInstance().resetMotorsToEncoders();
+
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         // schedule the autonomous command (example)
@@ -94,6 +101,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
+        LimelightSubsystem.getInstance().setPriorityTag((DriverStation.getAlliance().get() == Alliance.Red) ? 4 : 7);
+        ArmSubsystem.getInstance().resetMotorsToEncoders();
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove

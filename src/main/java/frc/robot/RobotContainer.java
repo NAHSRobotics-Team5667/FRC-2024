@@ -141,6 +141,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeNote", new IntakeNoteAuto());
         NamedCommands.registerCommand("ResetMotorsToEncoders", new InstantCommand(() -> arm.resetMotorsToEncoders()));
         NamedCommands.registerCommand("ResetGyro", new InstantCommand(() -> drive.resetGyro()));
+        NamedCommands.registerCommand("ShooterCommand", new ShooterCommand(RobotState.SPEAKER));
 
         // ---- Auto Chooser ----
 
@@ -149,7 +150,7 @@ public class RobotContainer {
         autoChooser.addOption("5_note", "5_note");
         autoChooser.addOption("6_note", "6_note");
         autoChooser.addOption("5_adj_steal", "5_adj_steal");
-        autoChooser.setDefaultOption("5_adj_steal", "5_adj_steal");
+        autoChooser.setDefaultOption("4_note", "4_note");
 
         SmartDashboard.putData(autoChooser);
 
@@ -184,16 +185,18 @@ public class RobotContainer {
         driverXbox.a().toggleOnTrue(new IntakeNote());
         driverXbox.b().toggleOnTrue(new RemoveNote());
 
-        driverXbox.rightBumper().toggleOnTrue(new ShooterCommand(false));
-        driverXbox.leftBumper().toggleOnTrue(new ShooterCommand(true));
+        driverXbox.rightBumper().toggleOnTrue(new ShooterCommand(RobotState.SPEAKER));
+        driverXbox.leftBumper().toggleOnTrue(new ShooterCommand(RobotState.AMP));
 
-        driverXbox.rightTrigger().whileTrue(new IndexCommand(2));
+        driverXbox.rightTrigger().whileTrue(new IndexCommand(RobotState.SPEAKER));
 
         driverXbox.rightStick().onTrue(new InstantCommand(() -> arm.resetMotorsToEncoders()));
         driverXbox.leftStick().onTrue(new InstantCommand(() -> drive.toggleFieldCentric()));
 
         driverXbox.povUp().onTrue(new InstantCommand(() -> states.setDesiredRobotState(RobotState.CLIMB)));
         driverXbox.povDown().onTrue(new InstantCommand(() -> states.setDesiredRobotState(RobotState.HANGING)));
+
+        driverXbox.y().toggleOnTrue(new ShooterCommand(RobotState.FEED));
     }
 
     public static CommandXboxController getDriverController() {
