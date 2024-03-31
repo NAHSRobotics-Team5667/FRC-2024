@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.actions.IntakeAndShootAuto;
 import frc.robot.commands.actions.IntakeNote;
