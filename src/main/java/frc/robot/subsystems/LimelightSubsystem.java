@@ -4,18 +4,15 @@
 
 package frc.robot.subsystems;
 
-import java.util.Map;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,6 +44,9 @@ public class LimelightSubsystem extends SubsystemBase {
         m_tab.addNumber("Tag tx", this::getTagTx);
         m_tab.addNumber("Tag ty", this::getTagTy);
         m_tab.addNumber("Tag ta", this::getTagTa);
+        m_tab.addNumber("Note tx", this::getNoteTx);
+        m_tab.addNumber("Note ty", this::getNoteTy);
+        m_tab.addNumber("Note ta", this::getNoteTa);
 
         // m_tab.addNumber("CameraPose X", this::getCameraPoseX);
         // m_tab.addNumber("CameraPose Y", this::getCameraPoseY);
@@ -157,7 +157,7 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     public double getNoteTy() {
-        double ty = NetworkTableInstance.getDefault().getTable("limelight-note").getEntry("ty").getDouble(0.0);
+        double ty = NetworkTableInstance.getDefault().getTable("limelight-note").getEntry("ty").getDouble(-50.0);
         return ty;
     }
 
@@ -166,17 +166,53 @@ public class LimelightSubsystem extends SubsystemBase {
         return ta;
     }
 
+    private double predictXDist() {
+        return -Units.inchesToMeters(0.844 * getNoteTx() + 0.59);
+    }
+
+    private double predictYDist() {
+        return Units.inchesToMeters(32.2 - (1.95 * getNoteTy()) + (0.208 * Math.pow(getNoteTy(), 2)));
+    }
+
+    private double getDistanceToNote() {
+        return Math.sqrt(Math.pow(predictXDist(), 2) + Math.pow(predictYDist(), 2));
+    }
+
+    private double getTotalTheta(double gyro) {
+        return Units.degreesToRadians(gyro) + Math.atan2(predictYDist(), predictXDist());
+    }
+
+    public Pose2d getRobotPoseFromNote(double note_x, double note_y, double gyro) {
+        double x_diff = getDistanceToNote() * Math.sin(getTotalTheta(gyro));
+        double y_diff = getDistanceToNote() * Math.cos(getTotalTheta(gyro));
+
+        double robot_x = note_x - x_diff;
+        double robot_y = note_y - y_diff;
+
+        return new Pose2d(robot_x, robot_y, Rotation2d.fromDegrees(gyro));
+    }
+
     // ========================================================
     // ================ ROBOT LOCALIZATION ====================
 
     public Pose2d getBotPose() {
-        double[] botpose = NetworkTableInstance.getDefault().getTable("limelight-note").getEntry("botpose")
+        double[] botpose = NetworkTableInstance.getDefault().getTable("limelight-tag").getEntry("botpose_wpiblue")
                 .getDoubleArray(new double[11]);
         return new Pose2d(
                 new Translation2d(
                         botpose[0], // botpose translation X
                         botpose[1]), // botpose translation Y
                 Rotation2d.fromDegrees(botpose[5])); // botpose yaw
+    }
+
+    public double[] getBotPoseArray() {
+        double[] botpose = NetworkTableInstance.getDefault().getTable("limelight-tag").getEntry("botpose_wpiblue")
+                .getDoubleArray(new double[11]);
+        return botpose;
+    }
+
+    public double getMegaTagLatency() {
+        return getBotPoseArray()[6];
     }
 
     // ========================================================
@@ -213,5 +249,24 @@ public class LimelightSubsystem extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
         SmartDashboard.putNumber("[LL] April Tag", getAprilTagID());
+
+        // SmartDashboard.putNumber("[LL] Botpose 0", getBotPoseArray()[0]);
+        // SmartDashboard.putNumber("[LL] Botpose 1", getBotPoseArray()[1]);
+        // SmartDashboard.putNumber("[LL] Botpose 2", getBotPoseArray()[2]);
+        // SmartDashboard.putNumber("[LL] Botpose 3", getBotPoseArray()[3]);
+        // SmartDashboard.putNumber("[LL] Botpose 4", getBotPoseArray()[4]);
+        // SmartDashboard.putNumber("[LL] Botpose 5", getBotPoseArray()[5]);
+        // SmartDashboard.putNumber("[LL] Botpose 6", getBotPoseArray()[6]);
+        // SmartDashboard.putNumber("[LL] Botpose 7", getBotPoseArray()[7]);
+        // SmartDashboard.putNumber("[LL] Botpose 8", getBotPoseArray()[8]);
+        // SmartDashboard.putNumber("[LL] Botpose 9", getBotPoseArray()[9]);
+        // SmartDashboard.putNumber("[LL] Botpose 10", getBotPoseArray()[10]);
+        SmartDashboard.putNumber("[LL] Botpose X", getBotPose().getX());
+        SmartDashboard.putNumber("[LL] Botpose Y", getBotPose().getY());
+        SmartDashboard.putNumber("[LL] Botpose Yaw", getBotPose().getRotation().getDegrees());
+
+        SmartDashboard.putNumber("[LL] Note X to Bot", predictXDist());
+        SmartDashboard.putNumber("[LL] Note Y to Bot", predictYDist());
+        SmartDashboard.putNumber("[LL] Note Dist to Bot", getDistanceToNote());
     }
 }

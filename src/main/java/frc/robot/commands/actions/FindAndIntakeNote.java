@@ -5,26 +5,18 @@
 package frc.robot.commands.actions;
 
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.commands.index.IndexCommand;
-import frc.robot.commands.index.IndexCommandAuto;
-import frc.robot.commands.intake.IntakeCommand;
-import frc.robot.commands.intake.IntakeCommandAuto;
-import frc.robot.commands.shooter.OuttakeShooter;
-import frc.robot.util.States.RobotState;
+import frc.robot.commands.drivetrain.IntakeDriveAuto;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeNoteAuto extends ParallelRaceGroup {
-    /**
-     * Intakes a note. Stops when note is collected.
-     */
-    public IntakeNoteAuto() {
+public class FindAndIntakeNote extends ParallelRaceGroup {
+    /** Creates a new FindAndIntakeNote. */
+    public FindAndIntakeNote() {
         // Add your commands in the addCommands() call, e.g.
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
-                new IntakeCommandAuto(true),
-                new IndexCommand(RobotState.INTAKE));
+                new IntakeNoteAuto(),
+                new IntakeDriveAuto());
     }
 }

@@ -6,7 +6,6 @@ package frc.robot;
 
 import java.util.Map;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.ArmAngle;
 import frc.robot.util.States.ArmState;
@@ -62,7 +61,7 @@ public final class Constants {
         // =======================================================
         // ====================== PID ============================
 
-        public static final double AUTO_DRIVE_P = 6;
+        public static final double AUTO_DRIVE_P = 7;
         public static final double AUTO_DRIVE_I = 0;
         public static final double AUTO_DRIVE_D = 0;
         public static final double AUTO_DRIVE_F = 0;
@@ -133,10 +132,10 @@ public final class Constants {
                 ArmState.TRANSFER, new ArmAngle(/* 108.1 */ 15.2, -6.25), // arm position when at resting position
                 ArmState.SPEAKER, new ArmAngle(/* 108.1 */ 55, 0), // default position for speaker
                 ArmState.AMP, new ArmAngle(108.1, -130.7), // position for amp
-                ArmState.FEED, new ArmAngle(15.2, 10), // position for feed
-                ArmState.TRAP, new ArmAngle(108.1, -130), // position for trap
+                ArmState.FEED, new ArmAngle(45, 0), // position for feed
+                ArmState.TRAP, new ArmAngle(108.1, 0), // position for trap
                 ArmState.CLIMB, new ArmAngle(69.303, -107.58),
-                ArmState.HANGING, new ArmAngle(50.051, 17.8)); // position for human player intake
+                ArmState.HANGING, new ArmAngle(48.051, 17.8)); // position for human player intake
 
         // create a map of arm positions and their target goal states - maps aren't
         // bi-directional :(
@@ -161,12 +160,62 @@ public final class Constants {
         }
 
         /**
+         * @param ty limelight crosshair vertical angle from target.
+         * @return ideal first pivot angle to aim into speaker.
+         */
+        public static double calculateSpeakerFirstPivot(double ty) {
+            // 39.3
+            double output = 38.6 + (0.781 * ty) - (0.00895 * Math.pow(ty, 2));
+            // double output = -31.4 - (12.2 * ty) - (0.548 * Math.pow(ty, 2)); 4.12//
+            // equation
+            // for farther shots
+
+            // TODO: uncomment below for continuous passthrough (not working 3/16)
+            // if (ty > -7.8 /* && DriverStation.isAutonomousEnabled() */) {
+            // output = 28.4 + (0.546 * ty) + (0.0121 * Math.pow(ty, 2)); // equation for
+            // normal shots with transfer
+            // }
+            return output;
+        }
+
+        /**
+         * @param firstPivotDegrees first pivot setpoint in degrees.
+         * @param ty                limelight ty from april tag.
+         * @return second pivot setpoint. Currently set to 0 bc passthrough not working
+         *         well enough.
+         */
+        public static double calculateSpeakerSecondPivot(double firstPivotDegrees, double ty) {
+            double transferX = 4.67;
+            double transferY = -2.51;
+
+            double c = Math.sqrt(Math.pow(transferX, 2) + Math.pow(transferY, 2));
+
+            double a = 20.6; // first pivot is 20.6in
+            double b = Math.sqrt(
+                    Math.pow((a * Math.cos(Units.degreesToRadians(firstPivotDegrees))) - transferX, 2)
+                            + Math.pow((a * Math.sin(Units.degreesToRadians(firstPivotDegrees))) - transferY,
+                                    2));
+
+            double output = 0; // second pivot goes up when making farther shots
+
+            // TODO: uncomment below for passthrough shots (not working 3/16)
+            // if (ty > -7.5 /* && DriverStation.isAutonomousEnabled() */) {
+            // // second pivot meets intake to shoot
+            // output = -Units
+            // .radiansToDegrees(Math.acos((Math.pow(c, 2) - Math.pow(a, 2) - Math.pow(b,
+            // 2)) / (-2 * a * b)));
+            // }
+
+            return output;
+        }
+
+        /**
          * Updates first pivot value for speaker. Call to adjust the arm angle to auto
          * aim.
          * 
          * @param target new first pivot goal for speaker.
          */
-        public static void setFirstPivotSpeaker(double target) {
+        public static void setFirstPivotSpeakerSetpoint(double target) {
             getGoalArmAngle(ArmState.SPEAKER).setFirstPivot(target);
         }
 
@@ -176,7 +225,7 @@ public final class Constants {
          * 
          * @param target new second pivot goal for speaker.
          */
-        public static void setSecondPivotSpeaker(double target) {
+        public static void setSecondPivotSpeakerSetpoint(double target) {
             getGoalArmAngle(ArmState.SPEAKER).setSecondPivot(target);
         }
 
@@ -250,7 +299,7 @@ public final class Constants {
         // ==== MOTION MAGIC ====
 
         // ---- FIRST PIVOT ----
-        public static final double FIRST_kP = 0.02;
+        public static final double FIRST_kP = 0.022;
         public static final double FIRST_kI = 0;
         public static final double FIRST_kD = 0.0;
         public static final double FIRST_kF = 0.5;
@@ -267,7 +316,7 @@ public final class Constants {
         public static final double FIRST_MAX_ACCEL = 1500; // target acceleration (deg / sec / sec)
 
         // ---- SECOND PIVOT ----
-        public static final double SECOND_kP = 0.015;
+        public static final double SECOND_kP = 0.021;
         public static final double SECOND_kI = 0;
         public static final double SECOND_kD = 0;
         public static final double SECOND_kF = 0;
@@ -297,6 +346,7 @@ public final class Constants {
         // ==== ELECTRONICS ====
         public static final int SHOOTER_TOP_ID = 11;
         public static final int SHOOTER_BOTTOM_ID = 10;
+        public static final int FAN_ID = 40; // TODO: find FAN id
 
         // ---- MAXIMUM RPM ----
         public static final double SHOOTER_MAX_RPM = 87;
@@ -313,7 +363,12 @@ public final class Constants {
 
         public static final double OUTTAKE_SPEED = 20;
 
-        public static double getShooterSpeed(double ty) {
+        public static final double FEED_SPEED = 70;
+
+        public static final double TRAP_SPEED = 70;
+        public static final double TRAP_FAN_SPEED = 100;
+
+        public static double getSpeakerShooterSpeed(double ty) {
             double output = Math.max(SPEAKER_DEFAULT_SPEED, 68.9 + (-0.87 * ty) + (0.0388 * Math.pow(ty, 2)));
             return output;
             // return SPEAKER_DEFAULT_SPEED;
@@ -326,7 +381,7 @@ public final class Constants {
         public static final int BEAM_BREAK_CHANNEL_ID = 5;
 
         // ==== SPEEDS ====
-        public static final double INTAKE_SPEED = 20;
+        public static final double INTAKE_SPEED = 30;
         public static final double SHOOT_SPEED = 100;
     }
 

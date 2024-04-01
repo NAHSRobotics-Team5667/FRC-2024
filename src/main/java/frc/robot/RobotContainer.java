@@ -5,33 +5,29 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.actions.FindAndIntakeNote;
 import frc.robot.commands.actions.IntakeAndShootAuto;
 import frc.robot.commands.actions.IntakeNote;
 import frc.robot.commands.actions.IntakeNoteAuto;
+import frc.robot.commands.actions.JustShoot;
 import frc.robot.commands.actions.RemoveNote;
-import frc.robot.commands.actions.ShootNoteAmp;
 import frc.robot.commands.actions.ShootNoteSpeaker;
 import frc.robot.commands.arm.SetArm;
-import frc.robot.commands.drivetrain.SpeakerDrive;
+import frc.robot.commands.drivetrain.AlignShooterAuto;
+import frc.robot.commands.drivetrain.TeleopDrive;
 import frc.robot.commands.index.IndexCommand;
-import frc.robot.commands.index.IndexCommandAuto;
-import frc.robot.commands.intake.IntakeCommandAuto;
 import frc.robot.commands.shooter.ShooterCommand;
-import frc.robot.commands.shooter.ShooterCommandAuto;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.TestSubsystem;
 import frc.robot.util.States.RobotState;
 
 import java.io.File;
 
-import java.util.Map;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
@@ -58,14 +54,12 @@ public class RobotContainer {
     private StateManager states = StateManager.getInstance();
     private LimelightSubsystem limelight = LimelightSubsystem.getInstance();
 
+    // initialize each subsystem here
     private SwerveSubsystem drive = SwerveSubsystem.getInstance();
     private IntakeSubsystem intake = IntakeSubsystem.getInstance();
     private ArmSubsystem arm = ArmSubsystem.getInstance();
     private ShooterSubsystem shooter = ShooterSubsystem.getInstance();
     private LEDSubsystem led = LEDSubsystem.getInstance();
-
-    private ClimbSubsystem climb;
-    private TestSubsystem testSubsystem;
 
     private SendableChooser<String> autoChooser = new SendableChooser<>();
 
@@ -77,6 +71,16 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        // ---- Auto Chooser ----
+
+        autoChooser.addOption("4_vis", "4_vis");
+        autoChooser.addOption("5_full_vis", "5_full_vis");
+        autoChooser.addOption("5_steal", "5_steal");
+        autoChooser.addOption("farside", "farside");
+        autoChooser.setDefaultOption("5_full_vis", "5_full_vis");
+
+        SmartDashboard.putData(autoChooser);
+
         // ========================================================
         // ==================== DRIVETRAIN ========================
 
@@ -89,17 +93,7 @@ public class RobotContainer {
 
         // ---- DRIVE COMMANDS ----
 
-        // Real drive command
-        Command driveFieldOrientedAnglularVelocity = drive.driveCommand(
-                () -> MathUtil.applyDeadband(-driverXbox.getLeftY(),
-                        OperatorConstants.LEFT_Y_DEADBAND), // X direction
-                // is front
-                () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
-                        OperatorConstants.LEFT_X_DEADBAND), // Y direction
-                // is left
-                () -> -driverXbox.getRightX()); // right stick horizontal value
-
-        Command speakerDrive = new SpeakerDrive(
+        Command speakerDrive = new TeleopDrive(
                 () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
                 () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
                 () -> MathUtil.applyDeadband(-driverXbox.getRightX(), OperatorConstants.RIGHT_X_DEADBAND));
@@ -131,33 +125,28 @@ public class RobotContainer {
         led.setSolidRGB(0, 255, 0);
 
         // ========================================================
+        // ================== CONTROLLER ==========================
+
+        // Configure the trigger bindings
+        configureBindings();
+
+        // ========================================================
         // ======================== AUTO ==========================
 
         // ---- Named Commands ----
 
         NamedCommands.registerCommand("IntakeAndShootAuto", new IntakeAndShootAuto());
         NamedCommands.registerCommand("ShootNoteSpeaker", new ShootNoteSpeaker());
+        NamedCommands.registerCommand("JustShoot", new JustShoot());
         NamedCommands.registerCommand("IntakeNote", new IntakeNoteAuto());
         NamedCommands.registerCommand("ResetMotorsToEncoders", new InstantCommand(() -> arm.resetMotorsToEncoders()));
         NamedCommands.registerCommand("ResetGyro", new InstantCommand(() -> drive.resetGyro()));
         NamedCommands.registerCommand("ShooterCommand", new ShooterCommand(RobotState.SPEAKER));
+        NamedCommands.registerCommand("CheckAprilTags", new InstantCommand(() -> drive.addVisionReading()));
+        NamedCommands.registerCommand("FindAndIntakeNote", new FindAndIntakeNote());
+        NamedCommands.registerCommand("AlignShooterAuto", new AlignShooterAuto());
 
-        // ---- Auto Chooser ----
-
-        autoChooser.addOption("4_note", "4_note");
-        autoChooser.addOption("5_note_steal", "5_note_steal");
-        autoChooser.addOption("5_note", "5_note");
-        autoChooser.addOption("6_note", "6_note");
-        autoChooser.addOption("5_adj_steal", "5_adj_steal");
-        autoChooser.setDefaultOption("4_note", "4_note");
-
-        SmartDashboard.putData(autoChooser);
-
-        // ========================================================
-        // ================== CONTROLLER ==========================
-
-        // Configure the trigger bindings
-        configureBindings();
+        drive.loadAutos();
     }
 
     /**
@@ -167,21 +156,27 @@ public class RobotContainer {
 
         /*
          * Driver Controller:
-         * - Joystick 1 Movement - Movement on Field
-         * - Joystick 2 Movement - Direction on Field (Where robot front is facing).
+         * - Left Stick - Movement on Field
+         * - Right Stick - Direction on Field (Where robot front is facing).
          * - Press X - reset gyro --> found in drivetrain subsystem periodic
          * - Press A - toggle intake
          * - Press B - toggle outtake
          * - Press RB - toggle shooter (speaker)
          * - Press LB - toggle amp
          * - Right Trigger - run index into shooter
-         * - Right Stick Button - reset motor to absolute encoder --> found in arm
+         * - Right Stick Button - reset arm motors to absolute encoder --> found in arm
          * subsystem periodic
+         * - Press Y - feed over stage
+         * - DPad Up - line up climb
+         * - DPad Down - hang
+         * - DPad Left - Raise speaker arm setpoint
+         * - DPad right - Lower speaker arm setpoint
          */
 
         driverXbox.x().onTrue(new InstantCommand(() -> drive.resetGyro()));
 
         driverXbox.a().toggleOnTrue(new IntakeNote());
+        // driverXbox.a().toggleOnTrue(new FindAndIntakeNote());
         driverXbox.b().toggleOnTrue(new RemoveNote());
 
         driverXbox.rightBumper().toggleOnTrue(new ShooterCommand(RobotState.SPEAKER));
@@ -190,12 +185,16 @@ public class RobotContainer {
         driverXbox.rightTrigger().whileTrue(new IndexCommand(RobotState.SPEAKER));
 
         driverXbox.rightStick().onTrue(new InstantCommand(() -> arm.resetMotorsToEncoders()));
-        driverXbox.leftStick().onTrue(new InstantCommand(() -> drive.toggleFieldCentric()));
 
         driverXbox.povUp().onTrue(new InstantCommand(() -> states.setDesiredRobotState(RobotState.CLIMB)));
         driverXbox.povDown().onTrue(new InstantCommand(() -> states.setDesiredRobotState(RobotState.HANGING)));
 
         driverXbox.y().toggleOnTrue(new ShooterCommand(RobotState.FEED));
+
+        driverXbox.leftTrigger().onTrue(new InstantCommand(() -> drive.setFieldCentric(true)));
+        driverXbox.leftTrigger().onFalse(new InstantCommand(() -> drive.setFieldCentric(false)));
+
+        driverXbox.leftStick().toggleOnTrue(new ShooterCommand(RobotState.TRAP));
     }
 
     public static CommandXboxController getDriverController() {

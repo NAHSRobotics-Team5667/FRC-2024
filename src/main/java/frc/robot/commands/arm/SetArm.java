@@ -88,15 +88,23 @@ public class SetArm extends Command {
 
         // -------------------------------------------------------------
 
+        if (RobotContainer.getDriverController().povLeft().getAsBoolean()) {
+            setpoint_offset += 0.5;
+        } else if (RobotContainer.getDriverController().povRight().getAsBoolean()) {
+            setpoint_offset -= 0.5;
+        }
+
         boolean aimingAtSpeaker = states.getTargetArmState().equals(ArmState.SPEAKER);
 
         if (aimingAtSpeaker) {
             // double firstSpeakerSetpoint =
             // ArmConstants.getGoalArmAngle(ArmState.SPEAKER).getFirstPivot();
-            double firstSpeakerSetpoint = calculateSpeakerFirstPivot(limelight.getTagTy());
+            double firstSpeakerSetpoint = setpoint_offset
+                    + ArmConstants.calculateSpeakerFirstPivot(limelight.getTagTy());
 
-            ArmConstants.setFirstPivotSpeaker(firstSpeakerSetpoint);
-            ArmConstants.setSecondPivotSpeaker(calculateSpeakerSecondPivot(firstSpeakerSetpoint, limelight.getTagTy()));
+            ArmConstants.setFirstPivotSpeakerSetpoint(firstSpeakerSetpoint);
+            ArmConstants.setSecondPivotSpeakerSetpoint(
+                    ArmConstants.calculateSpeakerSecondPivot(firstSpeakerSetpoint, limelight.getTagTy()));
         }
 
         // // check if second pivot has priority in the maneuver
@@ -120,13 +128,7 @@ public class SetArm extends Command {
         // arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
         // }
 
-        if (RobotContainer.getDriverController().povLeft().getAsBoolean()) {
-            setpoint_offset += 0.5;
-        } else if (RobotContainer.getDriverController().povRight().getAsBoolean()) {
-            setpoint_offset -= 0.5;
-        }
-
-        arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
+        arm.secondPivotToTarget(states.getTargetArmAngle().getSecondPivot());
         arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
     }
 
@@ -141,49 +143,5 @@ public class SetArm extends Command {
     public boolean isFinished() {
         return false; // never stops - always running. If need to adjust arm position, set
                       // target using methods inside other commands.
-    }
-
-    /**
-     * @param ty limelight crosshair vertical angle from target.
-     * @return ideal first pivot angle to aim into speaker.
-     */
-    public double calculateSpeakerFirstPivot(double ty) {
-        // 38.9
-        double output = setpoint_offset + 39.3 + (0.781 * ty) - (0.00895 * Math.pow(ty, 2));
-        // double output = -31.4 - (12.2 * ty) - (0.548 * Math.pow(ty, 2)); 4.12//
-        // equation
-        // for farther shots
-
-        // TODO: uncomment below for continuous passthrough (not working 3/16)
-        // if (ty > -7.8 /* && DriverStation.isAutonomousEnabled() */) {
-        // output = 28.4 + (0.546 * ty) + (0.0121 * Math.pow(ty, 2)); // equation for
-        // normal shots with transfer
-        // }
-        return output;
-    }
-
-    public double calculateSpeakerSecondPivot(double firstPivotDegrees, double ty) {
-        double transferX = 4.67;
-        double transferY = -2.51;
-
-        double c = Math.sqrt(Math.pow(transferX, 2) + Math.pow(transferY, 2));
-
-        double a = 20.6; // first pivot is 20.6in
-        double b = Math.sqrt(
-                Math.pow((a * Math.cos(Units.degreesToRadians(firstPivotDegrees))) - transferX, 2)
-                        + Math.pow((a * Math.sin(Units.degreesToRadians(firstPivotDegrees))) - transferY,
-                                2));
-
-        double output = 0; // second pivot goes up when making farther shots
-
-        // TODO: uncomment below for passthrough shots (not working 3/16)
-        // if (ty > -7.5 /* && DriverStation.isAutonomousEnabled() */) {
-        // // second pivot meets intake to shoot
-        // output = -Units
-        // .radiansToDegrees(Math.acos((Math.pow(c, 2) - Math.pow(a, 2) - Math.pow(b,
-        // 2)) / (-2 * a * b)));
-        // }
-
-        return output;
     }
 }

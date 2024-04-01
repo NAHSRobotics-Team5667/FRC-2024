@@ -7,9 +7,8 @@ package frc.robot.subsystems;
 import java.util.Map;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.ADXL345_I2C.AllAxes;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -33,9 +32,6 @@ public class StateManager extends SubsystemBase {
     // robot state
     private RobotState desiredRobotState;
 
-    // rumble
-    private double rumbleTimer;
-
     // leds
     private LEDSubsystem led;
 
@@ -48,7 +44,8 @@ public class StateManager extends SubsystemBase {
             RobotState.SPEAKER, ArmState.SPEAKER,
             RobotState.FEED, ArmState.FEED,
             RobotState.CLIMB, ArmState.CLIMB,
-            RobotState.HANGING, ArmState.HANGING);
+            RobotState.HANGING, ArmState.HANGING,
+            RobotState.TRAP, ArmState.TRAP);
 
     // singleton
     private static StateManager instance = null;
@@ -68,9 +65,6 @@ public class StateManager extends SubsystemBase {
         // Shooter --------------------------------------------
         shooterState = ShooterState.STOPPED;
         shooterStartTime = 0;
-
-        // Rumble ---------------------------------------------
-        rumbleTimer = 0;
 
         // LED ------------------------------------------------
         led = LEDSubsystem.getInstance();
@@ -107,6 +101,23 @@ public class StateManager extends SubsystemBase {
      */
     public RobotState getDesiredRobotState() {
         return desiredRobotState;
+    }
+
+    // ========================================================
+    // ==================== APRIL TAGS ========================
+
+    /**
+     * Update priority april tags. Remove april tag filters if trying to line up for
+     * amp or trap. Sets them back to correct april tags if doing any other
+     * activity.
+     */
+    private void updatePriorityAprilTag() {
+        if (getDesiredRobotState() == RobotState.TRAP) {
+            LimelightSubsystem.getInstance().setPriorityTag(-1); // TODO: check back to see if this removes the filter
+        } else {
+            LimelightSubsystem.getInstance()
+                    .setPriorityTag((DriverStation.getAlliance().get() == Alliance.Red) ? 4 : 7);
+        }
     }
 
     // ========================================================
@@ -243,14 +254,11 @@ public class StateManager extends SubsystemBase {
     // ====================== RUMBLE ==========================
 
     private void updateRumble() {
-        if (IndexSubsystem.getInstance().hasGamePiece() /* && rumbleTimer == 0 */) {
+        if (IndexSubsystem.getInstance().hasGamePiece() && DriverStation.isTeleopEnabled()) {
             // rumbleTimer = Timer.getFPGATimestamp();
             // start rumbling
             RobotContainer.getRumbleController().setRumble(RumbleType.kLeftRumble, 0.25);
-        } else /*
-                * if ( Timer.getFPGATimestamp() - rumbleTimer >= 2 ||
-                * !IndexSubsystem.getInstance().hasGamePiece())
-                */ {
+        } else {
             // stop rumbling
             RobotContainer.getRumbleController().setRumble(RumbleType.kBothRumble, 0);
             // if (!IndexSubsystem.getInstance().hasGamePiece()) { // reset rumble timer
@@ -269,6 +277,7 @@ public class StateManager extends SubsystemBase {
         updateShooterState(); // update shooter state periodically
         updateRumble(); // update rumble state of controller
         updateLights(); // update LEDs
+        updatePriorityAprilTag();
 
         SmartDashboard.putBoolean("[STATES] Arm At Target", armAtTarget());
     }

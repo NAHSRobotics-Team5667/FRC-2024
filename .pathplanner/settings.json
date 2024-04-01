@@ -4,15 +4,17 @@
   "holonomicMode": true,
   "pathFolders": [
     "4 note",
-    "6 note",
     "5 note",
+    "5_steal",
+    "6 note",
+    "farside",
     "Samar"
   ],
   "autoFolders": [
     "Samar"
   ],
   "defaultMaxVel": 4.7,
-  "defaultMaxAccel": 5.0,
+  "defaultMaxAccel": 7.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 4.7

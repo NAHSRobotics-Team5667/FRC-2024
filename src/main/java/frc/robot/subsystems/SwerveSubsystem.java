@@ -4,12 +4,10 @@
 
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathPoint;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -25,8 +23,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -34,11 +30,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 
 import java.io.File;
-import java.sql.Driver;
 import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
@@ -66,8 +60,6 @@ public class SwerveSubsystem extends SubsystemBase {
     private final SwerveDrive swerveDrive;
 
     private static SwerveSubsystem instance = null; // singleton instance
-
-    private AHRS gyro;
 
     private boolean fieldCentric = true;
 
@@ -129,14 +121,6 @@ public class SwerveSubsystem extends SubsystemBase {
                     Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
                 });
 
-        // load autos on bootup to make auto start quicker
-        loadedAutos = Map.of(
-                "4_note", new PathPlannerAuto("4_note"),
-                "5_note_steal", new PathPlannerAuto("5_note_steal"),
-                "5_note", new PathPlannerAuto("5_note"),
-                "6_note", new PathPlannerAuto("6_note"),
-                "5_adj_steal", new PathPlannerAuto("5_adj_steal"));
-
         setupPathPlanner(); // configure AutoBuilder - path generator
     }
 
@@ -177,6 +161,18 @@ public class SwerveSubsystem extends SubsystemBase {
     // ========================================================
     // ======================== AUTO ==========================
     // ========================================================
+
+    /**
+     * Loads autos to make auto start faster.
+     */
+    public void loadAutos() {
+        // load autos on bootup to make auto start quicker
+        loadedAutos = Map.of(
+                "4_vis", new PathPlannerAuto("4_vis"),
+                "5_full_vis", new PathPlannerAuto("5_full_vis"),
+                "5_steal", new PathPlannerAuto("5_steal"),
+                "farside", new PathPlannerAuto("farside"));
+    }
 
     /**
      * Setup AutoBuilder for PathPlanner.
@@ -328,31 +324,6 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Command to drive the robot using translative values and heading as angular
-     * velocity.
-     *
-     * @param translationX     Translation in the X direction. Cubed for smoother
-     *                         controls.
-     * @param translationY     Translation in the Y direction. Cubed for smoother
-     *                         controls.
-     * @param angularRotationX Angular velocity of the robot to set. Cubed for
-     *                         smoother controls.
-     * @return Drive command.
-     */
-    public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY,
-            DoubleSupplier angularRotationX) {
-        return run(() -> {
-            // Make the robot move
-            swerveDrive.drive(
-                    new Translation2d(Math.pow(translationX.getAsDouble(), 3) * swerveDrive.getMaximumVelocity(),
-                            Math.pow(translationY.getAsDouble(), 3) * swerveDrive.getMaximumVelocity()),
-                    Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumAngularVelocity(),
-                    fieldCentric,
-                    false);
-        });
-    }
-
-    /**
      * The primary method for controlling the drivebase. Takes a
      * {@link Translation2d} and a rotation rate, and
      * calculates and commands module states accordingly. Can use either open-loop
@@ -375,10 +346,24 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param fieldRelative Drive mode. True for field-relative, false for
      *                      robot-relative.
      */
-    public void drive(Translation2d translation, double rotation) {
+    public void driveTeleop(Translation2d translation, double rotation) {
         swerveDrive.drive(translation,
                 rotation,
                 fieldCentric,
+                false); // Open loop is disabled since it shouldn't be used most of the time.
+    }
+
+    /**
+     * Drives the robot in a robot oriented manner.
+     * 
+     * @param translation Translation2d specifying X and Y velocities in meters per
+     *                    second. +X -> forward, +Y -> left.
+     * @param rotation    angular velocity in radians per second. CCW positive.
+     */
+    public void driveRobotOriented(Translation2d translation, double rotation) {
+        swerveDrive.drive(translation,
+                rotation,
+                false,
                 false); // Open loop is disabled since it shouldn't be used most of the time.
     }
 
@@ -389,15 +374,6 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public void driveFieldOriented(ChassisSpeeds velocity) {
         swerveDrive.driveFieldOriented(velocity);
-    }
-
-    /**
-     * Drive according to the chassis robot oriented velocity.
-     *
-     * @param velocity Robot oriented {@link ChassisSpeeds}
-     */
-    public void drive(ChassisSpeeds velocity) {
-        swerveDrive.drive(velocity);
     }
 
     /**
@@ -609,10 +585,20 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     /**
+     * @return current heading of the robot.
+     */
+    public double getYaw() {
+        return swerveDrive.getYaw().getDegrees();
+    }
+
+    /**
      * Add a fake vision reading for testing purposes.
      */
-    public void addFakeVisionReading() {
-        swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
+    public void addVisionReading() {
+        if (LimelightSubsystem.getInstance().getAprilTagID() != -1) {
+            swerveDrive.addVisionMeasurement(LimelightSubsystem.getInstance().getBotPose(),
+                    Timer.getFPGATimestamp() - (LimelightSubsystem.getInstance().getMegaTagLatency() / 1000.0));
+        }
     }
 
     // ========================================================
@@ -621,7 +607,15 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        resetOdometry(LimelightSubsystem.getInstance().getBotPose()); // TODO: check back to see if this works with auto
+        // if (LimelightSubsystem.getInstance().getNoteTx() != 0 &&
+        // LimelightSubsystem.getInstance().getNoteTy() != 0) {
+        // swerveDrive.addVisionMeasurement(
+        // LimelightSubsystem.getInstance().getRobotPoseFromNote(2.9, 7,
+        // swerveDrive.getGyro().getRotation3d().getAngle()),
+        // Timer.getFPGATimestamp());
+        // }
+
+        // addVisionReading();
 
         SmartDashboard.putNumber("[DRIVE] Max Velocity", getMaximumVelocity());
     }

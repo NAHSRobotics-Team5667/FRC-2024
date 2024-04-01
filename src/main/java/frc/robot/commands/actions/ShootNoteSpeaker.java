@@ -5,6 +5,8 @@
 package frc.robot.commands.actions;
 
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.drivetrain.AlignShooterAuto;
 import frc.robot.commands.index.IndexCommand;
 import frc.robot.commands.shooter.ShooterCommandAuto;
 import frc.robot.util.States.RobotState;
@@ -19,6 +21,8 @@ public class ShootNoteSpeaker extends ParallelRaceGroup {
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
                 new ShooterCommandAuto(),
-                new IndexCommand(RobotState.SPEAKER));
+                new SequentialCommandGroup(
+                        new AlignShooterAuto(),
+                        new IndexCommand(RobotState.SPEAKER)));
     }
 }

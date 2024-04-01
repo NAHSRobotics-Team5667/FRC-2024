@@ -20,26 +20,19 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootNoteSpeaker"
+            "name": "JustShoot"
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "4_note_1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeNote"
-                }
-              }
-            ]
+            "pathName": "4_vis_1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FindAndIntakeNote"
           }
         },
         {
@@ -49,22 +42,15 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "4_note_2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeNote"
-                }
-              }
-            ]
+            "pathName": "4_vis_2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FindAndIntakeNote"
           }
         },
         {
@@ -74,19 +60,43 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
+          "data": {
+            "pathName": "4_vis_3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FindAndIntakeNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5_vis_4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FindAndIntakeNote"
+          }
+        },
+        {
+          "type": "race",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4_note_3"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeNote"
+                  "pathName": "5_vis_5"
                 }
               }
             ]

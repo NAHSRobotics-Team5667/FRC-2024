@@ -9,15 +9,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import frc.robot.util.ArmAngle;
-import frc.robot.util.States.ArmState;
-import frc.robot.util.States.ShooterState;
-import frc.robot.RobotContainer;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ShooterConstants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -39,6 +33,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private TalonFX m_topShooter;
     private TalonFX m_bottomShooter; // declaring motors and global scope
 
+    private CANSparkMax m_fan;
+
     private double targetLeftRPM = ShooterConstants.SHOOTER_MAX_RPM;
     private double targetRightRPM = ShooterConstants.SHOOTER_MAX_RPM;
 
@@ -50,8 +46,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private static ShooterSubsystem instance = null;
 
     private ShooterSubsystem() {
-
-        // Initialize Motors (Falcon 500s).
+        // Initialize Shooter Motors (Falcon 500s).
         m_topShooter = new TalonFX(ShooterConstants.SHOOTER_TOP_ID);
         m_topShooter.setNeutralMode(NeutralModeValue.Coast);
         m_topShooter.setInverted(true);
@@ -59,6 +54,9 @@ public class ShooterSubsystem extends SubsystemBase {
         m_bottomShooter = new TalonFX(ShooterConstants.SHOOTER_BOTTOM_ID);
         m_bottomShooter.setNeutralMode(NeutralModeValue.Coast);
         m_bottomShooter.setInverted(true);
+
+        // Initialize Fan Motor
+        m_fan = new CANSparkMax(ShooterConstants.FAN_ID, MotorType.kBrushless);
     }
 
     public static ShooterSubsystem getInstance() {
@@ -104,6 +102,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
         m_topShooter.set(topOutput);
         m_bottomShooter.set(bottomOutput);
+    }
+
+    /**
+     * Turns fan on or off.
+     * 
+     * @param on whether fan should be turned on or off.
+     */
+    public void setFan(boolean on) {
+        double fanSpeed = ShooterConstants.TRAP_FAN_SPEED / 100;
+
+        m_fan.set((on) ? fanSpeed : 0);
     }
 
     // ========================================================

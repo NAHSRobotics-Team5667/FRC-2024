@@ -10,7 +10,6 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StateManager;
-import frc.robot.util.States.ArmState;
 import frc.robot.util.States.RobotState;
 
 public class ShooterCommand extends Command {
@@ -46,17 +45,27 @@ public class ShooterCommand extends Command {
         states.setDesiredRobotState(mode);
 
         shooter.set(0.00);
+        shooter.setFan(false);
     }
 
     // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
         if (mode == RobotState.SPEAKER) {
-            shooter.set(ShooterConstants.getShooterSpeed(limelight.getTagTy()));
+            shooter.set(ShooterConstants.getSpeakerShooterSpeed(limelight.getTagTy()));
+            shooter.setFan(false);
+
         } else if (mode == RobotState.AMP) {
             shooter.set(ShooterConstants.AMP_SPEED);
+            shooter.setFan(false);
+
         } else if (mode == RobotState.FEED) {
-            shooter.set(100);
+            shooter.set(ShooterConstants.FEED_SPEED);
+            shooter.setFan(false);
+
+        } else if (mode == RobotState.TRAP) {
+            shooter.set(ShooterConstants.TRAP_SPEED);
+            shooter.setFan(true);
         }
     }
 
@@ -66,6 +75,7 @@ public class ShooterCommand extends Command {
         states.setDesiredRobotState(RobotState.IDLE);
 
         shooter.set(0.00);
+        shooter.setFan(false);
     }
 
     // Called so it should return true when the command will end

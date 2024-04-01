@@ -49,7 +49,7 @@ public class ShooterCommandAuto extends Command {
     // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
-        shooter.set(ShooterConstants.getShooterSpeed(limelight.getTagTy()));
+        shooter.set(ShooterConstants.getSpeakerShooterSpeed(limelight.getTagTy()));
     }
 
     // Called when the command is interruped or ended
