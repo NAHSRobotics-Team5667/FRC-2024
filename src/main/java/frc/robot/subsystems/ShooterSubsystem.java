@@ -57,6 +57,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
         // Initialize Fan Motor
         m_fan = new CANSparkMax(ShooterConstants.FAN_ID, MotorType.kBrushless);
+        m_fan.setSmartCurrentLimit(20); // set current limit of neo550 to 20A to avoid motor failure
+        m_fan.setInverted(true);
     }
 
     public static ShooterSubsystem getInstance() {

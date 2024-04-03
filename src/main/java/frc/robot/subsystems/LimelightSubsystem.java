@@ -250,23 +250,7 @@ public class LimelightSubsystem extends SubsystemBase {
         // This method will be called once per scheduler run
         SmartDashboard.putNumber("[LL] April Tag", getAprilTagID());
 
-        // SmartDashboard.putNumber("[LL] Botpose 0", getBotPoseArray()[0]);
-        // SmartDashboard.putNumber("[LL] Botpose 1", getBotPoseArray()[1]);
-        // SmartDashboard.putNumber("[LL] Botpose 2", getBotPoseArray()[2]);
-        // SmartDashboard.putNumber("[LL] Botpose 3", getBotPoseArray()[3]);
-        // SmartDashboard.putNumber("[LL] Botpose 4", getBotPoseArray()[4]);
-        // SmartDashboard.putNumber("[LL] Botpose 5", getBotPoseArray()[5]);
-        // SmartDashboard.putNumber("[LL] Botpose 6", getBotPoseArray()[6]);
-        // SmartDashboard.putNumber("[LL] Botpose 7", getBotPoseArray()[7]);
-        // SmartDashboard.putNumber("[LL] Botpose 8", getBotPoseArray()[8]);
-        // SmartDashboard.putNumber("[LL] Botpose 9", getBotPoseArray()[9]);
-        // SmartDashboard.putNumber("[LL] Botpose 10", getBotPoseArray()[10]);
-        SmartDashboard.putNumber("[LL] Botpose X", getBotPose().getX());
-        SmartDashboard.putNumber("[LL] Botpose Y", getBotPose().getY());
-        SmartDashboard.putNumber("[LL] Botpose Yaw", getBotPose().getRotation().getDegrees());
-
-        SmartDashboard.putNumber("[LL] Note X to Bot", predictXDist());
-        SmartDashboard.putNumber("[LL] Note Y to Bot", predictYDist());
-        SmartDashboard.putNumber("[LL] Note Dist to Bot", getDistanceToNote());
+        SmartDashboard.putNumber("[LL] Tag Tx", getTagTx());
+        SmartDashboard.putNumber("[LL] Tag Ty", getTagTy());
     }
 }

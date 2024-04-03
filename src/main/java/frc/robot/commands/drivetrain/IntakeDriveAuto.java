@@ -35,12 +35,12 @@ public class IntakeDriveAuto extends Command {
         pid_x = new ProfiledPIDController(
                 DriveConstants.INTAKE_P,
                 DriveConstants.INTAKE_I,
-                DriveConstants.INTAKE_D, new TrapezoidProfile.Constraints(180, 260));
+                DriveConstants.INTAKE_D, new TrapezoidProfile.Constraints(240, 340));
 
         pid_y = new ProfiledPIDController(
                 DriveConstants.INTAKE_P,
                 DriveConstants.INTAKE_I,
-                DriveConstants.INTAKE_D, new TrapezoidProfile.Constraints(180, 260));
+                DriveConstants.INTAKE_D, new TrapezoidProfile.Constraints(240, 340));
 
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(swerve);

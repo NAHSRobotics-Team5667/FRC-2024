@@ -128,6 +128,14 @@ public class SetArm extends Command {
         // arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
         // }
 
+        // if (states.getDesiredRobotState() == RobotState.HANGING) {
+        // arm.secondPivotToTargetClimb(states.getTargetArmAngle().getSecondPivot());
+        // arm.firstPivotToTargetClimb(states.getTargetArmAngle().getFirstPivot());
+        // } else {
+        // arm.secondPivotToTarget(states.getTargetArmAngle().getSecondPivot());
+        // arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
+        // }
+
         arm.secondPivotToTarget(states.getTargetArmAngle().getSecondPivot());
         arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
     }

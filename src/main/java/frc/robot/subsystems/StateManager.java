@@ -104,23 +104,6 @@ public class StateManager extends SubsystemBase {
     }
 
     // ========================================================
-    // ==================== APRIL TAGS ========================
-
-    /**
-     * Update priority april tags. Remove april tag filters if trying to line up for
-     * amp or trap. Sets them back to correct april tags if doing any other
-     * activity.
-     */
-    private void updatePriorityAprilTag() {
-        if (getDesiredRobotState() == RobotState.TRAP) {
-            LimelightSubsystem.getInstance().setPriorityTag(-1); // TODO: check back to see if this removes the filter
-        } else {
-            LimelightSubsystem.getInstance()
-                    .setPriorityTag((DriverStation.getAlliance().get() == Alliance.Red) ? 4 : 7);
-        }
-    }
-
-    // ========================================================
     // ======================== ARM ===========================
 
     /**
@@ -225,7 +208,7 @@ public class StateManager extends SubsystemBase {
             if (desiredRobotState.equals(RobotState.INTAKE)) {
                 // robot is picking up a game piece
                 led.flashingRGB(255, 100, 0, 5); // flash orange while intaking
-            } else if (desiredRobotState.equals(RobotState.SPEAKER)) {
+            } else if (desiredRobotState.equals(RobotState.SPEAKER) || desiredRobotState.equals(RobotState.TRAP)) {
                 if (armAtTarget() && isShooterReady()) {
                     // signify to human player to press button - shooter is ready to fire
                     led.setSolidRGB(0, 255, 0); // solid green LED when ready to shoot
@@ -277,7 +260,6 @@ public class StateManager extends SubsystemBase {
         updateShooterState(); // update shooter state periodically
         updateRumble(); // update rumble state of controller
         updateLights(); // update LEDs
-        updatePriorityAprilTag();
 
         SmartDashboard.putBoolean("[STATES] Arm At Target", armAtTarget());
     }

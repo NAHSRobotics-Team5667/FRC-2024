@@ -80,7 +80,8 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void autonomousInit() {
-        LimelightSubsystem.getInstance().setPriorityTag((DriverStation.getAlliance().get() == Alliance.Red) ? 4 : 7);
+        // LimelightSubsystem.getInstance().setPriorityTag((DriverStation.getAlliance().get()
+        // == Alliance.Red) ? 4 : 7);
         ArmSubsystem.getInstance().resetMotorsToEncoders();
 
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -100,7 +101,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
-        LimelightSubsystem.getInstance().setPriorityTag((DriverStation.getAlliance().get() == Alliance.Red) ? 4 : 7);
+        // LimelightSubsystem.getInstance().setPriorityTag((DriverStation.getAlliance().get()
+        // == Alliance.Red) ? 4 : 7);
         ArmSubsystem.getInstance().resetMotorsToEncoders();
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to

@@ -71,8 +71,7 @@ public class TeleopDrive extends Command {
         boolean autoDrive = false;
 
         // set default value of angular velocity based on controller
-        double angularRotationPercent = Math.pow(vRot.getAsDouble(), 3)
-                * swerve.getMaximumAngularVelocity();
+        double angularRotationPercent = Math.pow(vRot.getAsDouble(), 3);
         double xPercent = vX.getAsDouble();
         double yPercent = vY.getAsDouble();
 
@@ -114,17 +113,17 @@ public class TeleopDrive extends Command {
             if (limelight.getAprilTagID() != -1) {
                 // line up to tag
                 // TODO: get values to line up for trap - tx and ty
-                xPercent = MathUtil.clamp(-pid_x.calculate(limelight.getTagTy(), 20), -1, 1);
-                yPercent = MathUtil.clamp(pid_y.calculate(limelight.getTagTx(), 7.8), -1, 1);
+                xPercent = MathUtil.clamp(-pid_x.calculate(limelight.getTagTy(), 19.11), -1, 1);
+                yPercent = MathUtil.clamp(-pid_y.calculate(limelight.getTagTx(), 19.45), -1, 1);
                 // angle to tag
                 double angleTarget = 0;
 
                 if (limelight.getAprilTagID() == 11 || limelight.getAprilTagID() == 15) {
-                    angleTarget = -60;
+                    angleTarget = 122;
                 } else if (limelight.getAprilTagID() == 12 || limelight.getAprilTagID() == 16) {
-                    angleTarget = 60;
+                    angleTarget = 302;
                 } else if (limelight.getAprilTagID() == 13 || limelight.getAprilTagID() == 14) {
-                    angleTarget = 180;
+                    angleTarget = 2;
                 }
 
                 newAngularRotationPercent = MathUtil.clamp(

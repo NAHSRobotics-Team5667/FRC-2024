@@ -133,9 +133,9 @@ public final class Constants {
                 ArmState.SPEAKER, new ArmAngle(/* 108.1 */ 55, 0), // default position for speaker
                 ArmState.AMP, new ArmAngle(108.1, -130.7), // position for amp
                 ArmState.FEED, new ArmAngle(45, 0), // position for feed
-                ArmState.TRAP, new ArmAngle(108.1, 0), // position for trap
+                ArmState.TRAP, new ArmAngle(44, -16.95), // position for trap
                 ArmState.CLIMB, new ArmAngle(69.303, -107.58),
-                ArmState.HANGING, new ArmAngle(48.051, 17.8)); // position for human player intake
+                ArmState.HANGING, new ArmAngle(30.051, 17.8)); // position for human player intake
 
         // create a map of arm positions and their target goal states - maps aren't
         // bi-directional :(
@@ -346,7 +346,7 @@ public final class Constants {
         // ==== ELECTRONICS ====
         public static final int SHOOTER_TOP_ID = 11;
         public static final int SHOOTER_BOTTOM_ID = 10;
-        public static final int FAN_ID = 40; // TODO: find FAN id
+        public static final int FAN_ID = 20;
 
         // ---- MAXIMUM RPM ----
         public static final double SHOOTER_MAX_RPM = 87;
@@ -365,7 +365,7 @@ public final class Constants {
 
         public static final double FEED_SPEED = 70;
 
-        public static final double TRAP_SPEED = 70;
+        public static final double TRAP_SPEED = 35.5;
         public static final double TRAP_FAN_SPEED = 100;
 
         public static double getSpeakerShooterSpeed(double ty) {

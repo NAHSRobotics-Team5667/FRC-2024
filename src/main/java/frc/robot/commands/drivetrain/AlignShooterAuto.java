@@ -44,8 +44,13 @@ public class AlignShooterAuto extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double rot = MathUtil.clamp(alignPID.calculate(limelight.getTagTx(), 7.8), -1, 1)
+        double rot = MathUtil.clamp(alignPID.calculate(swerve.getYaw(), 0), -1, 1)
                 * swerve.getMaximumAngularVelocity();
+
+        if (limelight.getAprilTagID() != -1) {
+            rot = MathUtil.clamp(alignPID.calculate(limelight.getTagTx(), 7.8), -1, 1)
+                    * swerve.getMaximumAngularVelocity();
+        }
 
         swerve.driveRobotOriented(new Translation2d(), rot);
 
