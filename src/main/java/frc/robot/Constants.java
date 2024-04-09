@@ -134,7 +134,7 @@ public final class Constants {
                 ArmState.AMP, new ArmAngle(108.1, -130.7), // position for amp
                 ArmState.FEED, new ArmAngle(45, 0), // position for feed
                 ArmState.TRAP, new ArmAngle(44, -16.95), // position for trap
-                ArmState.CLIMB, new ArmAngle(69.303, -107.58),
+                ArmState.CLIMB, new ArmAngle(69.303, -108.58),
                 ArmState.HANGING, new ArmAngle(30.051, 17.8)); // position for human player intake
 
         // create a map of arm positions and their target goal states - maps aren't
@@ -165,7 +165,7 @@ public final class Constants {
          */
         public static double calculateSpeakerFirstPivot(double ty) {
             // 39.3
-            double output = 38.6 + (0.781 * ty) - (0.00895 * Math.pow(ty, 2));
+            double output = 39.3 + (0.781 * ty) - (0.00895 * Math.pow(ty, 2));
             // double output = -31.4 - (12.2 * ty) - (0.548 * Math.pow(ty, 2)); 4.12//
             // equation
             // for farther shots
@@ -234,8 +234,8 @@ public final class Constants {
          * 
          * @param target new first pivot goal for climb.
          */
-        public static void setFirstPivotClimb(double target) {
-            getGoalArmAngle(ArmState.CLIMB).setFirstPivot(target);
+        public static void setFirstPivotHanging(double target) {
+            getGoalArmAngle(ArmState.HANGING).setFirstPivot(target);
         }
 
         /**
@@ -243,8 +243,8 @@ public final class Constants {
          * 
          * @param target new second pivot goal for climb.
          */
-        public static void setSecondPivotClimb(double target) {
-            getGoalArmAngle(ArmState.CLIMB).setSecondPivot(target);
+        public static void setSecondPivotHanging(double target) {
+            getGoalArmAngle(ArmState.HANGING).setSecondPivot(target);
         }
 
         /**
@@ -365,7 +365,7 @@ public final class Constants {
 
         public static final double FEED_SPEED = 70;
 
-        public static final double TRAP_SPEED = 35.5;
+        public static final double TRAP_SPEED = 40;
         public static final double TRAP_FAN_SPEED = 100;
 
         public static double getSpeakerShooterSpeed(double ty) {

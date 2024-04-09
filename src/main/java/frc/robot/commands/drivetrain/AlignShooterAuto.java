@@ -7,6 +7,7 @@ package frc.robot.commands.drivetrain;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
@@ -21,6 +22,9 @@ public class AlignShooterAuto extends Command {
     private LimelightSubsystem limelight;
 
     private PIDController alignPID;
+
+    private double initialTime;
+    private double TIME_LIMIT = 2; // time limit on align command is 2 sec
 
     /** Creates a new AlignShooterAuto. */
     public AlignShooterAuto() {
@@ -39,6 +43,7 @@ public class AlignShooterAuto extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        initialTime = Timer.getFPGATimestamp();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -66,6 +71,7 @@ public class AlignShooterAuto extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return Math.abs(alignPID.getPositionError()) < 3 || limelight.getTagTx() == 0.0;
+        return Math.abs(alignPID.getPositionError()) < 3 || limelight.getTagTx() == 0.0
+                || Timer.getFPGATimestamp() - initialTime >= TIME_LIMIT;
     }
 }

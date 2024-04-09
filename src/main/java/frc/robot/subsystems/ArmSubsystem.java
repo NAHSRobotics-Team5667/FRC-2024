@@ -57,8 +57,8 @@ public class ArmSubsystem extends SubsystemBase {
             secondEncoderL, secondEncoderR; // declare encoders for arm actuation
     private DigitalInput limitSwitch;
 
-    private ProfiledPIDController firstPivotPID, firstPivotPIDClimb;
-    private ProfiledPIDController secondPivotPID, secondPivotPIDClimb;
+    private ProfiledPIDController firstPivotPID;
+    private ProfiledPIDController secondPivotPID;
     private ProfiledPIDController speakerPID; // PID controller to use when aiming shooter at target - faster than
                                               // profiled
 
@@ -105,22 +105,6 @@ public class ArmSubsystem extends SubsystemBase {
                 new TrapezoidProfile.Constraints( // sets trapezoid profile for first pivot velocity
                         ArmConstants.FIRST_MAX_VELOCITY,
                         ArmConstants.FIRST_MAX_ACCEL));
-
-        firstPivotPIDClimb = new ProfiledPIDController(
-                ArmConstants.FIRST_kP,
-                ArmConstants.FIRST_kI,
-                ArmConstants.FIRST_kD,
-                new TrapezoidProfile.Constraints( // sets trapezoid profile for first pivot velocity
-                        250,
-                        300));
-
-        secondPivotPIDClimb = new ProfiledPIDController(
-                ArmConstants.FIRST_kP,
-                ArmConstants.FIRST_kI,
-                ArmConstants.FIRST_kD,
-                new TrapezoidProfile.Constraints( // sets trapezoid profile for first pivot velocity
-                        100,
-                        200));
 
         // ====== FIRST PIVOT ======
 
@@ -246,18 +230,6 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     /**
-     * Moves first pivot to target using climb settings.
-     * 
-     * @param targetPos target for arm in degrees.
-     */
-    public void firstPivotToTargetClimb(double targetPos) {
-        double output = MathUtil.clamp(
-                firstPivotPIDClimb.calculate(getFirstPivotMotorDeg(), targetPos),
-                -1, 1);
-        setFirstPivot(output * 100);
-    }
-
-    /**
      * Moves first pivot to target using regular PID. Use only for auto aiming to
      * speaker.
      * 
@@ -309,18 +281,6 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void secondPivotToTarget(double targetPos) {
         double output = calculateSecondPivotPID(getSecondPivotMotorDeg(), targetPos);
-        setSecondPivot(output * 100);
-    }
-
-    /**
-     * Moves first pivot to target using climb settings.
-     * 
-     * @param targetPos target for arm in degrees.
-     */
-    public void secondPivotToTargetClimb(double targetPos) {
-        double output = MathUtil.clamp(
-                secondPivotPIDClimb.calculate(getSecondPivotMotorDeg(), targetPos),
-                -1, 1);
         setSecondPivot(output * 100);
     }
 

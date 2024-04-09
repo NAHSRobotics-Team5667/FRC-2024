@@ -12,6 +12,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
@@ -91,23 +93,29 @@ public class TeleopDrive extends Command {
             yPercent = MathUtil.clamp(yPercent, -0.7, 0.7);
 
         } else if (states.getDesiredRobotState().equals(RobotState.INTAKE)) {
-            if (limelight.getNoteTy() != 0.0) {
-                // find note
-                xPercent = MathUtil.clamp(-pid_x.calculate(limelight.getNoteTy(), -30), -1, 1);
-                yPercent = MathUtil.clamp(pid_y.calculate(limelight.getNoteTx(), 0), -1, 1);
-                // align to note
-                newAngularRotationPercent = MathUtil.clamp(
-                        pid_y.calculate(limelight.getNoteTx(), 0), -1, 1);
+            // if (limelight.getNoteTy() != 0.0) {
+            // // find note
+            // xPercent = MathUtil.clamp(-pid_x.calculate(limelight.getNoteTy(), -30), -1,
+            // 1);
+            // yPercent = MathUtil.clamp(pid_y.calculate(limelight.getNoteTx(), 0), -1, 1);
+            // // align to note
+            // newAngularRotationPercent = MathUtil.clamp(
+            // pid_y.calculate(limelight.getNoteTx(), 0), -1, 1);
 
-                autoDrive = true;
-            } else {
-                autoDrive = false;
-            }
+            // autoDrive = true;
+            // } else {
+            // autoDrive = false;
+            // }
+
+            newAngularRotationPercent = MathUtil.clamp(
+                    pid_y.calculate(limelight.getNoteTx(), 0), -1, 1);
 
         } else if (states.getDesiredRobotState().equals(RobotState.FEED)) {
             // align to ideal angle
+            double angleTarget = (DriverStation.getAlliance().get() == Alliance.Red) ? 15 : -15;
+
             newAngularRotationPercent = MathUtil.clamp(
-                    alignPID.calculate(swerve.getYaw(), 15), -1, 1);
+                    alignPID.calculate(swerve.getYaw(), angleTarget), -1, 1);
 
         } else if (states.getDesiredRobotState().equals(RobotState.TRAP)) {
             if (limelight.getAprilTagID() != -1) {
@@ -121,7 +129,7 @@ public class TeleopDrive extends Command {
                 if (limelight.getAprilTagID() == 11 || limelight.getAprilTagID() == 15) {
                     angleTarget = 122;
                 } else if (limelight.getAprilTagID() == 12 || limelight.getAprilTagID() == 16) {
-                    angleTarget = 302;
+                    angleTarget = 122; // TODO: make negative again
                 } else if (limelight.getAprilTagID() == 13 || limelight.getAprilTagID() == 14) {
                     angleTarget = 2;
                 }

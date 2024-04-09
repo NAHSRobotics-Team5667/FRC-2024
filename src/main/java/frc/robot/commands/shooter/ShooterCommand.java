@@ -7,6 +7,7 @@ package frc.robot.commands.shooter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StateManager;
@@ -44,8 +45,10 @@ public class ShooterCommand extends Command {
 
         states.setDesiredRobotState(mode);
 
+        ArmSubsystem.getInstance().resetMotorsToEncoders();
+
         shooter.set(0.00);
-        shooter.setFan(false);
+        // shooter.setFan(false);
     }
 
     // Called when scheduler runs while the command is scheduled
@@ -53,19 +56,19 @@ public class ShooterCommand extends Command {
     public void execute() {
         if (mode == RobotState.SPEAKER) {
             shooter.set(ShooterConstants.getSpeakerShooterSpeed(limelight.getTagTy()));
-            shooter.setFan(false);
+            // shooter.setFan(false);
 
         } else if (mode == RobotState.AMP) {
             shooter.set(ShooterConstants.AMP_SPEED);
-            shooter.setFan(false);
+            // shooter.setFan(false);
 
         } else if (mode == RobotState.FEED) {
             shooter.set(ShooterConstants.FEED_SPEED);
-            shooter.setFan(false);
+            // shooter.setFan(false);
 
         } else if (mode == RobotState.TRAP) {
             shooter.set(ShooterConstants.TRAP_SPEED);
-            shooter.setFan(true);
+            // shooter.setFan(false);
         }
     }
 
@@ -75,7 +78,7 @@ public class ShooterCommand extends Command {
         states.setDesiredRobotState(RobotState.IDLE);
 
         shooter.set(0.00);
-        shooter.setFan(false);
+        // shooter.setFan(false);
     }
 
     // Called so it should return true when the command will end

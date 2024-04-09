@@ -7,6 +7,7 @@ package frc.robot.commands.shooter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IndexSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -42,6 +43,8 @@ public class ShooterCommandAuto extends Command {
     public void initialize() {
         states.setShooterStartTime(Timer.getFPGATimestamp());
         states.setDesiredRobotState(RobotState.SPEAKER);
+
+        ArmSubsystem.getInstance().resetMotorsToEncoders();
 
         shooter.set(0.00);
     }

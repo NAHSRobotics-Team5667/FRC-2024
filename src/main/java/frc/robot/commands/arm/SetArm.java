@@ -29,6 +29,7 @@ public class SetArm extends Command {
     private LimelightSubsystem limelight;
 
     double setpoint_offset = 0;
+    double climb_offset = 0;
 
     /**
      * Creates a new SetArm.
@@ -92,6 +93,10 @@ public class SetArm extends Command {
             setpoint_offset += 0.5;
         } else if (RobotContainer.getDriverController().povRight().getAsBoolean()) {
             setpoint_offset -= 0.5;
+        }
+
+        if (RobotContainer.getDriverController().leftTrigger().getAsBoolean()) {
+            climb_offset -= 0.25;
         }
 
         boolean aimingAtSpeaker = states.getTargetArmState().equals(ArmState.SPEAKER);
