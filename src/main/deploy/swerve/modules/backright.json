@@ -7,12 +7,12 @@
     "drive": {
         "type": "talonfx",
         "id": 4,
-        "canbus": null
+        "canbus": "canivore"
     },
     "angle": {
         "type": "talonfx",
-        "id": 8,
-        "canbus": null
+        "id": 16,
+        "canbus": "canivore"
     },
     "conversionFactor": {
         "angle": 16.8,
@@ -21,7 +21,7 @@
     "encoder": {
         "type": "cancoder",
         "id": 20,
-        "canbus": null
+        "canbus": "canivore"
     },
     "inverted": {
         "drive": false,

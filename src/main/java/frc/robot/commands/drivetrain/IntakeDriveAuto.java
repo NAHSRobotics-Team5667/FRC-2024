@@ -56,7 +56,7 @@ public class IntakeDriveAuto extends Command {
     public void execute() {
         double x = 0, y = 0;
         if (limelight.getNoteTy() != 0.0) {
-            x = MathUtil.clamp(-pid_x.calculate(limelight.getNoteTy(), -30), -1, 1)
+            x = MathUtil.clamp(-pid_x.calculate(limelight.getNoteTy(), -50), -1, 1)
                     * swerve.getMaximumVelocity();
             y = MathUtil.clamp(pid_y.calculate(limelight.getNoteTx(), 0), -1, 1) * swerve.getMaximumVelocity();
         }

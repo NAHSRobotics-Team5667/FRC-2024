@@ -7,6 +7,7 @@ package frc.robot.commands.index;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IndexConstants;
 import frc.robot.subsystems.IndexSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StateManager;
 import frc.robot.util.States.RobotState;
 import frc.robot.util.States.ShooterState;
@@ -42,17 +43,22 @@ public class IndexCommand extends Command {
     @Override
     public void execute() {
         if (mode == RobotState.SPEAKER) { // shoot
-            if (states.getShooterState().equals(ShooterState.READY) && states.armAtTarget()) { // only run the index if
-                                                                                               // shooter is
+            if (states.getShooterState().equals(ShooterState.READY)
+                    && ShooterSubsystem.getInstance().getRightShooterRPM() > 0 && states.armAtTarget()) { // only run
+                                                                                                          // the index
+                                                                                                          // if
+                // shooter is
                 // revved up and arm is at target
                 index.set(IndexConstants.SHOOT_SPEED);
             } else {
                 index.set(0);
             }
-        } else if (mode == RobotState.INTAKE) { // intake
+        } else if (mode == RobotState.INTAKE && states.armAtTarget()) { // intake
             index.set(IndexConstants.INTAKE_SPEED); // run index without conditions if not shooting
-        } else if (mode == RobotState.OUTTAKE) { // outtake
+        } else if (mode == RobotState.OUTTAKE && states.armAtTarget()) { // outtake
             index.set(-IndexConstants.INTAKE_SPEED);
+        } else {
+            index.set(0);
         }
     }
 

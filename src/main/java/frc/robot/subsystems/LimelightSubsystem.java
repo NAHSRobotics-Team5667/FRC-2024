@@ -5,9 +5,15 @@
 package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.KalmanFilter;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
@@ -28,6 +34,8 @@ public class LimelightSubsystem extends SubsystemBase {
     GenericEntry customCamAngle;
 
     private static LimelightSubsystem instance = null;
+
+    private LinearFilter tagYFilter = LinearFilter.movingAverage(10);
 
     // ========================================================
     // =================== CONSTRUCTOR ========================
@@ -133,6 +141,10 @@ public class LimelightSubsystem extends SubsystemBase {
         return ty;
     }
 
+    public double getFilteredTagTy() {
+        return tagYFilter.calculate(getTagTy());
+    }
+
     public double getTagTa() {
         double ta = NetworkTableInstance.getDefault().getTable("limelight-tag").getEntry("ta").getDouble(0.0);
         return ta;
@@ -157,7 +169,7 @@ public class LimelightSubsystem extends SubsystemBase {
     }
 
     public double getNoteTy() {
-        double ty = NetworkTableInstance.getDefault().getTable("limelight-note").getEntry("ty").getDouble(-50.0);
+        double ty = NetworkTableInstance.getDefault().getTable("limelight-note").getEntry("ty").getDouble(-40.0);
         return ty;
     }
 
@@ -252,5 +264,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("[LL] Tag Tx", getTagTx());
         SmartDashboard.putNumber("[LL] Tag Ty", getTagTy());
+
+        tagYFilter.calculate(getTagTy());
     }
 }

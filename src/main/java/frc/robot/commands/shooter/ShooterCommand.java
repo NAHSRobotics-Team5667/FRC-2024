@@ -55,7 +55,7 @@ public class ShooterCommand extends Command {
     @Override
     public void execute() {
         if (mode == RobotState.SPEAKER) {
-            shooter.set(ShooterConstants.getSpeakerShooterSpeed(limelight.getTagTy()));
+            shooter.set(ShooterConstants.getSpeakerShooterSpeed(limelight.getFilteredTagTy()));
             // shooter.setFan(false);
 
         } else if (mode == RobotState.AMP) {
@@ -68,7 +68,12 @@ public class ShooterCommand extends Command {
 
         } else if (mode == RobotState.TRAP) {
             shooter.set(ShooterConstants.TRAP_SPEED);
-            // shooter.setFan(false);
+
+            if (states.armAtTarget()) {
+                // shooter.setFan(true);
+            } else {
+                // shooter.setFan(false);
+            }
         }
     }
 

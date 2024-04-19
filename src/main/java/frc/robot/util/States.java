@@ -32,6 +32,7 @@ public class States {
 
     public static enum RobotState {
         IDLE,
+        IDLE_AIM,
         INTAKE,
         OUTTAKE,
         AMP,
@@ -40,5 +41,10 @@ public class States {
         TRAP,
         CLIMB,
         HANGING
+    }
+
+    public static enum AutoType {
+        PATHPLANNER,
+        CHOREO
     }
 }

@@ -32,7 +32,7 @@ public class AlignShooterAuto extends Command {
         limelight = LimelightSubsystem.getInstance(); // DO NOT add to addRequirements()
 
         alignPID = new PIDController(
-                DriveConstants.ALIGN_P,
+                0.015,
                 DriveConstants.ALIGN_I,
                 DriveConstants.ALIGN_D);
 
@@ -49,8 +49,9 @@ public class AlignShooterAuto extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double rot = MathUtil.clamp(alignPID.calculate(swerve.getYaw(), 0), -1, 1)
-                * swerve.getMaximumAngularVelocity();
+        double rot = 0;
+        // MathUtil.clamp(alignPID.calculate(swerve.getYaw(), 0), -1, 1)
+        // * swerve.getMaximumAngularVelocity();
 
         if (limelight.getAprilTagID() != -1) {
             rot = MathUtil.clamp(alignPID.calculate(limelight.getTagTx(), 7.8), -1, 1)
@@ -71,7 +72,6 @@ public class AlignShooterAuto extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return Math.abs(alignPID.getPositionError()) < 3 || limelight.getTagTx() == 0.0
-                || Timer.getFPGATimestamp() - initialTime >= TIME_LIMIT;
+        return Math.abs(alignPID.getPositionError()) < 2 || Timer.getFPGATimestamp() - initialTime >= TIME_LIMIT;
     }
 }

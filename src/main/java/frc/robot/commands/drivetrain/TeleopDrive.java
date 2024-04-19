@@ -80,7 +80,7 @@ public class TeleopDrive extends Command {
         double newAngularRotationPercent = 0;
 
         // adjust rotational and translational velocity based on april tag
-        if (states.getTargetArmState().equals(ArmState.SPEAKER)
+        if (states.getDesiredRobotState().equals(RobotState.SPEAKER)
                 && (limelight.getAprilTagID() == 4 || limelight.getAprilTagID() == 7)) {
             // align to april tag - setpoint is 8.8 <units> away from center
             newAngularRotationPercent = MathUtil.clamp(
@@ -93,26 +93,26 @@ public class TeleopDrive extends Command {
             yPercent = MathUtil.clamp(yPercent, -0.7, 0.7);
 
         } else if (states.getDesiredRobotState().equals(RobotState.INTAKE)) {
-            // if (limelight.getNoteTy() != 0.0) {
-            // // find note
-            // xPercent = MathUtil.clamp(-pid_x.calculate(limelight.getNoteTy(), -30), -1,
-            // 1);
-            // yPercent = MathUtil.clamp(pid_y.calculate(limelight.getNoteTx(), 0), -1, 1);
-            // // align to note
+            if (limelight.getNoteTy() != 0.0) {
+                // find note
+                xPercent = MathUtil.clamp(-pid_x.calculate(limelight.getNoteTy(), -50), -1,
+                        1);
+                yPercent = MathUtil.clamp(pid_y.calculate(limelight.getNoteTx(), 0), -1, 1);
+                // align to note
+                newAngularRotationPercent = MathUtil.clamp(
+                        pid_y.calculate(limelight.getNoteTx(), 0), -1, 1);
+
+                autoDrive = true;
+            } else {
+                autoDrive = false;
+            }
+
             // newAngularRotationPercent = MathUtil.clamp(
             // pid_y.calculate(limelight.getNoteTx(), 0), -1, 1);
 
-            // autoDrive = true;
-            // } else {
-            // autoDrive = false;
-            // }
-
-            newAngularRotationPercent = MathUtil.clamp(
-                    pid_y.calculate(limelight.getNoteTx(), 0), -1, 1);
-
         } else if (states.getDesiredRobotState().equals(RobotState.FEED)) {
             // align to ideal angle
-            double angleTarget = (DriverStation.getAlliance().get() == Alliance.Red) ? 15 : -15;
+            double angleTarget = (DriverStation.getAlliance().get() == Alliance.Red) ? 35 : -35;
 
             newAngularRotationPercent = MathUtil.clamp(
                     alignPID.calculate(swerve.getYaw(), angleTarget), -1, 1);
@@ -120,24 +120,27 @@ public class TeleopDrive extends Command {
         } else if (states.getDesiredRobotState().equals(RobotState.TRAP)) {
             if (limelight.getAprilTagID() != -1) {
                 // line up to tag
-                // TODO: get values to line up for trap - tx and ty
-                xPercent = MathUtil.clamp(-pid_x.calculate(limelight.getTagTy(), 19.11), -1, 1);
-                yPercent = MathUtil.clamp(-pid_y.calculate(limelight.getTagTx(), 19.45), -1, 1);
-                // angle to tag
-                double angleTarget = 0;
+                // xPercent = MathUtil.clamp(-pid_x.calculate(limelight.getTagTy(), 19.11), -1,
+                // 1);
+                // yPercent = MathUtil.clamp(-pid_y.calculate(limelight.getTagTx(), -19.45), -1,
+                // 1);
+                // // angle to tag
+                // double angleTarget = 0;
 
-                if (limelight.getAprilTagID() == 11 || limelight.getAprilTagID() == 15) {
-                    angleTarget = 122;
-                } else if (limelight.getAprilTagID() == 12 || limelight.getAprilTagID() == 16) {
-                    angleTarget = 122; // TODO: make negative again
-                } else if (limelight.getAprilTagID() == 13 || limelight.getAprilTagID() == 14) {
-                    angleTarget = 2;
-                }
+                // if (limelight.getAprilTagID() == 11 || limelight.getAprilTagID() == 15) {
+                // angleTarget = 122;
+                // } else if (limelight.getAprilTagID() == 12 || limelight.getAprilTagID() ==
+                // 16) {
+                // angleTarget = -122;
+                // } else if (limelight.getAprilTagID() == 13 || limelight.getAprilTagID() ==
+                // 14) {
+                // angleTarget = 2;
+                // }
 
-                newAngularRotationPercent = MathUtil.clamp(
-                        alignPID.calculate(swerve.getYaw(), angleTarget), -1, 1);
+                // newAngularRotationPercent = MathUtil.clamp(
+                // alignPID.calculate(swerve.getYaw(), angleTarget), -1, 1);
 
-                autoDrive = true;
+                // autoDrive = true;
             } else {
                 autoDrive = false;
             }

@@ -55,7 +55,6 @@ public class IntakeCommand extends Command {
     // Called when scheduler runs while the command is scheduled
     @Override
     public void execute() {
-        // intake.setPiston(true);
         if (states.armAtTarget()) {
             intake.set((goingIn) ? IntakeConstants.INTAKE_SPEED : IntakeConstants.OUTTAKE_SPEED);
         } else {

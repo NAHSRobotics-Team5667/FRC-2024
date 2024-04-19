@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.Map;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.util.ArmAngle;
 import frc.robot.util.States.ArmState;
 
@@ -61,7 +62,7 @@ public final class Constants {
         // =======================================================
         // ====================== PID ============================
 
-        public static final double AUTO_DRIVE_P = 7;
+        public static final double AUTO_DRIVE_P = 10;
         public static final double AUTO_DRIVE_I = 0;
         public static final double AUTO_DRIVE_D = 0;
         public static final double AUTO_DRIVE_F = 0;
@@ -88,7 +89,7 @@ public final class Constants {
         // ================== MECHANICAL =========================
 
         /** Gear ratio between first motors and first pivot. */
-        public static final double FIRST_GEAR_RATIO = 100.0 * (60.0 / 44.0); // 100*(60/44):1
+        public static final double FIRST_GEAR_RATIO = 125.0 * (60.0 / 44.0); // 125*(60/44):1
         /** Gear ratio between second motors and second pivot. */
         public static final double SECOND_GEAR_RATIO = 80.0; // 80:1 - torqued up by factor of 80
 
@@ -109,8 +110,8 @@ public final class Constants {
         // ---- FIRST PIVOT ----
         public static final int FIRST_ENC_PORT_1 = 7; // left side
         public static final int FIRST_ENC_PORT_2 = 8; // right side
-        public static final double FIRST_LEFT_OFFSET = -0.703;
-        public static final double FIRST_RIGHT_OFFSET = 0.472;
+        public static final double FIRST_LEFT_OFFSET = -0.198 - (0.25 * (60.0 / 44.0));
+        public static final double FIRST_RIGHT_OFFSET = 0.676 - (0.25 * (60.0 / 44.0));
         /** Rotations of first pivot for each rotation of encoder. */
         public static final double FIRST_ENC_DIST_PER_ROT = (44.0 / 60.0) * 360.0;
 
@@ -131,11 +132,11 @@ public final class Constants {
         public static Map<ArmState, ArmAngle> GOAL_POSITIONS = Map.of(
                 ArmState.TRANSFER, new ArmAngle(/* 108.1 */ 15.2, -6.25), // arm position when at resting position
                 ArmState.SPEAKER, new ArmAngle(/* 108.1 */ 55, 0), // default position for speaker
-                ArmState.AMP, new ArmAngle(108.1, -130.7), // position for amp
+                ArmState.AMP, new ArmAngle(108.1, -129.7), // position for amp
                 ArmState.FEED, new ArmAngle(45, 0), // position for feed
-                ArmState.TRAP, new ArmAngle(44, -16.95), // position for trap
-                ArmState.CLIMB, new ArmAngle(69.303, -108.58),
-                ArmState.HANGING, new ArmAngle(30.051, 17.8)); // position for human player intake
+                ArmState.TRAP, new ArmAngle(44, -11.15), // position for trap
+                ArmState.CLIMB, new ArmAngle(69.303, -109.58),
+                ArmState.HANGING, new ArmAngle(15.2, 17.8)); // position for human player intake
 
         // create a map of arm positions and their target goal states - maps aren't
         // bi-directional :(
@@ -164,13 +165,19 @@ public final class Constants {
          * @return ideal first pivot angle to aim into speaker.
          */
         public static double calculateSpeakerFirstPivot(double ty) {
-            // 39.3
-            double output = 39.3 + (0.781 * ty) - (0.00895 * Math.pow(ty, 2));
+            // 36.8
+            double output = 37.2 + (0.945 * ty) + -(8.84E-03 * Math.pow(ty, 2));
+
+            if (ty == 0.0 && DriverStation.isAutonomousEnabled()) {
+                output = 50;
+            }
+
             // double output = -31.4 - (12.2 * ty) - (0.548 * Math.pow(ty, 2)); 4.12//
             // equation
             // for farther shots
 
-            // TODO: uncomment below for continuous passthrough (not working 3/16)
+            // continuous passthrough below
+
             // if (ty > -7.8 /* && DriverStation.isAutonomousEnabled() */) {
             // output = 28.4 + (0.546 * ty) + (0.0121 * Math.pow(ty, 2)); // equation for
             // normal shots with transfer
@@ -198,7 +205,8 @@ public final class Constants {
 
             double output = 0; // second pivot goes up when making farther shots
 
-            // TODO: uncomment below for passthrough shots (not working 3/16)
+            // continuous passthrough below
+
             // if (ty > -7.5 /* && DriverStation.isAutonomousEnabled() */) {
             // // second pivot meets intake to shoot
             // output = -Units
@@ -286,7 +294,8 @@ public final class Constants {
                 ArmState.AMP, false, // move first pivot first when going to amp
                 ArmState.TRAP, false,
                 ArmState.CLIMB, false,
-                ArmState.HANGING, false); // move first pivot first when going to trap
+                ArmState.HANGING, true,
+                ArmState.FEED, false);
 
         /**
          * @param state state to check second pivot's priority for.
@@ -299,7 +308,7 @@ public final class Constants {
         // ==== MOTION MAGIC ====
 
         // ---- FIRST PIVOT ----
-        public static final double FIRST_kP = 0.022;
+        public static final double FIRST_kP = 0.024;
         public static final double FIRST_kI = 0;
         public static final double FIRST_kD = 0.0;
         public static final double FIRST_kF = 0.5;
@@ -311,9 +320,9 @@ public final class Constants {
         public static final double AIM_kI = 0.0;
         public static final double AIM_kD = 0.00;
 
-        public static final double FIRST_MAX_VELOCITY = 1000; // maximum achievable velocity (deg per sec)
+        public static final double FIRST_MAX_VELOCITY = 600; // maximum achievable velocity (deg per sec)
         public static final double FIRST_TARGET_CRUISE_VEL = FIRST_MAX_VELOCITY * 0.5; // target cruise velocity
-        public static final double FIRST_MAX_ACCEL = 1500; // target acceleration (deg / sec / sec)
+        public static final double FIRST_MAX_ACCEL = 1000; // target acceleration (deg / sec / sec)
 
         // ---- SECOND PIVOT ----
         public static final double SECOND_kP = 0.021;
@@ -354,6 +363,8 @@ public final class Constants {
         public static final double SHOOTER_RAMP_TIME = 0.25;
 
         // --- SPEEDS ----
+        public static final double IDLE_SPEED = 20;
+
         public static final double AMP_SPEED = 70;
 
         public static final double SPEAKER_BOTTOM_SPEED = 100;
@@ -363,15 +374,23 @@ public final class Constants {
 
         public static final double OUTTAKE_SPEED = 20;
 
-        public static final double FEED_SPEED = 70;
+        public static final double FEED_SPEED = 65;
 
-        public static final double TRAP_SPEED = 40;
+        public static final double TRAP_SPEED = 37;
         public static final double TRAP_FAN_SPEED = 100;
 
+        public static double shooterOffset = 0;
+
         public static double getSpeakerShooterSpeed(double ty) {
-            double output = Math.max(SPEAKER_DEFAULT_SPEED, 68.9 + (-0.87 * ty) + (0.0388 * Math.pow(ty, 2)));
+            // double output = Math.max(SPEAKER_DEFAULT_SPEED, 68.9 + (-0.87 * ty) + (0.0388
+            // * Math.pow(ty, 2)));
+
+            // double output = -(0.327 * ty) + 95.3;
+            double output = -0.654 * ty + 90.4;
             return output;
-            // return SPEAKER_DEFAULT_SPEED;
+
+            // TODO: for shooter tuning
+            // return 100;
         }
     }
 
@@ -381,7 +400,7 @@ public final class Constants {
         public static final int BEAM_BREAK_CHANNEL_ID = 5;
 
         // ==== SPEEDS ====
-        public static final double INTAKE_SPEED = 30;
+        public static final double INTAKE_SPEED = 37;
         public static final double SHOOT_SPEED = 100;
     }
 
@@ -394,7 +413,7 @@ public final class Constants {
 
         // ==== SPEED ====
         public static final double INTAKE_SPEED = 100;
-        public static final double OUTTAKE_SPEED = -50;
+        public static final double OUTTAKE_SPEED = -100;
     }
 
     public static class ClimbConstants {

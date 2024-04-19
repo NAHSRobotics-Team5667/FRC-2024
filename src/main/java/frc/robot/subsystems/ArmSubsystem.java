@@ -9,10 +9,12 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -55,12 +57,12 @@ public class ArmSubsystem extends SubsystemBase {
 
     private DutyCycleEncoder firstEncoderL, firstEncoderR,
             secondEncoderL, secondEncoderR; // declare encoders for arm actuation
-    private DigitalInput limitSwitch;
 
     private ProfiledPIDController firstPivotPID;
+    // private PIDController firstPivotPID;
     private ProfiledPIDController secondPivotPID;
-    private ProfiledPIDController speakerPID; // PID controller to use when aiming shooter at target - faster than
-                                              // profiled
+    private PIDController speakerPID; // PID controller to use when aiming shooter at target - faster than
+                                      // profiled
 
     private ArmAngle armPos = new ArmAngle();
 
@@ -82,13 +84,25 @@ public class ArmSubsystem extends SubsystemBase {
 
         // ==== PID ====
 
+        // TODO: uncomment below if sticking with profiled PID
         firstPivotPID = new ProfiledPIDController(
                 ArmConstants.FIRST_kP,
                 ArmConstants.FIRST_kI,
                 ArmConstants.FIRST_kD,
-                new TrapezoidProfile.Constraints( // sets trapezoid profile for first pivot velocity
+                new TrapezoidProfile.Constraints( // sets trapezoid profile for first pivotvelocity
                         ArmConstants.FIRST_MAX_VELOCITY,
                         ArmConstants.FIRST_MAX_ACCEL));
+
+        // firstPivotPID = new PIDController(
+        // ArmConstants.FIRST_kP,
+        // ArmConstants.FIRST_kI,
+        // ArmConstants.FIRST_kD
+        // // new TrapezoidProfile.Constraints( // sets trapezoid profile for first
+        // pivot
+        // // velocity
+        // // ArmConstants.FIRST_MAX_VELOCITY,
+        // // ArmConstants.FIRST_MAX_ACCEL)
+        // );
 
         secondPivotPID = new ProfiledPIDController(
                 ArmConstants.SECOND_kP,
@@ -98,13 +112,10 @@ public class ArmSubsystem extends SubsystemBase {
                         ArmConstants.SECOND_MAX_VELOCITY,
                         ArmConstants.SECOND_MAX_ACCEL));
 
-        speakerPID = new ProfiledPIDController(
-                ArmConstants.AIM_kP,
-                ArmConstants.AIM_kI,
-                ArmConstants.AIM_kD,
-                new TrapezoidProfile.Constraints( // sets trapezoid profile for first pivot velocity
-                        ArmConstants.FIRST_MAX_VELOCITY,
-                        ArmConstants.FIRST_MAX_ACCEL));
+        speakerPID = new PIDController(
+                ArmConstants.FIRST_kP,
+                ArmConstants.FIRST_kI,
+                ArmConstants.FIRST_kD);
 
         // ====== FIRST PIVOT ======
 
@@ -160,9 +171,6 @@ public class ArmSubsystem extends SubsystemBase {
 
         secondEncoderR = new DutyCycleEncoder(ArmConstants.SECOND_ENC_PORT_2); // one of them will have to be reversed
         secondEncoderR.setDistancePerRotation(ArmConstants.SECOND_ENC_DIST_PER_ROT);
-
-        // initialize limit switch
-        limitSwitch = new DigitalInput((int) ArmConstants.LIMIT_SWITCH);
     }
 
     /*
@@ -214,9 +222,12 @@ public class ArmSubsystem extends SubsystemBase {
      * @return PID calculation in response.
      */
     public double calculateFirstPivotPID(double currentPos, double targetPos) {
-        return MathUtil.clamp(
+        return (DriverStation.isAutonomousEnabled()) ? MathUtil.clamp(
                 firstPivotPID.calculate(currentPos, targetPos),
-                -0.5, 1);
+                -0.5, 1)
+                : MathUtil.clamp(
+                        speakerPID.calculate(currentPos, targetPos),
+                        -0.5, 1);
     }
 
     /**
@@ -240,13 +251,6 @@ public class ArmSubsystem extends SubsystemBase {
                 speakerPID.calculate(getFirstPivotMotorDeg(), targetPos),
                 -1, 1);
         setFirstPivot(output * 100);
-    }
-
-    /**
-     * @return velocity of first stage.
-     */
-    public double getFirstStageVelocity() {
-        return m_firstStageLead.getVelocity().getValueAsDouble();
     }
 
     // SECOND PIVOT -------------------------------------------
@@ -284,24 +288,8 @@ public class ArmSubsystem extends SubsystemBase {
         setSecondPivot(output * 100);
     }
 
-    /**
-     * @return velocity of second stage.
-     */
-    public double getSecondStageVelocity() {
-        return m_secondStageLead.getVelocity().getValueAsDouble();
-    }
-
     // ========================================================
     // ===================== POSITION =========================
-
-    /**
-     * Update the Arm Position variable.
-     * 
-     * @param newPosition replaces current arm position.
-     */
-    public void updateArmPosition(ArmAngle newPosition) {
-        armPos = newPosition;
-    }
 
     /**
      * Update the Arm Position variable.
@@ -396,13 +384,6 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public double getFirstPivotMotorDeg() {
         return Units.rotationsToDegrees(m_firstStageLead.getPosition().getValueAsDouble());
-    }
-
-    /**
-     * @return whether first arm is touching limit switch.
-     */
-    public boolean getLimitSwitch() {
-        return !limitSwitch.get();
     }
 
     // SECOND PIVOT -------------------------------------------
@@ -540,11 +521,10 @@ public class ArmSubsystem extends SubsystemBase {
         // States --------------------------------------------
         SmartDashboard.putString("[ARM] State", states.getArmState().toString());
 
-        // Limit Switch --------------------------------------
-        SmartDashboard.putBoolean("[ARM] Limit Switch", getLimitSwitch());
-
         // PID -----------------------------------------------
-        SmartDashboard.putNumber("[ARM] 1st PID Setpoint", firstPivotPID.getGoal().position);
+        // TODO: uncomment below after arm is tuned
+        // SmartDashboard.putNumber("[ARM] 1st PID Setpoint",
+        // firstPivotPID.getGoal().position);
         SmartDashboard.putNumber("[ARM] 1st PID Output",
                 calculateFirstPivotPID(getFirstPivotMotorDeg(), states.getTargetArmAngle().getFirstPivot()));
         SmartDashboard.putNumber("[ARM] 1st PID Error", firstPivotPID.getPositionError());

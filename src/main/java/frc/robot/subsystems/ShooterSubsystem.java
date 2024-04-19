@@ -29,11 +29,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * (one direction is reversed)
  * - Beam Break Sensor to detect if ring is in possession.
  */
+
 public class ShooterSubsystem extends SubsystemBase {
     private TalonFX m_topShooter;
     private TalonFX m_bottomShooter; // declaring motors and global scope
 
-    // private CANSparkMax m_fan;
+    private CANSparkMax m_fan;
 
     private double targetLeftRPM = ShooterConstants.SHOOTER_MAX_RPM;
     private double targetRightRPM = ShooterConstants.SHOOTER_MAX_RPM;
@@ -56,10 +57,9 @@ public class ShooterSubsystem extends SubsystemBase {
         m_bottomShooter.setInverted(true);
 
         // Initialize Fan Motor
-        // m_fan = new CANSparkMax(ShooterConstants.FAN_ID, MotorType.kBrushless);
-        // m_fan.setSmartCurrentLimit(20); // set current limit of neo550 to 20A to
-        // avoid motor failure
-        // m_fan.setInverted(true);
+        m_fan = new CANSparkMax(ShooterConstants.FAN_ID, MotorType.kBrushless);
+        m_fan.setSmartCurrentLimit(20); // set current limit of neo550 to 20A to avoid motor failure
+        m_fan.setInverted(true);
     }
 
     public static ShooterSubsystem getInstance() {
@@ -107,16 +107,16 @@ public class ShooterSubsystem extends SubsystemBase {
         m_bottomShooter.set(bottomOutput);
     }
 
-    // /**
-    // * Turns fan on or off.
-    // *
-    // * @param on whether fan should be turned on or off.
-    // */
-    // public void setFan(boolean on) {
-    // double fanSpeed = ShooterConstants.TRAP_FAN_SPEED / 100;
+    /**
+     * Turns fan on or off.
+     *
+     * @param on whether fan should be turned on or off.
+     */
+    public void setFan(boolean on) {
+        double fanSpeed = ShooterConstants.TRAP_FAN_SPEED / 100;
 
-    // m_fan.set((on) ? fanSpeed : 0);
-    // }
+        m_fan.set((on) ? fanSpeed : 0);
+    }
 
     // ========================================================
     // ===================== SENSORS ==========================

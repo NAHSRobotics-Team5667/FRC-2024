@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.StateManager;
@@ -62,10 +63,10 @@ public class SetArm extends Command {
 
         // if (RobotContainer.getDriverController().y().getAsBoolean() && setpoint < 80)
         // {
-        // ArmConstants.setFirstPivotSpeaker(setpoint + 0.25);
+        // ArmConstants.setFirstPivotSpeakerSetpoint(setpoint + 0.25);
         // } else if (RobotContainer.getDriverController().getLeftTriggerAxis() == 1 &&
         // setpoint > 20) {
-        // ArmConstants.setFirstPivotSpeaker(setpoint - 0.25);
+        // ArmConstants.setFirstPivotSpeakerSetpoint(setpoint - 0.25);
         // }
 
         // double firstSetpoint =
@@ -91,58 +92,52 @@ public class SetArm extends Command {
 
         if (RobotContainer.getDriverController().povLeft().getAsBoolean()) {
             setpoint_offset += 0.5;
+            // ShooterConstants.shooterOffset += 0.5;
         } else if (RobotContainer.getDriverController().povRight().getAsBoolean()) {
             setpoint_offset -= 0.5;
+            // ShooterConstants.shooterOffset -= 0.5;
         }
+
+        // SmartDashboard.putNumber("[SHOOTER]",
+        // ShooterConstants.getSpeakerShooterSpeed(0));
 
         if (RobotContainer.getDriverController().leftTrigger().getAsBoolean()) {
             climb_offset -= 0.25;
         }
 
-        boolean aimingAtSpeaker = states.getTargetArmState().equals(ArmState.SPEAKER);
+        // boolean aimingAtSpeaker =
+        // states.getTargetArmState().equals(ArmState.SPEAKER);
 
-        if (aimingAtSpeaker) {
-            // double firstSpeakerSetpoint =
-            // ArmConstants.getGoalArmAngle(ArmState.SPEAKER).getFirstPivot();
-            double firstSpeakerSetpoint = setpoint_offset
-                    + ArmConstants.calculateSpeakerFirstPivot(limelight.getTagTy());
+        // if (aimingAtSpeaker) {
+        // // double firstSpeakerSetpoint =
+        // // ArmConstants.getGoalArmAngle(ArmState.SPEAKER).getFirstPivot();
+        // double firstSpeakerSetpoint = setpoint_offset
+        // + ArmConstants.calculateSpeakerFirstPivot(limelight.getTagTy());
 
-            ArmConstants.setFirstPivotSpeakerSetpoint(firstSpeakerSetpoint);
-            ArmConstants.setSecondPivotSpeakerSetpoint(
-                    ArmConstants.calculateSpeakerSecondPivot(firstSpeakerSetpoint, limelight.getTagTy()));
+        // ArmConstants.setFirstPivotSpeakerSetpoint(firstSpeakerSetpoint);
+        // ArmConstants.setSecondPivotSpeakerSetpoint(
+        // ArmConstants.calculateSpeakerSecondPivot(firstSpeakerSetpoint,
+        // limelight.getTagTy()));
+        // }
+
+        double firstSpeakerSetpoint = setpoint_offset
+                + ArmConstants.calculateSpeakerFirstPivot(limelight.getFilteredTagTy());
+
+        ArmConstants.setFirstPivotSpeakerSetpoint(firstSpeakerSetpoint);
+        ArmConstants.setSecondPivotSpeakerSetpoint(
+                ArmConstants.calculateSpeakerSecondPivot(firstSpeakerSetpoint,
+                        limelight.getFilteredTagTy()));
+
+        if (ArmConstants.getSecondPivotPriority(states.getTargetArmState())) {
+            arm.secondPivotToTarget(states.getTargetArmAngle().getSecondPivot());
+
+            if (arm.secondPivotAtTarget()) {
+                arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
+            }
+        } else {
+            arm.secondPivotToTarget(states.getTargetArmAngle().getSecondPivot());
+            arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
         }
-
-        // // check if second pivot has priority in the maneuver
-        // if (ArmConstants.getSecondPivotPriority(states.getTargetArmState())) {
-        // // run second pivot
-        // arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
-
-        // // run first pivot after second pivot at desired location
-        // if (arm.secondPivotAtTarget()) {
-        // arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
-        // }
-        // } else { // if first pivot has priority
-        // // run first pivot
-        // if (aimingAtSpeaker && !DriverStation.isAutonomousEnabled()) {
-        // arm.firstPivotToTargetSpeaker(states.getTargetArmAngle().getFirstPivot());
-        // } else {
-        // arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
-        // }
-
-        // // run second pivot after first pivot at desired location
-        // arm.secondPivotToTargetProfiledPID(states.getTargetArmAngle().getSecondPivot());
-        // }
-
-        // if (states.getDesiredRobotState() == RobotState.HANGING) {
-        // arm.secondPivotToTargetClimb(states.getTargetArmAngle().getSecondPivot());
-        // arm.firstPivotToTargetClimb(states.getTargetArmAngle().getFirstPivot());
-        // } else {
-        // arm.secondPivotToTarget(states.getTargetArmAngle().getSecondPivot());
-        // arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
-        // }
-
-        arm.secondPivotToTarget(states.getTargetArmAngle().getSecondPivot());
-        arm.firstPivotToTarget(states.getTargetArmAngle().getFirstPivot());
     }
 
     // Called once the command ends or is interrupted.

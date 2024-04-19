@@ -33,6 +33,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 
 import java.io.File;
+import java.sql.Driver;
 import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
@@ -86,7 +87,7 @@ public class SwerveSubsystem extends SubsystemBase {
         // The gear ratio is 6.75 motor revolutions per wheel rotation.
         // The encoder resolution per motor revolution is 1 per motor revolution.
         double driveConversionFactor = SwerveMath.calculateMetersPerRotation(
-                Units.inchesToMeters(4),
+                Units.inchesToMeters(3.75),
                 6.75,
                 1);
         System.out.println("\"conversionFactor\": {");
@@ -212,35 +213,55 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Get the path follower with events.
-     *
-     * @param pathName       PathPlanner path name.
-     * @param setOdomToStart Set the odometry position to the start of the path.
-     * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
+     * Resets drive encoders of swerve.
      */
-    public Command getAutonomousCommand(String auto, boolean setOdomToStart) {
+    public void resetDriveEncoders() {
+        swerveDrive.resetDriveEncoders();
+    }
+
+    /**
+     * Resets drivetrain for path planner auto.
+     * 
+     * @param auto pathplannerauto to run.
+     */
+    public void resetForPathPlannerAuto(String auto) {
         // swerveDrive.resetDriveEncoders(); // reset encoders - start from 0
         resetGyro(); // set gyro to 0
 
         // Load the path you want to follow using its name in the GUI
         // PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
-        if (setOdomToStart) {
-            resetOdometry(new Pose2d(
-                    PathPlannerAuto.getPathGroupFromAutoFile(auto).get(0).getPreviewStartingHolonomicPose()
-                            .getTranslation(),
-                    (DriverStation.getAlliance().get() == Alliance.Red)
-                            ? Rotation2d.fromDegrees(PathPlannerAuto.getPathGroupFromAutoFile(auto).get(0)
-                                    .getPreviewStartingHolonomicPose().getRotation().getDegrees() + 180)
-                            : PathPlannerAuto.getPathGroupFromAutoFile(auto).get(0).getPreviewStartingHolonomicPose()
-                                    .getRotation()));
-            // resetOdometry(PathPlannerAuto.getStaringPoseFromAutoFile(auto));
-        }
+        resetOdometry(new Pose2d(
+                PathPlannerAuto.getPathGroupFromAutoFile(auto).get(0).getPreviewStartingHolonomicPose()
+                        .getTranslation(),
+                (DriverStation.getAlliance().get() == Alliance.Red)
+                        ? Rotation2d.fromDegrees(PathPlannerAuto.getPathGroupFromAutoFile(auto).get(0)
+                                .getPreviewStartingHolonomicPose().getRotation().getDegrees() + 180)
+                        : PathPlannerAuto.getPathGroupFromAutoFile(auto).get(0).getPreviewStartingHolonomicPose()
+                                .getRotation()));
+    }
 
-        // Create a path following command using AutoBuilder. This will also trigger
-        // event markers.
-        // return AutoBuilder.followPath(path);
-        return loadedAutos.get(auto);
+    /**
+     * Resets drivetrain for choreo path.
+     * 
+     * @param pathName pathName of choreo path.
+     */
+    public void resetForChoreoPath(String pathName) {
+        resetGyro(); // set gyro to 0
+
+        PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory(pathName);
+
+        boolean redAlliance = DriverStation.getAlliance().get() == Alliance.Red;
+        if (redAlliance)
+            path = path.flipPath();
+
+        resetOdometry(new Pose2d(
+                path.getPreviewStartingHolonomicPose().getTranslation(),
+                (redAlliance)
+                        ? Rotation2d
+                                .fromDegrees(path.getPreviewStartingHolonomicPose().getRotation().getDegrees() + 180)
+                        : path.getPreviewStartingHolonomicPose()
+                                .getRotation()));
     }
 
     /**

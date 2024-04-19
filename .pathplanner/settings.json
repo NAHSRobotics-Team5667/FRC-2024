@@ -7,13 +7,15 @@
     "5 note",
     "5_steal",
     "6 note",
+    "center_pickup",
+    "Samar",
     "farside",
-    "Samar"
+    "sneak"
   ],
   "autoFolders": [
     "Samar"
   ],
-  "defaultMaxVel": 4.7,
+  "defaultMaxVel": 3.7,
   "defaultMaxAccel": 5.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,

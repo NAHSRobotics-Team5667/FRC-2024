@@ -1,0 +1,97 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.69,
+      "y": 6.68
+    },
+    "rotation": 60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetMotorsToEncoders"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "sneak_1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "sneak_2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FindAndIntakeNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "sneak_3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "sneak_4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FindAndIntakeNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "sneak_3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNoteSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "sneak_5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FindAndIntakeNote"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

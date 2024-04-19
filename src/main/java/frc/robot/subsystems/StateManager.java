@@ -38,6 +38,7 @@ public class StateManager extends SubsystemBase {
     // maps of robot state to other states --------------------
     private Map<RobotState, ArmState> robotArmMap = Map.of(
             RobotState.IDLE, ArmState.TRANSFER,
+            RobotState.IDLE_AIM, ArmState.SPEAKER,
             RobotState.INTAKE, ArmState.TRANSFER,
             RobotState.OUTTAKE, ArmState.TRANSFER,
             RobotState.AMP, ArmState.AMP,
@@ -94,6 +95,18 @@ public class StateManager extends SubsystemBase {
      */
     public void setDesiredRobotState(RobotState newState) {
         desiredRobotState = newState;
+    }
+
+    public void updateIdleRobotState() {
+        if (desiredRobotState == RobotState.IDLE && IndexSubsystem.getInstance().hasGamePiece()
+                && (LimelightSubsystem.getInstance().getAprilTagID() == 4
+                        || LimelightSubsystem.getInstance().getAprilTagID() == 7)) {
+
+            desiredRobotState = RobotState.IDLE_AIM;
+        } else if (desiredRobotState == RobotState.IDLE_AIM && (LimelightSubsystem.getInstance().getAprilTagID() != 4
+                && LimelightSubsystem.getInstance().getAprilTagID() != 7)) {
+            desiredRobotState = RobotState.IDLE;
+        }
     }
 
     /**
@@ -211,7 +224,7 @@ public class StateManager extends SubsystemBase {
             } else if (desiredRobotState.equals(RobotState.SPEAKER) || desiredRobotState.equals(RobotState.TRAP)) {
                 if (armAtTarget() && isShooterReady()) {
                     // signify to human player to press button - shooter is ready to fire
-                    led.setSolidRGB(0, 255, 0); // solid green LED when ready to shoot
+                    led.setSolidRGB(255, 255, 255); // solid white LED when ready to shoot
                 } else {
                     // ramping up to speed or arm moving to target
                     led.flashingRGB(255, 255, 255, 5); // white flashing when ramping up
@@ -260,6 +273,7 @@ public class StateManager extends SubsystemBase {
         updateShooterState(); // update shooter state periodically
         updateRumble(); // update rumble state of controller
         updateLights(); // update LEDs
+        updateIdleRobotState(); // updates desired robot state to only idly aim if it sees the right april tags
 
         SmartDashboard.putBoolean("[STATES] Arm At Target", armAtTarget());
     }
